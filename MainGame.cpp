@@ -21,7 +21,7 @@ int WINAPI WinMain(PLAY_WINARGS_IN)
 	blit.SetDisplayBuffer(buff.GetDisplayBuffer(), DISPLAY_WIDTH, DISPLAY_HEIGHT);
 	blit.LoadBackground("Data\\Backgrounds\\background.png");
 	blit.CentreAllSpriteOrigins();
-	gState.player = new Player({ DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 45 });
+	gState.player = new Player({ DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 90 });
 
 	return buff.HandleWindows(PLAY_WINARGS_OUT, L"State Demo");
 }

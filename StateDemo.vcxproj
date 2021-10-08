@@ -143,15 +143,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CrouchingState.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="IdleState.h" />
+    <ClInclude Include="JumpingState.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Play.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerState.h" />
+    <ClInclude Include="RunLeftState.h" />
+    <ClInclude Include="RunRightState.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CrouchingState.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="IdleState.cpp" />
+    <ClCompile Include="JumpingState.cpp" />
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerState.cpp" />
+    <ClCompile Include="RunLeftState.cpp" />
+    <ClCompile Include="RunRightState.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

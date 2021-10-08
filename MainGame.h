@@ -10,6 +10,7 @@ enum State
 	STATE_RUN_LEFT,
 	STATE_JUMP,
 	STATE_CROUCH,
+	STATE_INVALID = -1,
 };
 
 struct GameState

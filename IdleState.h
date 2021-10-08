@@ -2,12 +2,14 @@
 #include "Play.h"
 #include "PlayerState.h"
 
+class Player;
+
 class IdleState : public PlayerState
 {
 public:
 	IdleState() {}
-	~IdleState() {}
 
-	void update(Player& player) override;
+	void StateUpdate(Player& player) override;
+	void HandleInput(Player& player);
 };
 

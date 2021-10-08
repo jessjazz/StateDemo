@@ -1,107 +1,94 @@
 #include "Player.h"
 #include "PlayerState.h"
+#include "IdleState.h"
+#include "JumpingState.h"
+#include "CrouchingState.h"
+#include "RunLeftState.h"
+#include "RunRightState.h"
+
+IdleState Player::s_idleState;
+JumpingState Player::s_jumpingState;
+CrouchingState Player::s_crouchingState;
+RunRightState Player::s_runRightState;
+RunLeftState Player::s_runLeftState;
+
 
 Player::Player(Point2f pos)
-	: GameObject(pos)
+	: GameObject(pos), 
+	m_speed(5),
+	m_state(State::STATE_INVALID),
+	m_pendingState(State::STATE_IDLE),
+	m_pCurrentState(&s_idleState)
 {
-	m_pos = pos;
+	SetPosition(pos);
 	SetType(OBJ_PLAYER);
+	SetState(State::STATE_IDLE);
 }
 
 Player::~Player() {}
 
 void Player::Update(GameState& gState)
 {
-	PlayBlitter& blit = PlayBlitter::Instance();
-	PlayBuffer& buff = PlayBuffer::Instance();
+	m_pCurrentState->HandleInput(*this);
 
-	switch (gState.playerState)
+	if (m_pendingState != m_state)
 	{
-	case STATE_IDLE:
-		if (buff.KeyDown(VK_RIGHT))
+		switch (m_pendingState)
 		{
-			gState.playerState = STATE_RUN_RIGHT;
-			m_pos.x += 5;
+		case State::STATE_IDLE:
+			m_pCurrentState = &s_idleState;
+			break;
+		case State::STATE_JUMP:
+			m_pCurrentState = &s_jumpingState;
+			break;
+		case State::STATE_CROUCH:
+			m_pCurrentState = &s_crouchingState;
+			break;
+		case State::STATE_RUN_RIGHT:
+			m_pCurrentState = &s_runRightState;
+			break;
+		case State::STATE_RUN_LEFT:
+			m_pCurrentState = &s_runLeftState;
+			break;
+		default:
+			break;
 		}
-		else if (buff.KeyDown(VK_LEFT))
-		{
-			gState.playerState = STATE_RUN_LEFT;
-			m_pos.x -= 5;
-		}
-		else if (buff.KeyPressed(VK_SPACE))
-		{
-			gState.playerState = STATE_JUMP;
-			m_pos.y -= 20;
-		}
-		else if (buff.KeyPressed(VK_DOWN))
-		{
-			gState.playerState = STATE_CROUCH;
-		}
-		break;
 
-	case STATE_RUN_RIGHT:
-		if (buff.KeyDown(VK_RIGHT))
-		{
-			m_pos.x += 5;
-		}
-		else if (!buff.KeyDown(VK_RIGHT))
-		{
-			gState.playerState = STATE_IDLE;
-		}
-		break;
-
-	case STATE_RUN_LEFT:
-		if (buff.KeyDown(VK_LEFT))
-		{
-			m_pos.x -= 5;
-		}
-		else if (!buff.KeyDown(VK_LEFT))
-		{
-			gState.playerState = STATE_IDLE;
-		}
-		break;
-
-	case STATE_JUMP:
-		if (!buff.KeyDown(VK_SPACE))
-		{
-			gState.playerState = STATE_IDLE;
-			m_pos.y += 20;
-		}
-		break;
-
-	case STATE_CROUCH:
-		if (!buff.KeyDown(VK_DOWN))
-		{
-			gState.playerState = STATE_IDLE;
-		}
-		break;
-
-	default:
-		break;
+		m_state = m_pendingState;
 	}
 
-	gState.player->SetPosition(m_pos);
+	m_pCurrentState->StateUpdate(*this);
 }
 
 void Player::Draw(GameState& gState) const
 {
 	PlayBlitter& blit = PlayBlitter::Instance();
 
-	switch (gState.playerState)
+	switch (m_state)
 	{
-	case STATE_IDLE:
-		blit.Draw(blit.GetSpriteId("idle_7"), m_pos, 5.0f * gState.time);
+	case State::STATE_IDLE:
+		blit.Draw(blit.GetSpriteId("large_idle_7"), m_pos, 5.0f * gState.time);
 		break;
-	case STATE_RUN_RIGHT:
-		blit.Draw(blit.GetSpriteId("run_right_8"), m_pos, 12.0f * gState.time);
+	case State::STATE_RUN_RIGHT:
+		blit.Draw(blit.GetSpriteId("large_run_right_8"), m_pos, 12.0f * gState.time);
 		break;
-	case STATE_RUN_LEFT:
-		blit.Draw(blit.GetSpriteId("run_left_8"), m_pos, 12.0f * gState.time);
+	case State::STATE_RUN_LEFT:
+		blit.Draw(blit.GetSpriteId("large_run_left_8"), m_pos, 12.0f * gState.time);
 		break;
-	case STATE_JUMP:
-		blit.Draw(blit.GetSpriteId("jump_2"), m_pos, 10.0f * gState.time);
+	case State::STATE_JUMP:
+		blit.Draw(blit.GetSpriteId("large_jump_3"), m_pos, 8.0f * gState.time);
 		break;
-	case STATE_CROUCH:
-		blit.Draw(blit.GetSpriteId("crouch_2"), m_pos, 5.0f * gState.time);
+	case State::STATE_CROUCH:
+		blit.Draw(blit.GetSpriteId("large_crouch_6"), m_pos, 5.0f * gState.time);
 	}
+}
+
+void Player::SetState(State newState)
+{
+	m_pendingState = newState;
+}
+
+int Player::GetSpeed() const
+{
+	return m_speed;
 }

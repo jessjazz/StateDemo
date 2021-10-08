@@ -16,7 +16,7 @@ public:
     GameObject(Point2f pos);
     virtual ~GameObject();
 
-    virtual void Update(GameState& state) = 0;
+    virtual void Update(GameState& gState) = 0;
     virtual void Draw(GameState& gState) const = 0;
 
     void SetPosition(Point2f pos) { m_pos = pos; }
@@ -37,8 +37,8 @@ public:
     static int GetObjectCount(Type eType);
     static int GetObjectList(GameObject::Type eType, std::vector< GameObject* >& vList);
 
-    static void UpdateAll(GameState& state);
-    static void DrawAll(GameState& state);
+    static void UpdateAll(GameState& gState);
+    static void DrawAll(GameState& gState);
     static void DestroyAll();
 
 protected:
