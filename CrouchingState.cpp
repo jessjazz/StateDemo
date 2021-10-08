@@ -3,9 +3,7 @@
 
 void CrouchingState::StateUpdate(Player& player)
 {
-	PlayBuffer& buff = PlayBuffer::Instance();
-
-	if (!buff.KeyDown(VK_DOWN))
+	if (!Play::KeyDown(VK_DOWN))
 	{
 		player.SetState(State::STATE_IDLE);
 	}

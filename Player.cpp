@@ -62,24 +62,23 @@ void Player::Update(GameState& gState)
 
 void Player::Draw(GameState& gState) const
 {
-	PlayBlitter& blit = PlayBlitter::Instance();
 
 	switch (m_state)
 	{
 	case State::STATE_IDLE:
-		blit.Draw(blit.GetSpriteId("large_idle_7"), m_pos, 5.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("large_idle_7"), m_pos, 5.0f * gState.time);
 		break;
 	case State::STATE_RUN_RIGHT:
-		blit.Draw(blit.GetSpriteId("large_run_right_8"), m_pos, 12.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("large_run_right_8"), m_pos, 12.0f * gState.time);
 		break;
 	case State::STATE_RUN_LEFT:
-		blit.Draw(blit.GetSpriteId("large_run_left_8"), m_pos, 12.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("large_run_left_8"), m_pos, 12.0f * gState.time);
 		break;
 	case State::STATE_JUMP:
-		blit.Draw(blit.GetSpriteId("large_jump_3"), m_pos, 8.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("large_jump_3"), m_pos, 8.0f * gState.time);
 		break;
 	case State::STATE_CROUCH:
-		blit.Draw(blit.GetSpriteId("large_crouch_6"), m_pos, 5.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("large_crouch_6"), m_pos, 5.0f * gState.time);
 	}
 }
 

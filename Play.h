@@ -14,13 +14,17 @@
 //				(___)                       .__.'                                                                  
 //
 //********************************************************************************************************************************
-//                                A simple C++ framework for learning how to make 2D games
-//											Copyright 2020 Sumo-Digital Limited
+//                       PlayBuffer: An instructional scaffold for learning C++ through 2D game development
+// 
+//											Copyright 2020 Sumo Digital Limited
+//	   C++ code is made available under the Creative Commons Attribution - No Derivatives 4.0 International Public License 
+//									https://creativecommons.org/licenses/by-nd/4.0/legalcode
 //********************************************************************************************************************************
 
 #ifndef PLAYPCH_H
 #define PLAYPCH_H
-#define PLAY_VERSION	"0.9.21.02.16"
+
+#define PLAY_VERSION	"1.1.21.07.02"
 
 #include <cstdint>
 #include <cstdlib>
@@ -38,9 +42,9 @@
 #include <thread>
 #include <future>
 
+#define WIN32_LEAN_AND_MEAN // Exclude rarely-used content from the Windows headers
+#define NOMINMAX // Stop windows macros defining their own min and max macros
 
-#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
-#define NOMINMAX // Stop windows macros defining min and max macros which can be problematic.
 // Windows Header Files
 #include <windows.h>
 #include <windowsx.h>
@@ -52,9 +56,9 @@
 #include "dwmapi.h"
 #include <Shlobj.h>
 #pragma warning(push)
-#pragma warning(disable:4458) // declaration of 'xyz' hides class member
+#pragma warning(disable:4458) // Suppress warning for declaration of 'xyz' hides class member
 
- // This is used to avoid issues with NOMINMAX
+ // Redirect the GDI to use the standard library for min and max
 namespace Gdiplus
 {
 	using std::min;
@@ -63,32 +67,24 @@ namespace Gdiplus
 #include <GdiPlus.h>
 #pragma warning(pop)
 
-
 // Macros for Assertion and Tracing
 void TracePrintf(const char* file, int line, const char* fmt, ...);
 void AssertFailMessage(const char* message, const char* file, long line);
 void DebugOutput(const char* s);
 void DebugOutput(std::string s);
 
-
 #ifdef _DEBUG
-#define PB_TRACE(fmt, ...) TracePrintf(__FILE__, __LINE__, fmt, __VA_ARGS__);
-#define PB_ASSERT(x) if(!(x)){ PB_TRACE(" *** ASSERT FAIL *** !("#x")\n\n"); AssertFailMessage(#x, __FILE__, __LINE__), __debugbreak(); }
-#define PB_ASSERT_MSG(x,y) if(!(x)){ PB_TRACE(" *** ASSERT FAIL *** !("#x")\n\n"); AssertFailMessage(y, __FILE__, __LINE__), __debugbreak(); }
+#define PLAY_TRACE(fmt, ...) TracePrintf(__FILE__, __LINE__, fmt, __VA_ARGS__);
+#define PLAY_ASSERT(x) if(!(x)){ PLAY_TRACE(" *** ASSERT FAIL *** !("#x")\n\n"); AssertFailMessage(#x, __FILE__, __LINE__), __debugbreak(); }
+#define PLAY_ASSERT_MSG(x,y) if(!(x)){ PLAY_TRACE(" *** ASSERT FAIL *** !("#x")\n\n"); AssertFailMessage(y, __FILE__, __LINE__), __debugbreak(); }
 #else
-#define PB_TRACE(fmt, ...)
-#define PB_ASSERT(x) if(!(x)){ AssertFailMessage(#x, __FILE__, __LINE__);  }
-#define PB_ASSERT_MSG(x,y) if(!(x)){ AssertFailMessage(y, __FILE__, __LINE__); }
+#define PLAY_TRACE(fmt, ...)
+#define PLAY_ASSERT(x) if(!(x)){ AssertFailMessage(#x, __FILE__, __LINE__);  }
+#define PLAY_ASSERT_MSG(x,y) if(!(x)){ AssertFailMessage(y, __FILE__, __LINE__); }
 #endif // _DEBUG
 
 // Global constants such as PI
 constexpr float PLAY_PI = 3.14159265358979323846f;   // pi
-
-
-
-//*******************************************************************
-// PLAY BEGIN: PlayMemory.h
-//*******************************************************************
 
 #ifndef PLAY_PLAYMEMORY_H
 #define PLAY_PLAYMEMORY_H
@@ -122,18 +118,10 @@ void operator delete[](void* p, const char* file, int line);
 #endif
 
 #endif
-
-//*******************************************************************
-// PLAY BEGIN: PlayMaths.h
-//*******************************************************************
-
 #ifndef PLAY_PLAYMATHS_H
 #define PLAY_PLAYMATHS_H
 //********************************************************************************************************************************
-// Copyright 2020 Sumo-Digital Limited
-//********************************************************************************************************************************
 // File:		PlayMaths.h
-// Created:		October 2020 - Sumo Academy
 // Description:	A very simple set of 2D maths structures and operations
 // Platform:	Independent
 //********************************************************************************************************************************
@@ -145,7 +133,7 @@ void operator delete[](void* p, const char* file, int line);
 struct Vector2f
 {
 	Vector2f() {}
-	// We're encouraging implicity type conversions between float and int with the same number of parameters
+	// We're encouraging implicit type conversions between float and int with the same number of parameters
 	Vector2f(float x, float y) : x(x), y(y) {}
 	Vector2f(int x, int y) : x(static_cast<float>(x)), y(static_cast<float>(y)) {}
 	Vector2f(float x, int y) : x(x), y(static_cast<float>(y)) {}
@@ -165,8 +153,9 @@ struct Vector2f
 
 // A point is conceptually different to a vector, but maps to Vector2f for ease of use
 using Point2f = Vector2f;
+using Point2D = Vector2f;
+using Vector2D = Vector2f;
 
-//**************************************************************************************************
 // Vector component operations
 //**************************************************************************************************
 
@@ -175,9 +164,8 @@ inline Vector2f operator + (const Vector2f& lhs, const Vector2f& rhs)
 {
 	Vector2f ret;
 	for (int i = 0; i < 2; ++i)
-	{
 		ret.v[i] = lhs.v[i] + rhs.v[i];
-	}
+
 	return ret;
 }
 
@@ -185,9 +173,8 @@ inline Vector2f operator + (const Vector2f& lhs, const Vector2f& rhs)
 inline Vector2f& operator += (Vector2f& lhs, const Vector2f& rhs)
 {
 	for (int i = 0; i < 2; ++i)
-	{
 		lhs.v[i] += rhs.v[i];
-	}
+
 	return lhs;
 }
 
@@ -196,9 +183,8 @@ inline Vector2f operator - (const Vector2f& lhs, const Vector2f& rhs)
 {
 	Vector2f ret;
 	for (int i = 0; i < 2; ++i)
-	{
 		ret.v[i] = lhs.v[i] - rhs.v[i];
-	}
+
 	return ret;
 }
 
@@ -206,9 +192,8 @@ inline Vector2f operator - (const Vector2f& lhs, const Vector2f& rhs)
 inline Vector2f& operator -= (Vector2f& lhs, const Vector2f& rhs)
 {
 	for (int i = 0; i < 2; ++i)
-	{
 		lhs.v[i] -= rhs.v[i];
-	}
+
 	return lhs;
 }
 
@@ -217,9 +202,8 @@ inline Vector2f operator - (const Vector2f& op)
 {
 	Vector2f ret;
 	for (int i = 0; i < 2; ++i)
-	{
 		ret.v[i] = -op.v[i];
-	}
+
 	return ret;
 }
 
@@ -228,9 +212,8 @@ inline Vector2f operator * (const Vector2f& lhs, const Vector2f& rhs)
 {
 	Vector2f ret;
 	for (int i = 0; i < 2; ++i)
-	{
 		ret.v[i] = lhs.v[i] * rhs.v[i];
-	}
+
 	return ret;
 }
 
@@ -239,9 +222,8 @@ inline Vector2f operator *= (Vector2f& lhs, const Vector2f& rhs)
 {
 	Vector2f ret;
 	for (int i = 0; i < 2; ++i)
-	{
 		lhs.v[i] *= rhs.v[i];
-	}
+
 	return lhs;
 }
 
@@ -250,9 +232,8 @@ inline Vector2f operator / (const Vector2f& lhs, const Vector2f& rhs)
 {
 	Vector2f ret;
 	for (int i = 0; i < 2; ++i)
-	{
 		ret.v[i] = lhs.v[i] / rhs.v[i];
-	}
+
 	return ret;
 }
 
@@ -261,13 +242,11 @@ inline Vector2f operator /= (Vector2f& lhs, const Vector2f& rhs)
 {
 	Vector2f ret;
 	for (int i = 0; i < 2; ++i)
-	{
 		lhs.v[i] /= rhs.v[i];
-	}
+
 	return lhs;
 }
 
-//**************************************************************************************************
 // Vector scalar operations
 //**************************************************************************************************
 
@@ -276,9 +255,8 @@ inline Vector2f operator * (const Vector2f& lhs, const float rhs)
 {
 	Vector2f ret;
 	for (int i = 0; i < 2; ++i)
-	{
 		ret.v[i] = lhs.v[i] * rhs;
-	}
+
 	return ret;
 }
 
@@ -293,9 +271,8 @@ inline Vector2f operator *= (Vector2f& lhs, const float& rhs)
 {
 	Vector2f ret;
 	for (int i = 0; i < 2; ++i)
-	{
 		lhs.v[i] *= rhs;
-	}
+
 	return lhs;
 }
 
@@ -310,9 +287,8 @@ inline Vector2f operator / (const float lhs, const Vector2f& rhs)
 {
 	Vector2f ret;
 	for (int i = 0; i < 2; ++i)
-	{
 		ret.v[i] = lhs / rhs.v[i];
-	}
+
 	return ret;
 }
 
@@ -321,13 +297,11 @@ inline Vector2f operator /= (Vector2f& lhs, const float& rhs)
 {
 	Vector2f ret;
 	for (int i = 0; i < 2; ++i)
-	{
 		lhs.v[i] /= rhs;
-	}
+
 	return lhs;
 }
 
-//**************************************************************************************************
 // Vector component comparisons
 //**************************************************************************************************
 
@@ -356,14 +330,11 @@ inline bool EqualTol(const Vector2f& lhs, const Vector2f& rhs, const float toler
 	for (int i = 0; i < 2; ++i)
 	{
 		if (std::abs(lhs.v[i] - rhs.v[i]) > tolerance)
-		{
 			return false;
-		}
 	}
 	return true;
 }
 
-//**************************************************************************************************
 // Common maths functions
 //**************************************************************************************************
 
@@ -372,13 +343,12 @@ inline float dot(const Vector2f& lhs, const Vector2f& rhs)
 {
 	float ret = 0.f;
 	for (int i = 0; i < 2; ++i)
-	{
 		ret += lhs.v[i] * rhs.v[i];
-	}
+
 	return ret;
 }
 
-// Orthagonal vector
+// Orthogonal vector
 inline Vector2f normal(const Vector2f& lhs)
 {
 	Vector2f ret;
@@ -405,142 +375,270 @@ inline Vector2f normalize(const Vector2f& v)
 	return v / length(v);
 }
 
-
 #endif
 
 
-//*******************************************************************
-// PLAY END: PlayMaths.h
-//*******************************************************************
-
-
-//*******************************************************************
-// PLAY BEGIN: PlayBuffer.h
-//*******************************************************************
-
-#ifndef PLAY_PLAYBUFFER_H
-#define PLAY_PLAYBUFFER_H
+#ifndef PLAY_PLAYPIXEL_H
+#define PLAY_PLAYPIXEL_H
 //********************************************************************************************************************************
-//* Copyright 2020 Sumo-Digital Limited
+// File:		PlayPixel.h
+// Platform:	Independent
+// Description:	Pixel types for holding image data
 //********************************************************************************************************************************
-// File:		PlayBuffer.h
-// Created:		March 2020 - Sumo Academy
-// Description:	A software drawing buffer which provides the basis for creating 2D games  
+
+// A pixel structure to represent an ARBG format pixel
+struct Pixel
+{
+	Pixel() {}
+	Pixel(uint32_t bits) : bits(bits) {}
+	Pixel(float r, float g, float b) :
+		a(0xFF), r(static_cast<uint8_t>(r)), g(static_cast<uint8_t>(g)), b(static_cast<uint8_t>(b))
+	{
+	}
+	Pixel(int r, int g, int b) :
+		a(0xFF), r(static_cast<uint8_t>(r)), g(static_cast<uint8_t>(g)), b(static_cast<uint8_t>(b))
+	{
+	}
+	Pixel(int a, int r, int g, int b) :
+		a(static_cast<uint8_t>(a)), r(static_cast<uint8_t>(r)), g(static_cast<uint8_t>(g)), b(static_cast<uint8_t>(b))
+	{
+	}
+
+	union
+	{
+		uint32_t bits{ 0xFF000000 }; // Alpha set to opaque by default
+		struct { uint8_t b, g, r, a; }; // This order corresponds to ( a<<24 | r<<16 | g<<8 | b )
+	};
+};
+
+const Pixel PIX_BLACK{ 0x00, 0x00, 0x00 };
+const Pixel PIX_WHITE{ 0xFF, 0xFF, 0xFF };
+const Pixel PIX_RED{ 0xFF, 0x00, 0x00 };
+const Pixel PIX_GREEN{ 0x00, 0x8F, 0x00 };
+const Pixel PIX_BLUE{ 0x00, 0x00, 0xFF };
+const Pixel PIX_MAGENTA{ 0xFF, 0x00, 0xFF };
+const Pixel PIX_CYAN{ 0x00, 0xFF, 0xFF };
+const Pixel PIX_YELLOW{ 0xFF, 0xFF, 0x00 };
+const Pixel PIX_ORANGE{ 0xFF, 0x8F, 0x00 };
+const Pixel PIX_GREY{ 0x80, 0x80, 0x80 };
+const Pixel PIX_TRANS{ 0x00, 0x00, 0x00, 0x00 };
+
+
+struct PixelData
+{
+	int width{ 0 };
+	int height{ 0 };
+	Pixel* pPixels{ nullptr };
+	bool preMultiplied = false;
+};
+
+#endif
+#ifndef PLAY_PLAYMOUSE_H
+#define PLAY_PLAYMOUSE_H
+//********************************************************************************************************************************
+// File:		PlayMouse.h
+// Platform:	Independent
+// Description:	A mouse input data type 
+//********************************************************************************************************************************
+
+// A mouse structure to hold pointer co-ordinates and button states
+struct MouseData
+{
+	Vector2f pos{ 0, 0 };
+	bool left{ false };
+	bool right{ false };
+};
+
+#endif
+
+#ifndef PLAY_PLAYWINDOW_H
+#define PLAY_PLAYWINDOW_H
+//********************************************************************************************************************************
+// File:		PlayWindow.h
+// Description:	Platform specific code to provide a window to draw into
 // Platform:	Windows
-// Notes:		Provides a 32-bit ARGB display buffer
+// Notes:		Uses a 32-bit ARGB display buffer
 //********************************************************************************************************************************
 
 // The target frame rate
 constexpr int FRAMES_PER_SECOND = 60;
 
-// Some defines to hide the complexity of WinMain arguments 
-#define PLAY_WINARGS_IN		_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd
-#define PLAY_WINARGS_OUT	hInstance, hPrevInstance, lpCmdLine, nShowCmd
+// Some defines to hide the complexity of arguments 
+#define PLAY_IGNORE_COMMAND_LINE	int, char*[]
 
-// Encapsulates the functionality of a 2D display buffer 
-// > Singleton class accessed using PlayBuffer::Instance()
-class PlayBuffer
+constexpr int PLAY_OK = 0;
+constexpr int PLAY_ERROR = -1;
+
+// Encapsulates the platform specific functionality of creating and managing a window 
+// > Singleton class accessed using PlayWindow::Instance()
+class PlayWindow
 {
 public:
 
-	// A pixel structure to represent an ARBG format pixel
-	struct Pixel
-	{
-		Pixel() {}
-		Pixel(uint32_t bits) : bits(bits) {}
-		Pixel(float r, float g, float b) :
-			a(0xFF), r(static_cast<uint8_t>(r)), g(static_cast<uint8_t>(g)), b(static_cast<uint8_t>(b))
-		{
-		}
-		Pixel(int r, int g, int b) :
-			a(0xFF), r(static_cast<uint8_t>(r)), g(static_cast<uint8_t>(g)), b(static_cast<uint8_t>(b))
-		{
-		}
-		Pixel(int a, int r, int g, int b) :
-			a(static_cast<uint8_t>(a)), r(static_cast<uint8_t>(r)), g(static_cast<uint8_t>(g)), b(static_cast<uint8_t>(b))
-		{
-		}
-
-		union
-		{
-			uint32_t bits{ 0xFF000000 }; // Alpha set to opaque by default
-			struct { uint8_t b, g, r, a; }; // This order corresponds to ( a<<24 | r<<16 | g<<8 | b )
-		};
-	};
-
-	// Defaul pixel colours for ease of use
-	static PlayBuffer::Pixel pixBlack, pixWhite, pixRed, pixGreen, pixBlue, pixMagenta, pixCyan, pixYellow, pixOrange, pixGrey;
-
-	//********************************************************************************************************************************
 	// Instance functions
 	//********************************************************************************************************************************
 
-	// Creates the PlayBuffer instance and initialise the display buffer
-	static PlayBuffer& Instance(int nWidth, int nHeight, int nScale, Pixel bgColour = { 0, 0, 0 });
-	// Returns the PlayBuffer instance
-	static PlayBuffer& Instance();
-	// Destroys the PlayBuffer instance
+	// Creates the PlayWindow instance and initialises the window
+	static PlayWindow& Instance(PixelData* pDisplayBuffer, int nScale);
+	// Returns the PlayWindow instance
+	static PlayWindow& Instance();
+	// Destroys the PlayWindow instance
 	static void Destroy();
 
-	//********************************************************************************************************************************
 	// Windows functions
 	//********************************************************************************************************************************
 
-	// Passes control of Windows functionality over to the PlayBuffer 
+	// Call within WInMain to hand control of Windows functionality over to the PlayWindow class
 	int HandleWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow, LPCWSTR windowName);
-	// Handles Windows messages for the PlayBuffer  
+	// Handles Windows messages for the PlayWindow  
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	// Copies the display buffer pixels to the window
-	int Present();
+	// > Returns the time taken for the present in seconds
+	double Present();
+	// Sets the pointer to write mouse input data to
+	void RegisterMouse(MouseData* pMouseData) { m_pMouseData = pMouseData; }
 
-	//********************************************************************************************************************************
 	// Getter functions
 	//********************************************************************************************************************************
 
-	// Get a pointer to the display buffer's pixel data. 
-	uint32_t* GetDisplayBuffer() { return m_pDisplayBuffer; } // Bad abstraction, but good for modularity
 	// Gets the width of the display buffer in pixels
-	int GetWidth() const { return m_width; }
+	int GetWidth() const { return m_pPlayBuffer->width; }
 	// Gets the height of the display buffer in pixels 
-	int GetHeight() const { return m_height; }
+	int GetHeight() const { return m_pPlayBuffer->height; }
 	// Gets the scale of the display buffer in pixels
 	int GetScale() const { return m_scale; }
 
-	//********************************************************************************************************************************
-	// Mouse and keyboard functions
-	//********************************************************************************************************************************
-
-	// Returns the status of the supplied mouse button (0=left, 1=right)
-	bool GetMouseDown(int button) const;
-	// Get the screen position of the mouse cursor
-	Point2f GetMousePos() const { return m_mousePos; }
-	// Returns true if the key has been pressed since it was last released
-	// > https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
-	bool KeyPressed(int vKey);
-	// Returns true if the key is currently being held down
-	// > https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
-	bool KeyDown(int vKey);
-
-	//********************************************************************************************************************************
-	// Basic buffer drawing functions
+	// Loading functions
 	//********************************************************************************************************************************
 
-	// Clears the display buffer using the given pixel colour
-	void ClearBuffer(Pixel colour);
-	// Sets the colour of an individual pixel in the display buffer
+	// Reads the width and height of a png image
+	static int ReadPNGImage(std::string& fileAndPath, int& width, int& height);
+	// Loads a png image and puts the image data into the destination image provided
+	static int LoadPNGImage(std::string& fileAndPath, PixelData& destImage);
+
+private:
+
+	// Constructor / destructor
+	//********************************************************************************************************************************
+
+	// Creates a window of the required size and scale and stores a pointer to the display buffer source
+	PlayWindow(PixelData* pDisplayBuffer, int nScale);
+	// Frees up memory from all the different buffers
+	~PlayWindow();
+	// The assignment operator is removed to prevent copying of a singleton class
+	PlayWindow& operator=(const PlayWindow&) = delete;
+	// The copy constructor is removed to prevent copying of a singleton class
+	PlayWindow(const PlayWindow&) = delete;
+
+	// Miscellaneous internal functions
+	//********************************************************************************************************************************
+
+	// Display buffer dimensions
+	int m_scale{ 0 };
+
+	// Buffer pointers
+	PixelData* m_pPlayBuffer{ nullptr };
+	//Pointer to external mouse data
+	MouseData* m_pMouseData{ nullptr };
+	// Pointer to the instance.
+	static PlayWindow* s_pInstance;
+	// The handle to the Window 
+	HWND m_hWindow{ nullptr };
+	// A GDI+ token
+	static unsigned long long s_pGDIToken;
+};
+
+#endif
+
+
+
+#ifndef PLAY_PLAYBLITTER_H
+#define PLAY_PLAYBLITTER_H
+//********************************************************************************************************************************
+// File:		PlayBlitter.h
+// Description:	A software pixel renderer for drawing 2D primitives into a PixelData buffer
+// Platform:	Independent
+//********************************************************************************************************************************
+
+// A software pixel renderer for drawing 2D primitives into a PixelData buffer
+// > A singleton class accessed using PlayBlitter::Instance()
+class PlayBlitter
+{
+public:
+
+	// Constructor and initialisation
+	//********************************************************************************************************************************
+
+	// Constructor
+	PlayBlitter(PixelData* pRenderTarget = nullptr);
+	// Set the render target for all subsequent drawing operations
+	// Returns a pointer to any previous render target
+	PixelData* SetRenderTarget(PixelData* pRenderTarget) { PixelData* old = m_pRenderTarget; m_pRenderTarget = pRenderTarget; return old; }
+
+	// Primitive drawing functions
+	//********************************************************************************************************************************
+
+	// Sets the colour of an individual pixel on the render target
 	void DrawPixel(int posX, int posY, Pixel pix);
+	// Draws a line of pixels into the render target
+	void DrawLine(int startX, int startY, int endX, int endY, Pixel pix);
+	// Draws pixel data to the render target using a direct copy
+	// > Setting alphaMultiply < 1 forces a less optimal rendering approach (~50% slower) 
+	void BlitPixels(const PixelData& srcImage, int srcOffset, int blitX, int blitY, int blitWidth, int blitHeight, float alphaMultiply) const;
+	// Draws rotated and scaled pixel data to the render target (much slower than BlitPixels)
+	// > Setting alphaMultiply isn't a signfiicant additional slow down on RotateScalePixels
+	void RotateScalePixels(const PixelData& srcPixelData, int srcOffset, int blitX, int blitY, int blitWidth, int blitHeight, int originX, int originY, float angle, float scale, float alphaMultiply = 1.0f) const;
+	// Clears the render target using the given pixel colour
+	void ClearRenderTarget(Pixel colour);
+	// Copies a background image of the correct size to the render target
+	void BlitBackground(PixelData& backgroundImage);
+
+private:
+
+	PixelData* m_pRenderTarget{ nullptr };
+
+};
+
+#endif
+#ifndef PLAY_PLAYGRAPHICS_H
+#define PLAY_PLAYGRAPHICS_H
+//********************************************************************************************************************************
+// File:		PlayGraphics.h
+// Description:	Manages 2D graphics operations on a PixelData buffer 
+// Platform:	Independent
+// Notes:		Uses PNG format. The end of the filename indicates the number of frames e.g. "bat_4.png" or "tiles_10x10.png"
+//********************************************************************************************************************************
+
+// Manages 2D graphics operations on a PixelData buffer 
+// > Singleton class accessed using PlayGraphics::Instance()
+class PlayGraphics
+{
+public:
+	// Instance functions
+	//********************************************************************************************************************************
+
+	// Creates the PlayGraphics instance and generates sprites from all the PNGs in the directory indicated
+	static PlayGraphics& Instance(int bufferWidth, int bufferHeight, const char* path);
+	// Returns the PlayGraphics instance
+	static PlayGraphics& Instance();
+	// Destroys the PlayGraphics instance
+	static void Destroy();
+
+	// Basic drawing functions
+	//********************************************************************************************************************************
+
 	// Sets the colour of an individual pixel in the display buffer
 	void DrawPixel(Point2f pos, Pixel pix);
-	// Sets the colour of an individual pixel in the display buffer
+	// Draws a line of pixels into the display buffer
 	void DrawLine(Point2f startPos, Point2f endPos, Pixel pix);
-	// Draws a pixel line into the display buffer
-	void DrawLine(int startX, int startY, int endX, int endY, Pixel pix);
 	// Draws a rectangle into the display buffer
 	void DrawRect(Point2f topLeft, Point2f bottomRight, Pixel pix, bool fill = false);
 	// Draws a circle into the display buffer
 	void DrawCircle(Point2f centrePos, int radius, Pixel pix);
+	// Draws raw pixel data to the display buffer
+	// > Pre-multiplies the alpha on the image data if this hasn't been done before
+	void DrawPixelData(PixelData* pixelData, Point2f pos, float alpha = 1.0f);
 
-	//********************************************************************************************************************************
 	// Debug font functions
 	//********************************************************************************************************************************
 
@@ -551,142 +649,23 @@ public:
 	// > Returns the x position at the end of the text
 	int DrawDebugString(Point2f pos, const std::string& s, Pixel pix, bool centred = true);
 
-	//********************************************************************************************************************************
-	// Timing bar functions
-	//********************************************************************************************************************************
-
-	// Sets the current timing bar segment to a specific colour
-	// > Returns the index of the new timing segment
-	int SetTimingBarColour(PlayBuffer::Pixel pix);
-	// Draws the timing bar at the given position and size
-	void DrawTimingBar(Point2f pos, Point2f size);
-	// Gets the duration (in milliseconds) of a specific timing segment
-	float GetTimingSegmentDuration(int id) const;
-
-	//********************************************************************************************************************************
-	// Loading functions
+	// Sprite Loading functions
 	//********************************************************************************************************************************
 
-	// Reads the width and height of a png image
-	static int ReadPNGImage(std::string& fileAndPath, int& width, int& height);
-	// Loads a png image and puts the image data into the destination image provided
-	static int LoadPNGImage(std::string& fileAndPath, int& width, int& height, uint32_t*& destImage);
-
-private:
-
-	//********************************************************************************************************************************
-	// Constructor / destructor
-	//********************************************************************************************************************************
-
-	// Creates a window of the required size and scale and allocates the display buffer
-	PlayBuffer(int nWidth, int nHeight, int nScale, Pixel bgColour);
-	// Frees up memory from all the different buffers
-	~PlayBuffer();
-	// The assignment operator is removed to prevent copying of a singleton class
-	PlayBuffer& operator=(const PlayBuffer&) = delete;
-	// The copy constructor is removed to prevent copying of a singleton class
-	PlayBuffer(const PlayBuffer&) = delete;
-
-	//********************************************************************************************************************************
-	// Miscellaneous internal functions
-	//********************************************************************************************************************************
-
-	// Allocates a buffer for the debug font and copies the font pixel data to it
-	void DecompressDubugFont(void);
-	// Returns the pixel width of a string using the debig font
-	int GetDebugStringWidth(const std::string& s);
-	// Draws the offset points from the origin in all octants
-	void DrawCircleOctants(int posX, int posY, int offX, int offY, Pixel pix);
-	// Ends the current timing segment and calculates the duration
-	LARGE_INTEGER EndTimingSegment();
-
-	struct TimingSegment
-	{
-		PlayBuffer::Pixel pix;
-		long long begin{ 0 };
-		long long end{ 0 };
-		float millisecs{ 0 };
-	};
-
-	// Vector of timing data segments
-	std::vector<TimingSegment> m_vTimings;
-
-	// Display buffer dimensions
-	int m_width{ 0 }, m_height{ 0 }, m_scale{ 0 };
-
-	// Buffer pointers
-	uint32_t* m_pDisplayBuffer{ nullptr };
-	uint8_t* m_pDebugFontBuffer{ nullptr };
-
-	//Position of the mouse in the display buffer
-	Point2f m_mousePos{ 0, 0 };
-	//left right.
-	bool m_bMouseDown[2]{ false, false };
-	// Pointer to the isntance.
-	static PlayBuffer* s_pInstance;
-	// The handle to the PLayBuffer Window 
-	HWND m_hWindow{ nullptr };
-	// A GDI+ token
-	unsigned long long m_gpToken{ 0 };
-};
-
-
-
-#endif
-
-
-
-//*******************************************************************
-// PLAY END: PlayBuffer.h
-//*******************************************************************
-
-
-//*******************************************************************
-// PLAY BEGIN: PlayBlitter.h
-//*******************************************************************
-
-#ifndef PLAY_PLAYBLITTER_H
-#define PLAY_PLAYBLITTER_H
-//********************************************************************************************************************************
-//* Copyright 2020 Sumo-Digital Limited
-//********************************************************************************************************************************
-// File:		PlayBlitter.h
-// Created:		March 2020 - Sumo Academy
-// Description:	A simple image manager for handling spites/backgrounds with PlayBuffer
-// Platform:	Independent
-// Notes:		Uses PNG format. The end of the filename indicates the number of frames e.g. "bat_4.png" or "tiles_10x10.png"
-//********************************************************************************************************************************
-
-// A 2D sprite manager class, named in honour of the Amiga Blitter
-// > Singleton class accessed using PlayBlitter::Instance()
-class PlayBlitter
-{
-public:
-	//********************************************************************************************************************************
-	// Instance functions
-	//********************************************************************************************************************************
-
-	// Creates the PlayBlitter instance and creates sprites from all the PNGs in the directory indicated
-	static PlayBlitter& Instance(const char* path);
-	// Returns the PlayBlitter instance
-	static PlayBlitter& Instance();
-	// Destroys the PlayBlitter instance
-	static void Destroy();
-	// Set the display buffer for all subsequent drawing operations
-	void SetDisplayBuffer(uint32_t* pDisplayBuffer, int bufferWidth, int bufferHeight) { m_displayBuffer = pDisplayBuffer; m_displayBufferWidth = bufferWidth; m_displayBufferHeight = bufferHeight; }
-
-	//********************************************************************************************************************************
-	// Loading functions
-	//********************************************************************************************************************************
-
-	// Loads a spritesheet and creates a sprite from it (custom asset pipelines)
-	// > All sprites are normally created by the PlayBlitter constructor
+	// Loads a sprite sheet and creates a sprite from it (custom asset pipelines)
+	// > All sprites are normally created by the PlayGraphics constructor
 	int LoadSpriteSheet(const std::string& path, const std::string& filename);
+	// Adds a sprite sheet dynamically from memory (custom asset pipelines)
+	// > All sprites are normally created by the PlayGraphics constructor
+	int AddSprite(const std::string& name, PixelData& pixelData, int hCount = 1, int vCount = 1);
+	// Updates a sprite sheet dynamically from memory (custom asset pipelines)
+	// > Left to caller to release old PixelData
+	int UpdateSprite(const std::string& name, PixelData& pixelData, int hCount = 1, int vCount = 1);
+
 	// Loads a background image which is assumed to be the same size as the display buffer
 	// > Returns the index of the loaded background
 	int LoadBackground(const char* fileAndPath);
 
-	//********************************************************************************************************************************
 	// Sprite Getters and Setters
 	//********************************************************************************************************************************
 
@@ -709,19 +688,18 @@ public:
 	void CentreAllSpriteOrigins();
 	// Sets the origin of all sprites found matching the given name (offset from top left)
 	void SetSpriteOrigins(const char* rootName, Vector2f newOrigin, bool relative = false);
-	// Gets the number of sprites which have been loaded and created by PlayBlitter
+	// Gets the number of sprites which have been loaded and created by PlayGraphics
 	int GetTotalLoadedSprites() const { return m_nTotalSprites; }
 
-	//********************************************************************************************************************************
-	// Drawing functions
+	// Sprite Drawing functions
 	//********************************************************************************************************************************
 
 	// Draw the sprite without rotation or transparency (fastest draw)
-	inline void Draw(int spriteId, Point2f pos, int frameIndex) const { BlitSprite(spriteId, static_cast<int>(pos.x + 0.5f), static_cast<int>(pos.y + 0.5f), frameIndex); }
+	inline void Draw(int spriteId, Point2f pos, int frameIndex) const { DrawTransparent(spriteId, pos, frameIndex, 1.0f); }
 	// Draw the sprite with transparency (slower than without transparency)
-	inline void DrawTransparent(int spriteId, Point2f pos, int frameIndex, float alphaMultiply) const { BlitSprite(spriteId, static_cast<int>(pos.x + 0.5f), static_cast<int>(pos.y + 0.5f), frameIndex, alphaMultiply); }; // This just to force people to consider when they use an explicit alpha multiply
-	// Draw the sprite rotated with transprency (slowest draw)
-	inline void DrawRotated(int spriteId, Point2f pos, int frameIndex, float angle, float scale = 1.0f, float alphaMultiply = 1.0f) const { RotateScaleSprite(spriteId, static_cast<int>(pos.x + 0.5f), static_cast<int>(pos.y + 0.5f), frameIndex, angle, scale, alphaMultiply); }
+	void DrawTransparent(int spriteId, Point2f pos, int frameIndex, float alphaMultiply) const; // This just to force people to consider when they use an explicit alpha multiply
+	// Draw the sprite rotated with transparency (slowest draw)
+	void DrawRotated(int spriteId, Point2f pos, int frameIndex, float angle, float scale = 1.0f, float alphaMultiply = 1.0f) const;
 	// Draws a previously loaded background image
 	void DrawBackground(int backgroundIndex = 0);
 	// Multiplies the sprite image buffer by the colour values
@@ -748,152 +726,228 @@ public:
 		int id{ -1 }; // Fast way of finding the right sprite
 		std::string name; // Slow way of finding the right sprite
 		int width{ -1 }, height{ -1 }; // The width and height of a single image in the sprite
-		int canvasWidth{ -1 }, canvasHeight{ -1 }; // The width and height of the entire sprite canvas
-		int hCount{ -1 }, vCount{ -1 }, totalCount{ -1 };  // The number of sprite images in the canvas horizontally and verticaally
+		//int canvasWidth{ -1 }, canvasHeight{ -1 }; // The width and height of the entire sprite canvas
+		int hCount{ -1 }, vCount{ -1 }, totalCount{ -1 };  // The number of sprite images in the canvas horizontally and vertically
 		int originX{ 0 }, originY{ 0 }; // The origin and centre of rotation for the sprite (whole pixels only)
-		uint32_t* pCanvasBuffer{ nullptr }; // The sprite data
-		uint32_t* pPreMultAlpha{ nullptr }; // The sprite data premultiplied with its own alpha
+		PixelData canvasBuffer; // The sprite image data
+		PixelData preMultAlpha; // The sprite data pre-multiplied with its own alpha
 		Sprite() = default;
 	};
 
+	// Miscellaneous functions
+	//********************************************************************************************************************************
+
+	// Gets a pointer to the drawing buffer's pixel data
+	PixelData* GetDrawingBuffer(void) { return &m_playBuffer; }
+	// Resets the timing bar data and sets the current timing bar segment to a specific colour
+	void TimingBarBegin(Pixel pix);
+	// Sets the current timing bar segment to a specific colour
+	// > Returns the number of timing segments
+	int SetTimingBarColour(Pixel pix);
+	// Draws the timing bar for the previous frame at the given position and size
+	void DrawTimingBar(Point2f pos, Point2f size);
+	// Gets the duration (in milliseconds) of a specific timing segment
+	float GetTimingSegmentDuration(int id) const;
+	// Clears the display buffer using the given pixel colour
+	void ClearBuffer(Pixel colour) { m_blitter.ClearRenderTarget(colour); }
+	// Sets the render target for drawing operations
+	PixelData* SetRenderTarget(PixelData* renderTarget) { return m_blitter.SetRenderTarget(renderTarget); }
+
+
+
 private:
 
-	//********************************************************************************************************************************
 	// Constructors / destructors
 	//********************************************************************************************************************************
 
 	// Loads all the PNGs from the directory provided and sets them up as Sprites
-	PlayBlitter(const char* path);
+	PlayGraphics(int bufferWidth, int bufferHeight, const char* path);
 	// Frees up all the sprites and shuts down the manager
-	~PlayBlitter();
+	~PlayGraphics();
 	// The assignment operator is removed to prevent copying of a singleton class
-	PlayBlitter& operator=(const PlayBlitter&) = delete;
+	PlayGraphics& operator=(const PlayGraphics&) = delete;
 	// The copy constructor is removed to prevent copying of a singleton class
-	PlayBlitter(const PlayBlitter&) = delete;
+	PlayGraphics(const PlayGraphics&) = delete;
 
-	//********************************************************************************************************************************
 	// Internal functions relating to drawing
 	//********************************************************************************************************************************
 
-	// Draws a sprite using a direct copy of the sprite image to the display buffer
-	// > Setting AlphaMultiply < 1 forces a less optimal rendering approach in BlitSprite
-	void BlitSprite(int spriteId, int xpos, int ypos, int frameIndex, float alphaMultiply = 1.0f) const;
-	// Draws a sprite rotated and sclaed to the display buffer (much slower than Blit
-	// > AlphaMultiply isn't a signfiicant additional slow down on RotateScaleSprite
-	void RotateScaleSprite(int spriteId, int xpos, int ypos, int frameIndex, float angle, float scale, float alphaMultiply = 1.0f) const;
 	// Multiplies the sprite image by its own alpha transparency values to save repeating this calculation on every draw
 	// > A colour multiplication can also be applied at this stage, which affects all subseqent drawing operations on the sprite
-	void PreMultiplyAlpha(uint32_t* source, uint32_t* dest, int width, int height, int maxSkipWidth, float alphaMultiply, uint32_t colourMultiply);
+	void PreMultiplyAlpha(Pixel* source, Pixel* dest, int width, int height, int maxSkipWidth, float alphaMultiply, Pixel colourMultiply);
 
 	// Count of the total number of sprites loaded
 	int m_nTotalSprites{ 0 };
 	// Whether the singleton has been initialised yet
 	bool m_bInitialised{ false };
 
-	// Data about the current display buffer
-	uint32_t* m_displayBuffer{ nullptr };
-	// Width of the assigned display buffer
-	int m_displayBufferWidth{ 0 };
-	// height of the assigned display buffer
-	int m_displayBufferHeight{ 0 };
+	// Allocates a buffer for the debug font and copies the font pixel data to it
+	void DecompressDubugFont(void);
+	// Returns the pixel width of a string using the debug font
+	int GetDebugStringWidth(const std::string& s);
+	// Draws the offset points from the origin in all octants
+	void DrawCircleOctants(int posX, int posY, int offX, int offY, Pixel pix);
+	// Ends the current timing segment and calculates the duration
+	LARGE_INTEGER EndTimingSegment();
+
+	struct TimingSegment
+	{
+		Pixel pix;
+		long long begin{ 0 };
+		long long end{ 0 };
+		float millisecs{ 0 };
+	};
+
+	// Vectors of timing data segments
+	std::vector<TimingSegment> m_vTimings;
+	std::vector<TimingSegment> m_vPrevTimings;
+
+	// The PlayBlitter used for drawing
+	PlayBlitter m_blitter;
+
+	// Buffer pointers
+	PixelData m_playBuffer;
+	uint8_t* m_pDebugFontBuffer{ nullptr };
 
 	// A vector of all the loaded sprites
 	std::vector< Sprite > vSpriteData;
 	// A vector of all the loaded backgrounds
-	std::vector< uint32_t* > vBackgroundData;
+	std::vector< PixelData > vBackgroundData;
 
 	// A pointer to the static instance
-	static PlayBlitter* s_pInstance;
+	static PlayGraphics* s_pInstance;
 
 };
 
 #endif
-//*******************************************************************
-// PLAY END: PlayBlitter.h
-//*******************************************************************
-
-
-//*******************************************************************
-// PLAY BEGIN: PlaySpeaker.h
-//*******************************************************************
-
-#ifndef PLAY_PLAYSPEAKER_H
-#define PLAY_PLAYSPEAKER_H
+#ifndef PLAY_PLAYAUDIO_H
+#define PLAY_PLAYAUDIO_H
 //********************************************************************************************************************************
-//* Copyright 2020 Sumo-Digital Limited
-//********************************************************************************************************************************
-//* File:			PlaySpeaker.h
-//* Created:		July 2020 - Sumo Academy
-//* Description:	Declaration for a simple audio manager 
-//*					
+//* File:			PlayAudio.h
+//* Description:	Declaration for a simple audio manager class
 //********************************************************************************************************************************
 
-// Encapsulates the functionality of a sound manager 
-// > Singleton class accessed using PlaySpeaker::Instance()
-class PlaySpeaker
+// Encapsulates the functionality of a simple audio manager 
+// > A singleton class accessed using PlayAudio::Instance()
+class PlayAudio
 {
 public:
-	//********************************************************************************************************************************
-	// Instance access functions
+	// Instance access functions 
 	//********************************************************************************************************************************
 
-	// Instantiates class and loads all the.MP3 sounds from the directory provided
-	static PlaySpeaker& Instance();
+	// Instantiates class and loads all the .MP3 sounds from the directory provided
+	static PlayAudio& Instance(const char* path);
 	// Returns the PlaySpeaker instance
-	static PlaySpeaker& Instance(const char* path);
+	static PlayAudio& Instance();
 	// Destroys the PlaySpeaker instance
 	static void Destroy();
 
-	//********************************************************************************************************************************
-	// Sound playing and stopping
+	// Playing and stopping audio
 	//********************************************************************************************************************************
 
 	// Play a sound using part of all of its name
-	void StartSound(const char* name, bool bLoop);
+	void StartAudio(const char* name, bool bLoop);
 	//  Stop the currently playing sound using part of all of its name
-	void StopSound(const char* name);
+	void StopAudio(const char* name);
 
 private:
-	//********************************************************************************************************************************
 	// Constructor and destructor
 	//********************************************************************************************************************************
 
-	// Creates manager object and loads all the.MP3 sounds in the specified directory
-	PlaySpeaker(const char* path);
-	// Closes all loaded sounds
-	~PlaySpeaker();
+	// Creates manager object and loads all the .MP3 sounds in the specified directory
+	PlayAudio(const char* path);
+	// Destroys the manager and stops any sounds playing
+	~PlayAudio();
 	// The assignment operator is removed to prevent copying of a singleton class
-	PlaySpeaker& operator=(const PlaySpeaker&) = delete;
+	PlayAudio& operator=(const PlayAudio&) = delete;
 	// The copy operator is removed to prevent copying of a singleton class
-	PlaySpeaker(const PlaySpeaker&) = delete;
+	PlayAudio(const PlayAudio&) = delete;
 
 	// Vector of mp3 strings
 	std::vector< std::string > vSoundStrings;
 	// Pointer to the singleton
-	static PlaySpeaker* s_pInstance;
+	static PlayAudio* s_pInstance;
 };
 
 #endif
 
-//*******************************************************************
-// PLAY END: PlaySpeaker.h
-//*******************************************************************
+#ifndef PLAY_PLAYINPUT_H
+#define PLAY_PLAYINPUT_H
+//********************************************************************************************************************************
+// File:		PlayInput.h
+// Description:	Manages keyboard and mouse input 
+// Platform:	Windows
+// Notes:		Obtains mouse data from PlayWindow via MouseData structure
+//********************************************************************************************************************************
+
+// Manages keyboard and mouse input 
+// > Singleton class accessed using PlayInput::Instance()
+class PlayInput
+{
+public:
+
+	enum MouseButton
+	{
+		BUTTON_LEFT = 0,
+		BUTTON_RIGHT
+	};
+
+	// Instance functions
+	//********************************************************************************************************************************
+
+	// Creates / Returns the PlayInput instance
+	static PlayInput& Instance();
+	// Destroys the PlayInput instance
+	static void Destroy();
+
+	// Mouse and keyboard functions
+	//********************************************************************************************************************************
+
+	// Returns the status of the supplied mouse button (0=left, 1=right)
+	bool GetMouseDown(MouseButton button) const;
+	// Get the screen position of the mouse cursor
+	Point2f GetMousePos() const { return m_mouseData.pos; }
+	// Returns true if the key has been pressed since it was last released
+	// > https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+	bool KeyPressed(int vKey);
+	// Returns true if the key is currently being held down
+	// > https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+	bool KeyDown(int vKey);
+
+	MouseData* GetMouseData(void) { return &m_mouseData; }
+
+private:
+
+	// Constructor / destructor
+	//********************************************************************************************************************************
+
+	// Private constructor 
+	PlayInput();
+	// Private destructor
+	~PlayInput();
+	// The assignment operator is removed to prevent copying of a singleton class
+	PlayInput& operator=(const PlayInput&) = delete;
+	// The copy constructor is removed to prevent copying of a singleton class
+	PlayInput(const PlayInput&) = delete;
 
 
-//*******************************************************************
-// PLAY BEGIN: PlayManager.h
-//*******************************************************************
+	MouseData m_mouseData;
+	// Pointer to the singleton
+	static PlayInput* s_pInstance;
+
+};
+
+
+#endif
+
 
 #ifndef PLAY_PLAYMANAGER_H
 #define PLAY_PLAYMANAGER_H
 //********************************************************************************************************************************
-// Copyright 2020 Sumo-Digital Limited
-//********************************************************************************************************************************
 // File:		PlayManager.h
-// Created:		October 2020 - Sumo Academy
-// Description:	A manager for providing simplified access to the PlayBuffer framework
+// Description:	A manager for providing simplified access to the PlayBuffer framework with managed GameObjects
 // Platform:	Independent
-// Notes:		The PlayManager is "opt in" as many will want to create their own GameObject
+// Notes:		The GameObject management is "opt in" as many will want to create their own GameObject class
 //********************************************************************************************************************************
 
 #ifdef PLAY_USING_GAMEOBJECT_MANAGER
@@ -901,12 +955,6 @@ private:
 #ifndef PLAY_ADD_GAMEOBJECT_MEMBERS
 #define PLAY_ADD_GAMEOBJECT_MEMBERS 
 #endif
-
-// Slightly more friendly-looking Vector and Point aliases 
-using Vector2D = Vector2f;
-using Point2D = Vector2f;
-
-#ifdef PLAY_IMPLEMENTATION
 
 // PlayManager manges a map of GameObject structures
 // > Additional member variables can be added with PLAY_ADD_GAMEOBJECT_MEMBERS 
@@ -942,10 +990,6 @@ private:
 	GameObject(const GameObject&) = delete;
 };
 
-#else
-
-struct GameObject;
-
 #endif
 
 namespace Play
@@ -975,7 +1019,6 @@ namespace Play
 
 	extern Colour cBlack, cRed, cGreen, cBlue, cMagenta, cCyan, cYellow, cOrange, cWhite, cGrey;
 
-	//**************************************************************************************************
 	// Manager creation and deletion
 	//**************************************************************************************************
 
@@ -984,8 +1027,31 @@ namespace Play
 	// Shuts down the managers and closes the window
 	void DestroyManager();
 
+	// PlayWindow functions
 	//**************************************************************************************************
-	// PlayBuffer functions
+
+	// Copies the contents of the drawing buffer to the window
+	void PresentDrawingBuffer();
+	// Gets the co-ordinates of the mouse cursor within the display buffer
+	Point2D GetMousePos();
+	// Gets the status of the left or right mouse buttons
+	bool GetMouseButton(Align button);
+	// Gets the width of the display buffer
+	int GetBufferWidth();
+	// Gets the height of the display buffer
+	int GetBufferHeight();
+
+	// PlayAudio functions
+	//**************************************************************************************************
+
+	// Plays an mp3 audio file from the "Data\Sounds" directory
+	void PlayAudio(const char* mp3Filename);
+	// Loops an mp3 audio file from the "Data\Sounds" directory
+	void StartAudioLoop(const char* mp3Filename);
+	// Stops a looping mp3 audio file started with Play::StartSoundLoop()
+	void StopAudioLoop(const char* mp3Filename);
+
+	// PlayGraphics functions
 	//**************************************************************************************************
 
 	// Clears the display buffer using the colour provided
@@ -996,27 +1062,6 @@ namespace Play
 	void DrawBackground(int background = 0);
 	// Draws text to the screen using the built-in debug font
 	void DrawDebugText(Point2D pos, const char* text, Colour col = cWhite, bool centred = true);
-	// Copies the contents of the drawing buffer to the window
-	void PresentDrawingBuffer();
-	// Handles the compliations of windows programming so you don't have to!
-	int HandleWindows(PLAY_WINARGS_IN, const char* windowName);
-	// Gets the co-ordinates of the mouse cursor within the display buffer
-	Point2D GetMousePos();
-
-	//**************************************************************************************************
-	// PlaySpeaker functions
-	//**************************************************************************************************
-
-	// Plays an mp3 audio file from the "Data\Sounds" directory
-	void PlayAudio(const char* mp3Filename);
-	// Loops an mp3 audio file from the "Data\Sounds" directory
-	void StartAudioLoop(const char* mp3Filename);
-	// Stops a looping mp3 audio file started with Play::StartSoundLoop()
-	void StopAudioLoop(const char* mp3Filename);
-
-	//**************************************************************************************************
-	// PlayBlitter functions
-	//**************************************************************************************************
 
 	// Gets the sprite id of the first matching sprite whose filename contains the given text
 	int GetSpriteId(const char* spriteName);
@@ -1024,8 +1069,14 @@ namespace Play
 	int GetSpriteHeight(const char* spriteName);
 	// Gets the pixel width of a sprite
 	int GetSpriteWidth(const char* spriteName);
+	// Gets the pixel height of a sprite
+	int GetSpriteHeight(int spriteId);
+	// Gets the pixel width of a sprite
+	int GetSpriteWidth(int spriteId);
 	// Gets the stem filename for the sprite (without path or extension)
 	const char* GetSpriteName(int spriteId);
+	// Gets the total number of frames in the sprite
+	int GetSpriteFrames(int spriteId);
 	// Blends the sprite with the given colour (works best on white sprites)
 	// > Note that colouring affects subsequent DrawSprite calls using the same sprite!!
 	void ColourSprite(const char* spriteName, Colour col);
@@ -1037,11 +1088,19 @@ namespace Play
 	// Centres the origins of all loaded sprites
 	void CentreAllSpriteOrigins();
 	// Moves the origin of the first sprite found matching the given name
-	void MoveSpriteOrigin(const char* spriteName, int xoffset, int yoffset);
+	void MoveSpriteOrigin(const char* spriteName, int xOffset, int yOffset);
 	// Moves the origin of all sprites found matching the given name
 	void MoveMatchingSpriteOrigins(const char* partName, int xoffset, int yoffset);
 	// Moves the origin of all loaded sprites
 	void MoveAllSpriteOrigins(int xoffset, int yoffset);
+	// Sets the origin of the first sprite found matching the given name
+	void SetSpriteOrigin(const char* spriteName, int xOrigin, int yOrigin);
+	// Sets the origin of the sprite with a specific ID
+	void SetSpriteOrigin(int spriteId, int xOrigin, int yOrigin);
+	// Gets the origin of the first sprite found matching the given name
+	Point2D GetSpriteOrigin(const char* spriteName);
+	// Gets the origin of the sprite with a specific ID
+	Point2D GetSpriteOrigin(int spriteId);
 
 	// Draws the first matching sprite whose filename contains the given text
 	void DrawSprite(const char* spriteName, Point2D pos, int frameIndex);
@@ -1051,14 +1110,16 @@ namespace Play
 	void DrawSpriteTransparent(const char* spriteName, Point2D pos, int frame, float opacity);
 	// Draws the sprite with transparency (slower than DrawSprite)
 	void DrawSpriteTransparent(int spriteID, Point2D pos, int frame, float opacity);
-	// Draws the sprite with rotation and transparancy (slowest DrawSprite)
-	void DrawSpriteRotated(const char* spriteName, Point2D pos, int frame, float angle, float scale, float opacity = 1.0f);
-	// Draws the sprite with rotation and transparancy (slowest DrawSprite)
+	// Draws the sprite with rotation and transparency (slowest DrawSprite)
+	void DrawSpriteRotated(const char* spriteName, Point2D pos, int frame, float angle, float scale = 1.0f, float opacity = 1.0f);
+	// Draws the sprite with rotation and transparency (slowest DrawSprite)
 	void DrawSpriteRotated(int spriteID, Point2D pos, int frame, float angle, float scale, float opacity = 1.0f);
 	// Draws a single-pixel wide line between two points in the given colour
 	void DrawLine(Point2D start, Point2D end, Colour col);
 	// Draws a single-pixel wide circle in the given colour
 	void DrawCircle(Point2D pos, int radius, Colour col);
+	// Draws a rectangle in the given colour
+	void DrawRect(Point2D topLeft, Point2D bottomRight, Colour col, bool fill = false);
 	// Draws a line between two points using a sprite
 	// > Note that colouring affects subsequent DrawSprite calls using the same sprite!!
 	void DrawSpriteLine(Point2D startPos, Point2D endPos, const char* penSprite, Colour c = cWhite);
@@ -1067,11 +1128,20 @@ namespace Play
 	void DrawSpriteCircle(int x, int y, int radius, const char* penSprite, Colour c = cWhite);
 	// Draws text using a sprite-based font exported from PlayFontTool
 	void DrawFontText(const char* fontId, std::string text, Point2D pos, Align justify = LEFT);
+	// Adds a sprite dynamically from memory (custom asset pipelines)
 
+	// Resets the timing bar data and sets the current timing bar segment to a specific colour
+	void BeginTimingBar(Pixel pix);
+	// Sets the current timing bar segment to a specific colour
+	// > Returns the number of timing segments
+	int ColourTimingBar(Pixel pix);
+	// Draws the timing bar for the previous frame at the given position and size
+	void DrawTimingBar(Point2f pos, Point2f size);
 
-	//**************************************************************************************************
 	// GameObject functions
 	//**************************************************************************************************
+
+#ifdef PLAY_USING_GAMEOBJECT_MANAGER
 
 	// Creates a new GameObject and adds it to the managed list.
 	// > Returns the new object's unique id
@@ -1110,14 +1180,15 @@ namespace Play
 
 	// Changes the object's current spite and resets its animation frame to the start
 	void SetSprite(GameObject& obj, const char* spriteName, float animSpeed);
-	// Draws the object's sprite without rotation or transparancy (fastest)
+	// Draws the object's sprite without rotation or transparency (fastest)
 	void DrawObject(GameObject& obj);
-	// Draws the object's sprite with transparancy (slower than DrawObject)
+	// Draws the object's sprite with transparency (slower than DrawObject)
 	void DrawObjectTransparent(GameObject& obj, float opacity);
-	// Draws the object's sprite with rotation and transparancy (slower than DrawObject)
+	// Draws the object's sprite with rotation and transparency (slower than DrawObject)
 	void DrawObjectRotated(GameObject& obj, float opacity = 1.0f);
 
-	//**************************************************************************************************
+#endif
+
 	// Miscellaneous functions
 	//**************************************************************************************************
 
@@ -1146,14 +1217,10 @@ namespace Play
 	}
 
 }
-#endif
 
 #endif
 
 
-//*******************************************************************
-// PLAY END: PlayManager.h
-//*******************************************************************
 
 
 #endif // PLAYPCH_H
@@ -1162,9 +1229,6 @@ namespace Play
 
 
 
-//*******************************************************************
-//*******************************************************************
-//*******************************************************************
 //*******************************************************************
 //*******************************************************************
 #ifdef PLAY_IMPLEMENTATION
@@ -1226,7 +1290,7 @@ void PrintAllocation(const char* tagText, ALLOC& a);
 // the safest approach. The two definitions of new without the file and line pick up any other memory allocations for completeness.
 void* operator new(size_t size, const char* file, int line)
 {
-	PB_ASSERT(g_allocCount < MAX_ALLOCATIONS);
+	PLAY_ASSERT(g_allocCount < MAX_ALLOCATIONS);
 	CreateStaticObject();
 	void* p = malloc(size);
 	g_allocations[g_allocCount++] = ALLOC{ p, file, line, size };
@@ -1235,7 +1299,7 @@ void* operator new(size_t size, const char* file, int line)
 
 void* operator new[](size_t size, const char* file, int line)
 {
-	PB_ASSERT(g_allocCount < MAX_ALLOCATIONS);
+	PLAY_ASSERT(g_allocCount < MAX_ALLOCATIONS);
 	CreateStaticObject();
 	void* p = malloc(size);
 	g_allocations[g_allocCount++] = ALLOC{ p, file, line, size };
@@ -1244,7 +1308,7 @@ void* operator new[](size_t size, const char* file, int line)
 
 void* operator new(size_t size)
 {
-	PB_ASSERT(g_allocCount < MAX_ALLOCATIONS);
+	PLAY_ASSERT(g_allocCount < MAX_ALLOCATIONS);
 	CreateStaticObject();
 	void* p = malloc(size);
 	g_allocations[g_allocCount++] = ALLOC{ p, "Unknown", 0, size };
@@ -1253,7 +1317,7 @@ void* operator new(size_t size)
 
 void* operator new[](size_t size)
 {
-	PB_ASSERT(g_allocCount < MAX_ALLOCATIONS);
+	PLAY_ASSERT(g_allocCount < MAX_ALLOCATIONS);
 	CreateStaticObject();
 	void* p = malloc(size);
 	g_allocations[g_allocCount++] = ALLOC{ p, "Unknown", 0, size };
@@ -1273,12 +1337,17 @@ void operator delete(void* p, const char* file, int line)
 	operator delete(p);
 }
 
+int g_id = -1;
+
 void operator delete(void* p)
 {
 	for (unsigned int a = 0; a < g_allocCount; a++)
 	{
 		if (g_allocations[a].address == p)
 		{
+			if (g_allocations[a].id == g_id)
+				g_allocations[a].id = g_id;
+
 			g_allocations[a] = g_allocations[g_allocCount - 1];
 			g_allocations[g_allocCount - 1].address = nullptr;
 			g_allocCount--;
@@ -1300,6 +1369,9 @@ void operator delete[](void* p)
 	{
 		if (g_allocations[a].address == p)
 		{
+			if (g_allocations[a].id == g_id)
+				g_allocations[a].id = g_id;
+
 			g_allocations[a] = g_allocations[g_allocCount - 1];
 			g_allocations[g_allocCount - 1].address = nullptr;
 			g_allocCount--;
@@ -1372,6 +1444,7 @@ void PrintAllocations(const char* tagText)
 	{
 		ALLOC& a = g_allocations[n];
 		PrintAllocation(tagText, a);
+		bytes += a.size;
 	}
 	sprintf_s(buffer, "%s Total = %d bytes\n", tagText, bytes);
 	DebugOutput(buffer);
@@ -1383,92 +1456,54 @@ void PrintAllocations(const char* tagText)
 
 #endif
 
-
-//*******************************************************************
-// PLAY END: PlayMemory.cpp
-//*******************************************************************
-
-
-//*******************************************************************
-// PLAY BEGIN: PlayBuffer.cpp
-//*******************************************************************
-
 //********************************************************************************************************************************
-//* Copyright 2020 Sumo-Digital Limited
-//********************************************************************************************************************************
-// File:		PlayBuffer.cpp
-// Created:		March 2020 - Sumo Academy
-// Description:	A software drawing buffer which provides the basis for creating 2D games  
+// File:		PlayWindow.cpp
+// Description:	Platform specific code to provide a window to draw into
 // Platform:	Windows
-// Notes:		Provides a 32-bit ARGB display buffer
+// Notes:		Uses a 32-bit ARGB display buffer
 //********************************************************************************************************************************
 
 // Instruct Visual Studio to add these to the list of libraries to link
 #pragma comment(lib, "gdiplus.lib")
 #pragma comment(lib, "dwmapi.lib")
 
-
-PlayBuffer* PlayBuffer::s_pInstance = nullptr;
+PlayWindow* PlayWindow::s_pInstance = nullptr;
 
 // External functions which must be implemented by the user 
+extern void MainGameEntry(int argc, char* argv[]);
 extern bool MainGameUpdate(float); // Called every frame
-extern void MainGameExit(void); // Called on quit
+extern int MainGameExit(void); // Called on quit
 
-PlayBuffer::Pixel PlayBuffer::pixBlack{ 0x00, 0x00, 0x00 };
-PlayBuffer::Pixel PlayBuffer::pixWhite{ 0xFF, 0xFF, 0xFF };
-PlayBuffer::Pixel PlayBuffer::pixRed{ 0xFF, 0x00, 0x00 };
-PlayBuffer::Pixel PlayBuffer::pixGreen{ 0x00, 0xFF, 0x00 };
-PlayBuffer::Pixel PlayBuffer::pixBlue{ 0x00, 0x00, 0xFF };
-PlayBuffer::Pixel PlayBuffer::pixMagenta{ 0xFF, 0x00, 0xFF };
-PlayBuffer::Pixel PlayBuffer::pixCyan{ 0x00, 0xFF, 0xFF };
-PlayBuffer::Pixel PlayBuffer::pixYellow{ 0xFF, 0xFF, 0x00 };
-PlayBuffer::Pixel PlayBuffer::pixOrange{ 0xFF, 0x8F, 0x00 };
-PlayBuffer::Pixel PlayBuffer::pixGrey{ 0x80, 0x80, 0x80 };
+ULONG_PTR g_pGDIToken = 0;
 
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
+{
+	// Initialize GDI+
+	Gdiplus::GdiplusStartupInput startupInput;
+	ULONG_PTR token;
+	Gdiplus::Status gdiStatus = Gdiplus::GdiplusStartup(&token, &startupInput, NULL);
+	PLAY_ASSERT(Gdiplus::Ok == gdiStatus);
+	g_pGDIToken = token;
 
+	MainGameEntry(__argc, __argv);
+
+	return PlayWindow::Instance().HandleWindows(hInstance, hPrevInstance, lpCmdLine, nShowCmd, L"StateDemo");
+}
 
 //********************************************************************************************************************************
 // Constructor / Destructor (Private)
 //********************************************************************************************************************************
 
-PlayBuffer::PlayBuffer(int nWidth, int nHeight, int nScale, Pixel bgColour)
+PlayWindow::PlayWindow(PixelData* pDisplayBuffer, int nScale)
 {
-	m_width = nWidth;
-	m_width = nWidth;
-	m_height = nHeight;
+	PLAY_ASSERT(pDisplayBuffer);
+	PLAY_ASSERT(nScale > 0);
+	m_pPlayBuffer = pDisplayBuffer;
 	m_scale = nScale;
-
-	// A working buffer for our display. Each pixel is stored as an unsigned 32-bit integer: alpha<<24 | red<<16 | green<<8 | blue
-	m_pDisplayBuffer = new uint32_t[static_cast<size_t>(m_width) * m_height];
-	PB_ASSERT(m_pDisplayBuffer);
-
-	memset(m_pDisplayBuffer, 0, sizeof(uint32_t) * m_width * m_height);
-
-	uint32_t* p = m_pDisplayBuffer;
-
-	for (int i = 0; i < m_width * m_height; i++)
-		*p++ = bgColour.bits;
-
-	m_pDebugFontBuffer = nullptr; // Created on first use
-
-	// Initialize GDI+
-	Gdiplus::GdiplusStartupInput startupInput;
-	ULONG_PTR token;
-	Gdiplus::Status gdiStatus = Gdiplus::GdiplusStartup(&token, &startupInput, NULL);
-	PB_ASSERT(Gdiplus::Ok == gdiStatus);
-	m_gpToken = token;
 }
 
-PlayBuffer::~PlayBuffer(void)
+PlayWindow::~PlayWindow(void)
 {
-	delete[] m_pDisplayBuffer;
-
-	if (m_pDebugFontBuffer)
-		delete[] m_pDebugFontBuffer;
-
-	PB_ASSERT(s_pInstance->m_gpToken);
-	Gdiplus::GdiplusShutdown(static_cast<ULONG_PTR>(s_pInstance->m_gpToken));
-
 	s_pInstance = nullptr;
 }
 
@@ -1476,29 +1511,25 @@ PlayBuffer::~PlayBuffer(void)
 // Instance functions
 //********************************************************************************************************************************
 
-PlayBuffer& PlayBuffer::Instance()
+PlayWindow& PlayWindow::Instance()
 {
 	if (!s_pInstance)
-		PB_ASSERT_MSG(false, "Trying to use PlayBuffer without initialising it!");
+		PLAY_ASSERT_MSG(false, "Trying to use PlayBuffer without initialising it!");
 
 	return *s_pInstance;
 }
 
-PlayBuffer& PlayBuffer::Instance(int nWidth, int nHeight, int nScale, Pixel bgColour)
+PlayWindow& PlayWindow::Instance(PixelData* pDisplayBuffer, int nScale)
 {
-	PB_ASSERT_MSG(!s_pInstance, "Trying to create multiple instances of singleton class!");
-
-	s_pInstance = new PlayBuffer(nWidth, nHeight, nScale, bgColour);
-
+	PLAY_ASSERT_MSG(!s_pInstance, "Trying to create multiple instances of singleton class!");
+	s_pInstance = new PlayWindow(pDisplayBuffer, nScale);
 	return *s_pInstance;
 }
 
-void PlayBuffer::Destroy()
+void PlayWindow::Destroy()
 {
-	PB_ASSERT_MSG(s_pInstance, "Trying to use destroy PlayBuffer which hasn't been instanced!");
-
+	PLAY_ASSERT_MSG(s_pInstance, "Trying to use destroy PlayBuffer which hasn't been instanced!");
 	delete s_pInstance;
-
 	s_pInstance = nullptr;
 }
 
@@ -1506,7 +1537,7 @@ void PlayBuffer::Destroy()
 // Windows functions
 //********************************************************************************************************************************
 
-int PlayBuffer::HandleWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow, LPCWSTR windowName)
+int PlayWindow::HandleWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow, LPCWSTR windowName)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
@@ -1516,7 +1547,7 @@ int PlayBuffer::HandleWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPST
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = PlayBuffer::WndProc;
+	wcex.lpfnWndProc = PlayWindow::WndProc;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = hInstance;
@@ -1529,8 +1560,8 @@ int PlayBuffer::HandleWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPST
 
 	RegisterClassExW(&wcex);
 
-	int	w = m_width * m_scale;
-	int h = m_height * m_scale;
+	int	w = m_pPlayBuffer->width * m_scale;
+	int h = m_pPlayBuffer->height * m_scale;
 
 	UINT dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU;
 	RECT rect = { 0, 0, w, h };
@@ -1592,11 +1623,13 @@ int PlayBuffer::HandleWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPST
 	// Call the main game cleanup function
 	MainGameExit();
 
+	PLAY_ASSERT(g_pGDIToken);
+	Gdiplus::GdiplusShutdown(g_pGDIToken);
+
 	return static_cast<int>(msg.wParam);
 }
 
-
-LRESULT CALLBACK PlayBuffer::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK PlayWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
@@ -1610,24 +1643,31 @@ LRESULT CALLBACK PlayBuffer::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
 		PostQuitMessage(0);
 		break;
 	case WM_LBUTTONDOWN:
-		s_pInstance->m_bMouseDown[0] = true;
+		if (s_pInstance->m_pMouseData)
+			s_pInstance->m_pMouseData->left = true;
 		break;
 	case WM_LBUTTONUP:
-		s_pInstance->m_bMouseDown[0] = false;
+		if (s_pInstance->m_pMouseData)
+			s_pInstance->m_pMouseData->left = false;
 		break;
 	case WM_RBUTTONDOWN:
-		s_pInstance->m_bMouseDown[1] = true;
+		if (s_pInstance->m_pMouseData)
+			s_pInstance->m_pMouseData->right = true;
 		break;
 	case WM_RBUTTONUP:
-		s_pInstance->m_bMouseDown[1] = false;
+		if (s_pInstance->m_pMouseData)
+			s_pInstance->m_pMouseData->right = false;
 		break;
 	case WM_MOUSEMOVE:
-		s_pInstance->m_mousePos.x = static_cast<float>(GET_X_LPARAM(lParam) / s_pInstance->m_scale);
-		s_pInstance->m_mousePos.y = static_cast<float>(GET_Y_LPARAM(lParam) / s_pInstance->m_scale);
+		if (s_pInstance->m_pMouseData)
+		{
+			s_pInstance->m_pMouseData->pos.x = static_cast<float>(GET_X_LPARAM(lParam) / s_pInstance->m_scale);
+			s_pInstance->m_pMouseData->pos.y = static_cast<float>(GET_Y_LPARAM(lParam) / s_pInstance->m_scale);
+		}
 		break;
 	case WM_MOUSELEAVE:
-		s_pInstance->m_mousePos.x = -1;
-		s_pInstance->m_mousePos.y = -1;
+		s_pInstance->m_pMouseData->pos.x = -1;
+		s_pInstance->m_pMouseData->pos.y = -1;
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
@@ -1635,14 +1675,19 @@ LRESULT CALLBACK PlayBuffer::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
 	return 0;
 }
 
-
-int PlayBuffer::Present(void)
+double PlayWindow::Present(void)
 {
+	LARGE_INTEGER frequency;
+	LARGE_INTEGER before;
+	LARGE_INTEGER after;
+	QueryPerformanceCounter(&before);
+	QueryPerformanceFrequency(&frequency);
+
 	// Set up a BitmapInfo structure to represent the pixel format of the display buffer
 	BITMAPINFOHEADER bitmap_info_header
 	{
-			sizeof(BITMAPINFOHEADER), // size of its own data,
-			m_width, m_height,			// width and height
+			sizeof(BITMAPINFOHEADER),								// size of its own data,
+			m_pPlayBuffer->width, m_pPlayBuffer->height,		// width and height
 			1, 32, BI_RGB,				// planes must always be set to 1 (docs), 32-bit pixel data, uncompressed 
 			0, 0, 0, 0, 0				// rest can be set to 0 as this is uncompressed and has no palette
 	};
@@ -1653,368 +1698,22 @@ int PlayBuffer::Present(void)
 
 	// Copy the display buffer to the window: GDI only implements up scaling using simple pixel duplication, but that's what we want
 	// Note that GDI+ DrawImage would do the same thing, but it's much slower! 
-	StretchDIBits(hDC, 0, 0, m_width * m_scale, m_height * m_scale, 0, m_height + 1, m_width, -m_height, m_pDisplayBuffer, &bitmap_info, DIB_RGB_COLORS, SRCCOPY); // We flip h because Bitmaps store pixel data upside down.
+	StretchDIBits(hDC, 0, 0, m_pPlayBuffer->width * m_scale, m_pPlayBuffer->height * m_scale, 0, m_pPlayBuffer->height + 1, m_pPlayBuffer->width, -m_pPlayBuffer->height, m_pPlayBuffer->pPixels, &bitmap_info, DIB_RGB_COLORS, SRCCOPY); // We flip h because Bitmaps store pixel data upside down.
 
 	ReleaseDC(m_hWindow, hDC);
 
-	return 1;
-}
+	QueryPerformanceCounter(&after);
 
-//********************************************************************************************************************************
-// Mouse functions
-//********************************************************************************************************************************
+	double elapsedTime = (after.QuadPart - before.QuadPart) * 1000.0 / frequency.QuadPart;
 
-bool PlayBuffer::GetMouseDown(int button) const
-{
-	PB_ASSERT_MSG(button == 1 || button == 0, "Invalid mouse button selected.");
-	return m_bMouseDown[button];
-};
-
-bool PlayBuffer::KeyPressed(int vKey)
-{
-	static std::map< int, bool > keyMap;
-
-	bool& held = keyMap[vKey];
-
-	if (KeyDown(vKey) && !held)
-	{
-		held = true;
-		return true;
-	}
-
-	if (!KeyDown(vKey))
-		held = false;
-
-	return false;
-}
-
-bool PlayBuffer::KeyDown(int vKey)
-{
-	return GetAsyncKeyState(vKey) & 0x8000;
-}
-
-//********************************************************************************************************************************
-// Basic buffer drawing functions
-//********************************************************************************************************************************
-
-void PlayBuffer::ClearBuffer(Pixel colour)
-{
-	uint32_t* pBuffEnd = m_pDisplayBuffer + (m_width * m_height);
-	for (uint32_t* pBuff = m_pDisplayBuffer; pBuff < pBuffEnd; *pBuff++ = colour.bits);
-}
-
-void PlayBuffer::DrawPixel(Point2f pos, Pixel srcPix)
-{
-	// Convert floating point co-ordinates to pixels
-	DrawPixel(static_cast<int>(pos.x + 0.5f), static_cast<int>(pos.y + 0.5f), srcPix);
-}
-
-void PlayBuffer::DrawPixel(int posX, int posY, Pixel srcPix)
-{
-	if (srcPix.a == 0x00 || posX < 0 || posX >= m_width || posY < 0 || posY >= m_height)
-		return;
-
-	uint32_t* dest = &m_pDisplayBuffer[(posY * m_width) + posX];
-
-	if (srcPix.a == 0xFF) // Completely opaque pixel - no need to blend
-	{
-		*dest = srcPix.bits;
-	}
-	else
-	{
-		Pixel blendPix(*dest);
-		float srcAlpha = srcPix.a / 255.0f;
-		float oneMinusSrcAlpha = 1.0f - srcAlpha;
-
-		blendPix.a = 0xFF;
-		blendPix.r = static_cast<uint8_t>((srcAlpha * srcPix.r) + (oneMinusSrcAlpha * blendPix.r));
-		blendPix.g = static_cast<uint8_t>((srcAlpha * srcPix.g) + (oneMinusSrcAlpha * blendPix.g));
-		blendPix.b = static_cast<uint8_t>((srcAlpha * srcPix.b) + (oneMinusSrcAlpha * blendPix.b));
-
-		*dest = blendPix.bits;
-	}
-
-	return;
-}
-
-void PlayBuffer::DrawLine(Point2f startPos, Point2f endPos, Pixel pix)
-{
-	// Convert floating point co-ordinates to pixels
-	int x1 = static_cast<int>(startPos.x + 0.5f);
-	int y1 = static_cast<int>(startPos.y + 0.5f);
-	int x2 = static_cast<int>(endPos.x + 0.5f);
-	int y2 = static_cast<int>(endPos.y + 0.5f);
-
-	DrawLine(x1, y1, x2, y2, pix);
-}
-
-
-void PlayBuffer::DrawLine(int startX, int startY, int endX, int endY, Pixel pix)
-{
-	//Implementation of Bresenham's Line Drawing Algorithm
-	int dx = abs(endX - startX);
-	int sx = 1;
-	if (endX < startX) { sx = -1; }
-
-	int dy = -abs(endY - startY);
-	int sy = 1;
-	if (endY < startY) { sy = -1; }
-
-	int err = dx + dy;
-
-	if (err == 0) return;
-
-	int x = startX;
-	int y = startY;
-
-	while (true)
-	{
-		DrawPixel(x, y, pix);
-
-		if (x == endX && y == endY)
-			break;
-
-		int e2 = 2 * err;
-		if (e2 >= dy)
-		{
-			err += dy;
-			x += sx;
-		}
-		if (e2 <= dx)
-		{
-			err += dx;
-			y += sy;
-		}
-	}
-}
-
-void PlayBuffer::DrawRect(Point2f topLeft, Point2f bottomRight, Pixel pix, bool fill)
-{
-	// Convert floating point co-ordinates to pixels
-	int x1 = static_cast<int>(topLeft.x + 0.5f);
-	int x2 = static_cast<int>(bottomRight.x + 0.5f);
-	int y1 = static_cast<int>(topLeft.y + 0.5f);
-	int y2 = static_cast<int>(bottomRight.y + 0.5f);
-
-	if (fill)
-	{
-		for (int x = x1; x < x2; x++)
-		{
-			for (int y = y1; y < y2; y++)
-				DrawPixel(x, y, pix);
-		}
-	}
-	else
-	{
-		DrawLine(x1, y1, x2, y1, pix);
-		DrawLine(x2, y1, x2, y2, pix);
-		DrawLine(x2, y2, x1, y2, pix);
-		DrawLine(x1, y2, x1, y1, pix);
-	}
-}
-
-// Private function called by DrawCircle
-void PlayBuffer::DrawCircleOctants(int posX, int posY, int offX, int offY, Pixel pix)
-{
-	DrawPixel({ posX + offX , posY + offY }, pix);
-	DrawPixel({ posX - offX , posY + offY }, pix);
-	DrawPixel({ posX + offX , posY - offY }, pix);
-	DrawPixel({ posX - offX , posY - offY }, pix);
-	DrawPixel({ posX - offY , posY + offX }, pix);
-	DrawPixel({ posX + offY , posY - offX }, pix);
-	DrawPixel({ posX - offY , posY - offX }, pix);
-	DrawPixel({ posX + offY , posY + offX }, pix);
-}
-
-void PlayBuffer::DrawCircle(Point2f pos, int radius, Pixel pix)
-{
-	// Convert floating point co-ordinates to pixels
-	int x = static_cast<int>(pos.x + 0.5f);
-	int y = static_cast<int>(pos.y + 0.5f);
-
-	int dx = 0;
-	int dy = radius;
-
-	int d = 3 - 2 * radius;
-	DrawCircleOctants(x, y, dx, dy, pix);
-
-	while (dy >= dx)
-	{
-		dx++;
-		if (d > 0)
-		{
-			dy--;
-			d = static_cast<int>(d + 4 * (dx - dy) + 10);
-		}
-		else
-		{
-			d = static_cast<int>(d + 4 * dx + 6);
-		}
-		DrawCircleOctants(x, y, dx, dy, pix);
-	}
-};
-
-
-//********************************************************************************************************************************
-// Debug font functions
-//********************************************************************************************************************************
-
-// Settings for the embedded debug font
-#define FONT_IMAGE_WIDTH	96
-#define FONT_IMAGE_HEIGHT	36
-#define FONT_CHAR_WIDTH		6
-#define FONT_CHAR_HEIGHT	12
-
-// A 96x36 font image @ 1bpp containing basic ASCII characters from 0x30 (0) to 0x5F (underscore) at 6x12 pixels each
-static const uint32_t debugFontData[] =
-{
-	0x87304178, 0x0800861F, 0xFFFFFFE1, 0x7BBFBE79, 0xF7FE79EF, 0xFFFFFFFE, 0x7BBFBE79, 0xF7FE79EC, 0xFFFFFFFE, 0x7BBFBE79, 0xF7FE79EC, 0xFFFFFFFE, 0x7BBFBE79, 0xF7FE79EF, 0xFFEE3DFE, 0x6BB86080,
-	0x1078860F, 0xE3DFFEFE, 0x5BB7FEFB, 0xE7BE7BEF, 0xFFBFFF41, 0x7BB7FEFB, 0xE7BE7BEC, 0xFFDFFEDF, 0x7BB7FEFB, 0xE7BE7BEC, 0xFFEE3DDF, 0x7BB7FEFB, 0xE7BE7BEF, 0xFFFFFFFF, 0x7BB7BEF9, 0xE7BE7BEF,
-	0xFFFFFFDF, 0x87B001F8, 0x187E87EF, 0xFFFFFFDF, 0x86106104, 0x00007A30, 0x1E7C5061, 0x79E79E79, 0xF7DF7B7F, 0x5E7DA79E, 0x79E79F79, 0xF7DF7B7F, 0x5E7DA79E, 0x79E79F79, 0xF7DF7B7F, 0x5E7DA79E,
-	0x59E79F79, 0xF7DF7B7F, 0x597DA79E, 0x58005F78, 0x30D0037F, 0x477DA79E, 0x59E79F79, 0xF7DE7B7F, 0x597DA79E, 0x59E79F79, 0xF7DE7B7F, 0x5E7DA79E, 0x41E79F79, 0xF7DE7B7F, 0x5E7DA79E, 0x7DE79F79,
-	0xF7DE7B7F, 0x5E7DA79E, 0x7DE79E79, 0xF7DE7B7F, 0x5E7DA79E, 0x81E06104, 0x07C17A38, 0xDE01A7A1, 0x06106101, 0xE79E79E0, 0x337F3FFF, 0x79E79EED, 0xE79E79EF, 0xB77FBFFF, 0x79E79FED, 0xE79E79EF,
-	0xB7BFBFFF, 0x79E79FED, 0xE79A79EF, 0xB7BFBFFF, 0x79E75FED, 0xE79AB5EF, 0x77DFBFFF, 0x05E0E1ED, 0xE79ACC0E, 0xF7DFBFFF, 0x7DE77EED, 0xE79AB7ED, 0xF7EFBFFF, 0x7DE7BEED, 0xE79A7BEB, 0xF7EFBFFF,
-	0x7DE7BEED, 0xE79A7BE7, 0xF7F7BFFF, 0x7DA7BEED, 0xE79A7BE7, 0xF7F7BCFF, 0x7DD79EED, 0xEB5A7BE7, 0xF7FBBCFF, 0x7C27A1EE, 0x1CE57810, 0x33FB3EC0
-};
-
-void PlayBuffer::DecompressDubugFont(void)
-{
-	m_pDebugFontBuffer = new uint8_t[FONT_IMAGE_WIDTH * FONT_IMAGE_HEIGHT];
-
-	for (int y = 0; y < FONT_IMAGE_HEIGHT; y++)
-	{
-		for (int x = 0; x < FONT_IMAGE_WIDTH; x++)
-		{
-			int bufferIndex = (y * FONT_IMAGE_WIDTH) + x;
-			int dataIndex = bufferIndex / 32;
-			int dataShift = 31 - (bufferIndex % 32);
-
-			// Convert 1bpp to an 8-bit array for easy data access
-			if ((debugFontData[dataIndex] >> dataShift) & 0x01)
-				m_pDebugFontBuffer[(y * FONT_IMAGE_WIDTH) + x] = 0; // not ARGB just 0 (no pixel)
-			else
-				m_pDebugFontBuffer[(y * FONT_IMAGE_WIDTH) + x] = 1; // not ARGB just 1 (a pixel)
-		}
-	}
-}
-
-int PlayBuffer::DrawDebugCharacter(Point2f pos, char c, Pixel pix)
-{
-	// Limited character set in the font (0x30-0x5F) so includes translation of useful chars outside that range
-	switch (c)
-	{
-	case 0x2C: c = 0x5E; break; // Map full stop to comma (nearly the same!)
-	case 0x2D: c = 0x3B; break; // Map minus to semi-colon (rarely used)
-	case 0x28: c = 0x5B; break; // Map brackets to square brackets
-	case 0x29: c = 0x5D; break; // Map brackets to square brackets
-	case 0x2E: c = 0x5E; break; // Map full stop to carot (never used)
-	}
-
-	if (c < 0x30 || c > 0x5F)
-		return FONT_CHAR_WIDTH;
-
-	int sourceX = ((c - 0x30) % 16) * FONT_CHAR_WIDTH;
-	int sourceY = ((c - 0x30) / 16) * FONT_CHAR_HEIGHT;
-
-	// Loop over the bounding box of the glyph
-	for (int x = 0; x < FONT_CHAR_WIDTH; x++)
-	{
-		for (int y = 0; y < FONT_CHAR_HEIGHT; y++)
-		{
-			if (m_pDebugFontBuffer[((sourceY + y) * FONT_IMAGE_WIDTH) + (sourceX + x)] > 0)
-				DrawPixel({ pos.x + x, pos.y + y }, pix);
-		}
-	}
-
-	return FONT_CHAR_WIDTH;
-}
-
-int PlayBuffer::DrawDebugString(Point2f pos, const std::string& s, Pixel pix, bool centred)
-{
-	if (m_pDebugFontBuffer == nullptr)
-		DecompressDubugFont();
-
-	if (centred)
-		pos.x -= GetDebugStringWidth(s) / 2;
-
-	pos.y -= 6; // half the height of the debug font
-
-	for (char c : s)
-		pos.x += DrawDebugCharacter(pos, static_cast<char>(toupper(c)), pix) + 1;
-
-	// Return horizontal position at the end of the string so strings can be concatenated easily
-	return static_cast<int>(pos.x);
-}
-
-int PlayBuffer::GetDebugStringWidth(const std::string& s)
-{
-	return static_cast<int>(s.length()) * (FONT_CHAR_WIDTH + 1);
-}
-
-//********************************************************************************************************************************
-// Timing bar functions
-//********************************************************************************************************************************
-
-LARGE_INTEGER PlayBuffer::EndTimingSegment()
-{
-	int size = static_cast<int>(m_vTimings.size());
-
-	LARGE_INTEGER now, freq;
-	QueryPerformanceCounter(&now);
-	QueryPerformanceFrequency(&freq);
-
-	if (size > 0)
-	{
-		m_vTimings[size - 1].end = now.QuadPart;
-		m_vTimings[size - 1].millisecs = static_cast<float>(m_vTimings[size - 1].end - m_vTimings[size - 1].begin);
-		m_vTimings[size - 1].millisecs = static_cast<float>((m_vTimings[size - 1].millisecs * 1000.0f) / freq.QuadPart);
-	}
-
-	return now;
-}
-
-int PlayBuffer::SetTimingBarColour(PlayBuffer::Pixel pix)
-{
-	TimingSegment newData;
-	newData.pix = pix;
-	newData.begin = EndTimingSegment().QuadPart;
-
-	m_vTimings.push_back(newData);
-
-	return static_cast<int>(m_vTimings.size());
-};
-
-void PlayBuffer::DrawTimingBar(Point2f pos, Point2f size)
-{
-	EndTimingSegment();
-
-	int startPixel{ 0 };
-	int endPixel{ 0 };
-	for (const TimingSegment& t : m_vTimings)
-	{
-		endPixel += static_cast<int>((size.width * t.millisecs) / 16.667f);
-		DrawRect({ pos.x + startPixel, pos.y }, { pos.x + endPixel, pos.y + size.height }, t.pix, true);
-		startPixel = endPixel;
-	}
-
-	DrawRect({ pos.x, pos.y }, { pos.x + size.width, pos.y + size.height }, PlayBuffer::pixBlack, false);
-	DrawRect({ pos.x - 1, pos.y - 1 }, { pos.x + size.width + 1 , pos.y + size.height + 1 }, PlayBuffer::pixWhite, false);
-
-	// Reset the timer - shouldn't reduce the allocated vector size
-	m_vTimings.clear();
-}
-
-float PlayBuffer::GetTimingSegmentDuration(int id) const
-{
-	PB_ASSERT_MSG(id < static_cast<int>(m_vTimings.size()), "Invalid id for timing data.");
-	return m_vTimings[id].millisecs;
+	return elapsedTime;
 }
 
 //********************************************************************************************************************************
 // Loading functions
 //********************************************************************************************************************************
 
-int PlayBuffer::ReadPNGImage(std::string& fileAndPath, int& width, int& height)
+int PlayWindow::ReadPNGImage(std::string& fileAndPath, int& width, int& height)
 {
 	// Convert filename from single to wide string for GDI+ compatibility
 	size_t newsize = strlen(fileAndPath.c_str()) + 1;
@@ -2042,8 +1741,7 @@ int PlayBuffer::ReadPNGImage(std::string& fileAndPath, int& width, int& height)
 	return 1;
 }
 
-
-int PlayBuffer::LoadPNGImage(std::string& fileAndPath, int& width, int& height, uint32_t*& destImage)
+int PlayWindow::LoadPNGImage(std::string& fileAndPath, PixelData& destImage)
 {
 	// Convert filename from single to wide string for GDI+ compatibility
 	size_t newsize = strlen(fileAndPath.c_str()) + 1;
@@ -2065,23 +1763,23 @@ int PlayBuffer::LoadPNGImage(std::string& fileAndPath, int& width, int& height, 
 	// Create BitmapData structure to pull the data into
 	Gdiplus::BitmapData* bitmapData = new Gdiplus::BitmapData;
 
-	width = bitmap->GetWidth();
-	height = bitmap->GetHeight();
+	destImage.width = bitmap->GetWidth();
+	destImage.height = bitmap->GetHeight();
 
 	// Lock the bitmap in advance of reading its data
-	Gdiplus::Rect rect(0, 0, width, height);
+	Gdiplus::Rect rect(0, 0, destImage.width, destImage.height);
 	bitmap->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, bitmapData);
 
 	// Get a pointer to the actual bit data
-	uint32_t* sourcePixels = static_cast<uint32_t*>(bitmapData->Scan0);
+	Pixel* sourcePixels = static_cast<Pixel*>(bitmapData->Scan0);
 
-	destImage = new uint32_t[width * height];
-	memset(destImage, 0, sizeof(uint32_t) * width * height);
+	destImage.pPixels = new Pixel[destImage.width * destImage.height];
+	memset(destImage.pPixels, 0, sizeof(Pixel) * destImage.width * destImage.height);
 
-	uint32_t* destPixels = destImage;
+	Pixel* destPixels = destImage.pPixels;
 
 	// Copy the data across
-	for (int b = 0; b < width * height; b++)
+	for (int b = 0; b < destImage.width * destImage.height; b++)
 		*destPixels++ = *sourcePixels++;
 
 	//Unlock the bitmap
@@ -2097,7 +1795,6 @@ int PlayBuffer::LoadPNGImage(std::string& fileAndPath, int& width, int& height, 
 //********************************************************************************************************************************
 // Miscellaneous functions
 //********************************************************************************************************************************
-
 
 void AssertFailMessage(const char* message, const char* file, long line)
 {
@@ -2137,42 +1834,435 @@ void TracePrintf(const char* file, int line, const char* fmt, ...)
 	va_end(args);
 }
 
-
-
-
-
-//*******************************************************************
-// PLAY END: PlayBuffer.cpp
-//*******************************************************************
-
-
-//*******************************************************************
-// PLAY BEGIN: PlayBlitter.cpp
-//*******************************************************************
-
-//********************************************************************************************************************************
-//* Copyright 2020 Sumo-Digital Limited
 //********************************************************************************************************************************
 // File:		PlayBlitter.cpp
-// Created:		March 2020 - Sumo Academy
-// Description:	A simple image manager for handling spites/backgrounds with PlayBuffer
+// Description:	A software pixel renderer for drawing 2D primitives into a PixelData buffer
+// Platform:	Independent
+//********************************************************************************************************************************
+
+
+PlayBlitter::PlayBlitter(PixelData* pRenderTarget)
+{
+	m_pRenderTarget = pRenderTarget;
+}
+
+
+void PlayBlitter::DrawPixel(int posX, int posY, Pixel srcPix)
+{
+	if (srcPix.a == 0x00 || posX < 0 || posX >= m_pRenderTarget->width || posY < 0 || posY >= m_pRenderTarget->height)
+		return;
+
+	Pixel* destPix = &m_pRenderTarget->pPixels[(posY * m_pRenderTarget->width) + posX];
+
+	if (srcPix.a == 0xFF) // Completely opaque pixel - no need to blend
+	{
+		*destPix = srcPix.bits;
+	}
+	else
+	{
+		Pixel blendPix = *destPix;
+		float srcAlpha = srcPix.a / 255.0f;
+		float oneMinusSrcAlpha = 1.0f - srcAlpha;
+
+		blendPix.a = 0xFF;
+		blendPix.r = static_cast<uint8_t>((srcAlpha * srcPix.r) + (oneMinusSrcAlpha * blendPix.r));
+		blendPix.g = static_cast<uint8_t>((srcAlpha * srcPix.g) + (oneMinusSrcAlpha * blendPix.g));
+		blendPix.b = static_cast<uint8_t>((srcAlpha * srcPix.b) + (oneMinusSrcAlpha * blendPix.b));
+
+		*destPix = blendPix.bits;
+	}
+
+	return;
+}
+
+void PlayBlitter::DrawLine(int startX, int startY, int endX, int endY, Pixel pix)
+{
+	//Implementation of Bresenham's Line Drawing Algorithm
+	int dx = abs(endX - startX);
+	int sx = 1;
+	if (endX < startX) { sx = -1; }
+
+	int dy = -abs(endY - startY);
+	int sy = 1;
+	if (endY < startY) { sy = -1; }
+
+	int err = dx + dy;
+
+	if (err == 0) return;
+
+	int x = startX;
+	int y = startY;
+
+	while (true)
+	{
+		DrawPixel(x, y, pix);
+
+		if (x == endX && y == endY)
+			break;
+
+		int e2 = 2 * err;
+		if (e2 >= dy)
+		{
+			err += dy;
+			x += sx;
+		}
+		if (e2 <= dx)
+		{
+			err += dx;
+			y += sy;
+		}
+	}
+}
+
+//********************************************************************************************************************************
+// Function:	BlitPixels - draws image data with and without a global alpha multiply
+// Parameters:	spriteId = the id of the sprite to draw
+//				xpos, ypos = the position you want to draw the sprite
+//				frameIndex = which frame of the animation to draw (wrapped)
+// Notes:		Alpha multiply approach is relatively unoptimized
+//********************************************************************************************************************************
+void PlayBlitter::BlitPixels(const PixelData& srcPixelData, int srcOffset, int blitX, int blitY, int blitWidth, int blitHeight, float alphaMultiply) const
+{
+	PLAY_ASSERT_MSG(m_pRenderTarget, "Render target not set for PlayBlitter");
+
+	// Nothing within the display buffer to draw
+	if (blitX > m_pRenderTarget->width || blitX + blitWidth < 0 || blitY > m_pRenderTarget->height || blitY + blitHeight < 0)
+		return;
+
+	// Work out if we need to clip to the display buffer (and by how much)
+	int xClipStart = -blitX;
+	if (xClipStart < 0) { xClipStart = 0; }
+
+	int xClipEnd = (blitX + blitWidth) - m_pRenderTarget->width;
+	if (xClipEnd < 0) { xClipEnd = 0; }
+
+	int yClipStart = -blitY;
+	if (yClipStart < 0) { yClipStart = 0; }
+
+	int yClipEnd = (blitY + blitHeight) - m_pRenderTarget->height;
+	if (yClipEnd < 0) { yClipEnd = 0; }
+
+	// Set up the source and destination pointers based on clipping
+	int destOffset = (m_pRenderTarget->width * (blitY + yClipStart)) + (blitX + xClipStart);
+	uint32_t* destPixels = &m_pRenderTarget->pPixels->bits + destOffset;
+
+	int srcClipOffset = (srcPixelData.width * yClipStart) + xClipStart;
+	uint32_t* srcPixels = &srcPixelData.pPixels->bits + srcOffset + srcClipOffset;
+
+	// Work out in advance how much we need to add to src and dest to reach the next row 
+	int destInc = m_pRenderTarget->width - blitWidth + xClipEnd + xClipStart;
+	int srcInc = srcPixelData.width - blitWidth + xClipEnd + xClipStart;
+
+	//Work out final pixel in destination.
+	int destColOffset = (m_pRenderTarget->width * (blitHeight - yClipEnd - yClipStart - 1)) + (blitWidth - xClipEnd - xClipStart);
+	uint32_t* destColEnd = destPixels + destColOffset;
+
+	//How many pixels per row in sprite.
+	int endRow = blitWidth - xClipEnd - xClipStart;
+
+	if (alphaMultiply < 1.0f)
+	{
+		// *******************************************************************************************************************************************************
+		// A basic (unoptimized) approach which separates the channels and performs a 'typical' alpha blending operation: (src * srcAlpha)+(dest * (1-srcAlpha))
+		// Has the advantage that a global alpha multiplication can be easily added over the top, so we use this method when a global multiply is required
+		// *******************************************************************************************************************************************************
+
+		// Slightly more optimised iterations without the additions in the loop
+		while (destPixels < destColEnd)
+		{
+			uint32_t* destRowEnd = destPixels + endRow;
+
+			while (destPixels < destRowEnd)
+			{
+				uint32_t src = *srcPixels++;
+				uint32_t dest = *destPixels;
+
+				// If this isn't a fully transparent pixel 
+				if (src < 0xFF000000)
+				{
+					int srcAlpha = static_cast<int>((0xFF - (src >> 24)) * alphaMultiply);
+					int constAlpha = static_cast<int>(255 * alphaMultiply);
+
+					// Source pixels are already multiplied by srcAlpha so we just apply the constant alpha multiplier
+					int destRed = constAlpha * ((src >> 16) & 0xFF);
+					int destGreen = constAlpha * ((src >> 8) & 0xFF);
+					int destBlue = constAlpha * (src & 0xFF);
+
+					int invSrcAlpha = 0xFF - srcAlpha;
+
+					// Apply a standard Alpha blend [ src*srcAlpha + dest*(1-SrcAlpha) ]
+					destRed += invSrcAlpha * ((dest >> 16) & 0xFF);
+					destGreen += invSrcAlpha * ((dest >> 8) & 0xFF);
+					destBlue += invSrcAlpha * (dest & 0xFF);
+
+					// Bring back to the range 0-255
+					destRed >>= 8;
+					destGreen >>= 8;
+					destBlue >>= 8;
+
+					// Put ARGB components back together again
+					*destPixels++ = 0xFF000000 | (destRed << 16) | (destGreen << 8) | destBlue;
+				}
+				else
+				{
+					// If this is a fully transparent pixel then the low bits store how many there are in a row
+					// This means we can skip to the next pixel which isn't fully transparent
+					uint32_t skip = static_cast<uint32_t>(destRowEnd - destPixels) - 1;
+					src = src & 0x00FFFFFF;
+					if (skip > src) skip = src;
+
+					srcPixels += skip;
+					++destPixels += skip;
+				}
+			}
+			// Increase buffers by pre-calculated amounts
+			destPixels += destInc;
+			srcPixels += srcInc;
+		}
+
+	}
+	else
+	{
+		// *******************************************************************************************************************************************************
+		// An optimized approach which uses pre-multiplied alpha, parallel channel multiplication and pixel skipping to achieve the same 'typical' alpha 
+		// blending operation (src * srcAlpha)+(dest * (1-srcAlpha)). Not easy to apply a global alpha multiplication over the top, but used everywhere else.
+		// *******************************************************************************************************************************************************
+
+		// Slightly more optimised iterations without the additions in the loop
+		while (destPixels < destColEnd)
+		{
+			uint32_t* destRowEnd = destPixels + endRow;
+
+			while (destPixels < destRowEnd)
+			{
+				uint32_t src = *srcPixels++;
+				uint32_t dest = *destPixels;
+
+				// If this isn't a fully transparent pixel 
+				if (src < 0xFF000000)
+				{
+					// This performes the dest*(1-srcAlpha) calculation for all channels in parallel with minor accuracy loss in dest colour.
+					// It does this by shifting all the destination channels down by 4 bits in order to "make room" for the later multiplication.
+					// After shifting down, it masks out the bits which have shifted into the adjacent channel data.
+					// This causes the RGB data to be rounded down to their nearest 16 producing a reduction in colour accuracy.
+					// This is then multiplied by the inverse alpha (inversed in PreMultiplyAlpha), also divided by 16 (hence >> 8+8+8+4).
+					// The multiplication brings our RGB values back up to their original bit ranges (albeit rounded to the nearest 16).
+					// As the colour accuracy only affects the destination pixels behind semi-transparent source pixels and so isn't very obvious.
+					dest = (((dest >> 4) & 0x000F0F0F) * (src >> 28));
+					// Add the (pre-multiplied Alpha) source to the destination and force alpha to opaque
+					*destPixels++ = (src + dest) | 0xFF000000;
+				}
+				else
+				{
+					// If this is a fully transparent pixel then the low bits store how many there are in a row
+					// This means we can skip to the next pixel which isn't fully transparent
+					uint32_t skip = static_cast<uint32_t>(destRowEnd - destPixels) - 1;
+					src = src & 0x00FFFFFF;
+					if (skip > src) skip = src;
+
+					srcPixels += skip;
+					++destPixels += skip;
+				}
+			}
+			// Increase buffers by pre-calculated amounts
+			destPixels += destInc;
+			srcPixels += srcInc;
+		}
+
+	}
+
+	return;
+}
+
+//********************************************************************************************************************************
+// Function:	RotateScaleSprite - draws a rotated and scaled sprite with global alpha multiply
+// Parameters:	s = the sprite to draw
+//				xpos, ypos = the position of the center of rotation.
+//				frameIndex = which frame of the animation to draw (wrapped)
+//				angle = rotation angle
+//				scale = parameter to magnify the sprite.
+//				rotOffX, rotOffY = offset of centre of rotation to the top left of the sprite
+//				alpha = the fraction defining the amount of sprite and background that is draw. 255 = all sprite, 0 = all background.
+// Notes:		Pre-calculates roughly where the sprite will be in the display buffer and only processes those pixels. 
+//				Approx 15 times slower than not rotating.
+//********************************************************************************************************************************
+void PlayBlitter::RotateScalePixels(const PixelData& srcPixelData, int srcOffset, int blitX, int blitY, int blitWidth, int blitHeight, int originX, int originY, float angle, float scale, float alphaMultiply) const
+{
+	PLAY_ASSERT_MSG(m_pRenderTarget, "Render target not set for PlayBlitter");
+
+	//pointers to start of source and destination buffers
+	uint32_t* pSrcBase = &srcPixelData.pPixels->bits + srcOffset;
+	uint32_t* pDstBase = &m_pRenderTarget->pPixels->bits;
+
+	//the centre of rotation in the sprite frame relative to the top corner
+	float fRotCentreU = static_cast<float>(originX);
+	float fRotCentreV = static_cast<float>(originY);
+
+	//u/v are co-ordinates in the rotated sprite frame. x/y are screen buffer co-ordinates.
+	//change in u/v for a unit change in x/y.
+	float dUdX = static_cast<float>(cos(-angle)) * (1.0f / scale);
+	float dVdX = static_cast<float>(sin(-angle)) * (1.0f / scale);
+	float dUdY = -dVdX;
+	float dVdY = dUdX;
+
+	//Position in the sprite rotated frame with origin at the center of rotation of the sprite corners.
+	float leftU = -fRotCentreU * scale;
+	float rightU = (blitWidth + -fRotCentreU) * scale;
+	float topV = (-fRotCentreV) * scale;
+	float bottomV = (blitHeight - fRotCentreV) * scale;
+
+	//Scale added in to cancel out the scale in dUdX.
+	float boundingBoxCorners[4][2]
+	{
+		{ (dUdX * leftU + dVdX * topV) * scale,			(dUdY * leftU + dVdY * topV) * scale		},	// Top left
+		{ (dUdX * leftU + dVdX * bottomV) * scale,		(dUdY * leftU + dVdY * bottomV) * scale		},	// Bottom left
+		{ (dUdX * rightU + dVdX * bottomV) * scale,		(dUdY * rightU + dVdY * bottomV) * scale	},	// Bottom right
+		{ (dUdX * rightU + dVdX * topV) * scale,			(dUdY * rightU + dVdY * topV) * scale,		},	// Top right
+	};
+
+	float minX = std::numeric_limits<float>::infinity();
+	float minY = std::numeric_limits<float>::infinity();
+	float maxX = -std::numeric_limits<float>::infinity();
+	float maxY = -std::numeric_limits<float>::infinity();
+
+	//calculate the extremes of the rotated corners.
+	for (int i = 0; i < 4; i++)
+	{
+		minX = std::min(minX, boundingBoxCorners[i][0]);
+		maxX = std::max(maxX, boundingBoxCorners[i][0]);
+		minY = std::min(minY, boundingBoxCorners[i][1]);
+		maxY = std::max(maxY, boundingBoxCorners[i][1]);
+	}
+
+	//clip the starting and finishing positions.
+	int startY = blitY + static_cast<int>(minY);
+	if (startY < 0) { startY = 0; minY = static_cast<float>(-blitY); }
+
+	int endY = blitY + static_cast<int>(maxY);
+	if (endY > m_pRenderTarget->height) { endY = m_pRenderTarget->height; }
+
+	int startX = blitX + static_cast<int>(minX);
+	if (startX < 0) { startX = 0; minX = static_cast<float>(-blitX); }
+
+	int endX = blitX + static_cast<int>(maxX);
+	if (endX > m_pRenderTarget->width) { endX = m_pRenderTarget->width; }
+
+	//rotate the basis so we get the edge of the bounding box in the sprite frame.
+	float startingU = dUdX * minX + dUdY * minY + fRotCentreU;
+	float startingV = dVdY * minY + dVdX * minX + fRotCentreV;
+
+	float rowU = startingU;
+	float rowV = startingV;
+
+	uint32_t* destPixels = pDstBase + (static_cast<size_t>(m_pRenderTarget->width) * startY) + startX;
+	int nextRow = m_pRenderTarget->width - (endX - startX);
+
+	uint32_t* srcPixels = pSrcBase;
+
+	//Start of double for loop. 
+	for (int y = startY; y < endY; y++)
+	{
+		float u = rowU;
+		float v = rowV;
+
+		for (int x = startX; x < endX; x++)
+		{
+			//Check to see if u and v correspond to a valid pixel in sprite.
+			if (u > 0 && v > 0 && u < blitWidth && v < blitHeight)
+			{
+				srcPixels = pSrcBase + static_cast<size_t>(u) + (static_cast<size_t>(v) * srcPixelData.width);
+				uint32_t src = *srcPixels;
+
+				if (src < 0xFF000000)
+				{
+					int srcAlpha = static_cast<int>((0xFF - (src >> 24)) * alphaMultiply);
+					int constAlpha = static_cast<int>(255 * alphaMultiply);
+
+					// Source pixels are already multiplied by srcAlpha so we just apply the constant alpha multiplier
+					int destRed = constAlpha * ((src >> 16) & 0xFF);
+					int destGreen = constAlpha * ((src >> 8) & 0xFF);
+					int destBlue = constAlpha * (src & 0xFF);
+
+					uint32_t dest = *destPixels;
+					int invSrcAlpha = 0xFF - srcAlpha;
+
+					// Apply a standard Alpha blend [ src*srcAlpha + dest*(1-SrcAlpha) ]
+					destRed += invSrcAlpha * ((dest >> 16) & 0xFF);
+					destGreen += invSrcAlpha * ((dest >> 8) & 0xFF);
+					destBlue += invSrcAlpha * (dest & 0xFF);
+
+					// Bring back to the range 0-255
+					destRed >>= 8;
+					destGreen >>= 8;
+					destBlue >>= 8;
+
+					// Put ARGB components back together again
+					*destPixels = 0xFF000000 | (destRed << 16) | (destGreen << 8) | destBlue;
+				}
+			}
+
+			destPixels++;
+
+			// Change the position in the sprite frame for changing X in the display
+			u += dUdX;
+			v += dVdX;
+		}
+
+		// Work out the change in the sprite frame for changing Y in the display
+		rowU += dUdY;
+		rowV += dVdY;
+		// Next row
+		destPixels += nextRow;
+	}
+
+}
+
+
+void PlayBlitter::ClearRenderTarget(Pixel colour)
+{
+	Pixel* pBuffEnd = m_pRenderTarget->pPixels + (m_pRenderTarget->width * m_pRenderTarget->height);
+	for (Pixel* pBuff = m_pRenderTarget->pPixels; pBuff < pBuffEnd; *pBuff++ = colour.bits);
+	m_pRenderTarget->preMultiplied = false;
+}
+
+void PlayBlitter::BlitBackground(PixelData& backgroundImage)
+{
+	PLAY_ASSERT_MSG(backgroundImage.height == m_pRenderTarget->height && backgroundImage.width == m_pRenderTarget->width, "Background size doesn't match render target!");
+	// Takes about 1ms for 720p screen on i7-8550U
+	memcpy(m_pRenderTarget->pPixels, backgroundImage.pPixels, sizeof(Pixel) * m_pRenderTarget->width * m_pRenderTarget->height);
+}
+
+
+//********************************************************************************************************************************
+// File:		PlayGraphics.cpp
+// Description:	Manages 2D graphics operations on a PixelData buffer 
 // Platform:	Independent
 // Notes:		Uses PNG format. The end of the filename indicates the number of frames e.g. "bat_4.png" or "tiles_10x10.png"
 //********************************************************************************************************************************
 
 
-
-
-PlayBlitter* PlayBlitter::s_pInstance = nullptr;
+PlayGraphics* PlayGraphics::s_pInstance = nullptr;
 
 //********************************************************************************************************************************
 // Constructor / Destructor (Private)
 //********************************************************************************************************************************
 
-PlayBlitter::PlayBlitter(const char* path)
+PlayGraphics::PlayGraphics(int bufferWidth, int bufferHeight, const char* path)
 {
+	// A working buffer for our display. Each pixel is stored as an unsigned 32-bit integer: alpha<<24 | red<<16 | green<<8 | blue
+	m_playBuffer.width = bufferWidth;
+	m_playBuffer.height = bufferHeight;
+	m_playBuffer.pPixels = new Pixel[static_cast<size_t>(bufferWidth) * bufferHeight];
+	m_playBuffer.preMultiplied = false;
+	PLAY_ASSERT(m_playBuffer.pPixels);
+
+	memset(m_playBuffer.pPixels, 0, sizeof(uint32_t) * bufferWidth * bufferHeight);
+
+	// Make the display buffer the render target for the blitter
+	m_blitter.SetRenderTarget(&m_playBuffer);
+
 	// Iterate through the directory
-	PB_ASSERT_MSG(std::filesystem::exists(path), "PlayBlitter: Drectory provided does not exist.");
+	PLAY_ASSERT_MSG(std::filesystem::exists(path), "PlayBuffer: Drectory provided does not exist.");
 
 	for (const auto& p : std::filesystem::directory_iterator(path))
 	{
@@ -2201,7 +2291,7 @@ PlayBlitter::PlayBlitter(const char* path)
 					std::ifstream info_infile;
 					info_infile.open(info_filename, std::ios::in);
 
-					PB_ASSERT_MSG(info_infile.is_open(), std::string("Unable to load existing .inf file: " + info_filename).c_str());
+					PLAY_ASSERT_MSG(info_infile.is_open(), std::string("Unable to load existing .inf file: " + info_filename).c_str());
 					if (info_infile.is_open())
 					{
 						std::string type;
@@ -2221,45 +2311,46 @@ PlayBlitter::PlayBlitter(const char* path)
 	}
 }
 
-PlayBlitter::~PlayBlitter()
+PlayGraphics::~PlayGraphics()
 {
 	for (Sprite& s : vSpriteData)
 	{
-		if (s.pCanvasBuffer)
-			delete[] s.pCanvasBuffer;
+		if (s.canvasBuffer.pPixels)
+			delete[] s.canvasBuffer.pPixels;
 
-		if (s.pPreMultAlpha)
-			delete[] s.pPreMultAlpha;
+		if (s.preMultAlpha.pPixels)
+			delete[] s.preMultAlpha.pPixels;
 	}
 
-	for (uint32_t*& pBgBuffer : vBackgroundData)
-	{
-		delete[] pBgBuffer;
-	}
+	for (PixelData& pBgBuffer : vBackgroundData)
+		delete[] pBgBuffer.pPixels;
+
+	if (m_pDebugFontBuffer)
+		delete[] m_pDebugFontBuffer;
+
+	delete[] m_playBuffer.pPixels;
 }
-
-
 
 //********************************************************************************************************************************
 // Instance functions
 //********************************************************************************************************************************
 
-PlayBlitter& PlayBlitter::Instance()
+PlayGraphics& PlayGraphics::Instance()
 {
-	PB_ASSERT_MSG(s_pInstance, "Trying to use PlayCollider without initialising it!");
+	PLAY_ASSERT_MSG(s_pInstance, "Trying to use PlayGraphics without initialising it!");
 	return *s_pInstance;
 }
 
-PlayBlitter& PlayBlitter::Instance(const char* path)
+PlayGraphics& PlayGraphics::Instance(int bufferWidth, int bufferHeight, const char* path)
 {
-	PB_ASSERT_MSG(!s_pInstance, "Trying to create multiple instances of singleton class!");
-	s_pInstance = new PlayBlitter(path);
+	PLAY_ASSERT_MSG(!s_pInstance, "Trying to create multiple instances of singleton class!");
+	s_pInstance = new PlayGraphics(bufferWidth, bufferHeight, path);
 	return *s_pInstance;
 }
 
-void PlayBlitter::Destroy()
+void PlayGraphics::Destroy()
 {
-	PB_ASSERT_MSG(s_pInstance, "Trying to use destroy PlayBuffer which hasn't been instanced!");
+	PLAY_ASSERT_MSG(s_pInstance, "Trying to use destroy PlayGraphics when it hasn't been instanced!");
 	delete s_pInstance;
 	s_pInstance = nullptr;
 }
@@ -2268,39 +2359,38 @@ void PlayBlitter::Destroy()
 // Loading functions
 //********************************************************************************************************************************
 
-int PlayBlitter::LoadSpriteSheet(const std::string& path, const std::string& filename)
+int PlayGraphics::LoadSpriteSheet(const std::string& path, const std::string& filename)
 {
-	Sprite s;
-	s.id = m_nTotalSprites++;
-	s.name = filename;
-	s.originX = s.originY = 0;
-	s.hCount = s.vCount = 1; // default to a single-framed sprite
+	PixelData canvasBuffer;
+	std::string spriteName = filename;
+	int hCount = 1;
+	int vCount = 1;
 
 	// Switch everything to uppercase to avoid need to check case each time
-	for (char& c : s.name) c = static_cast<char>(toupper(c));
+	for (char& c : spriteName) c = static_cast<char>(toupper(c));
 
 	// Look for the final number in the filename to pull out the number of frames across the width
-	size_t frameWidthEnd = s.name.find_last_of("0123456789");
-	size_t frameWidthStart = s.name.find_last_not_of("0123456789");
+	size_t frameWidthEnd = spriteName.find_last_of("0123456789");
+	size_t frameWidthStart = spriteName.find_last_not_of("0123456789");
 
-	if (frameWidthEnd == s.name.length() - 1)
+	if (frameWidthEnd == spriteName.length() - 1)
 	{
 		// Grab the number of frames
-		std::string widthString = s.name.substr(frameWidthStart + 1, frameWidthEnd - frameWidthStart);
+		std::string widthString = spriteName.substr(frameWidthStart + 1, frameWidthEnd - frameWidthStart);
 
 		// Make sure the number is valid 
 		size_t num = widthString.find_first_of("0123456789");
-		PB_ASSERT_MSG(num == 0, std::string("Incorrectly named sprite: " + filename).c_str());
+		PLAY_ASSERT_MSG(num == 0, std::string("Incorrectly named sprite: " + filename).c_str());
 
-		s.hCount = stoi(widthString);
+		hCount = stoi(widthString);
 
-		if (s.name[frameWidthStart] == 'X')
+		if (spriteName[frameWidthStart] == 'X')
 		{
 			//Two dimensional sprite sheet so the width was actually the height: copy it over and work out the real width
-			s.vCount = s.hCount;
+			vCount = hCount;
 
 			// Cut off the last number we just found plus an "x", then check for another number indicating a frame height (optional)
-			std::string truncated = s.name.substr(0, frameWidthStart);
+			std::string truncated = spriteName.substr(0, frameWidthStart);
 			frameWidthEnd = truncated.find_last_of("0123456789");
 			frameWidthStart = truncated.find_last_not_of("0123456789");
 
@@ -2311,32 +2401,52 @@ int PlayBlitter::LoadSpriteSheet(const std::string& path, const std::string& fil
 
 				// Make sure the number is valid
 				num = widthString.find_first_of("0123456789");
-				PB_ASSERT_MSG(num == 0, std::string("Incorrectly named sprite: " + filename).c_str());
+				PLAY_ASSERT_MSG(num == 0, std::string("Incorrectly named sprite: " + filename).c_str());
 
-				s.hCount = stoi(widthString);
+				hCount = stoi(widthString);
 			}
 			else
 			{
-				PB_ASSERT_MSG(false, std::string("Incorrectly named sprite: " + filename).c_str());
+				PLAY_ASSERT_MSG(false, std::string("Incorrectly named sprite: " + filename).c_str());
 			}
 		}
 		else
 		{
-			s.vCount = 1;
+			vCount = 1;
 		}
 	}
 
-	s.totalCount = s.hCount * s.vCount;
+	std::string fileAndPath(path + spriteName + ".PNG");
+	PlayWindow::LoadPNGImage(fileAndPath, canvasBuffer); // Allocates memory as we don't know the size
 
-	std::string fileAndPath(path + s.name + ".PNG");
-	PlayBuffer::LoadPNGImage(fileAndPath, s.canvasWidth, s.canvasHeight, s.pCanvasBuffer); // Allocates memory as we don't know the size
-	s.width = s.canvasWidth / s.hCount;
-	s.height = s.canvasHeight / s.vCount;
+	return AddSprite(filename, canvasBuffer, hCount, vCount);
+}
+
+int PlayGraphics::AddSprite(const std::string& name, PixelData& pixelData, int hCount, int vCount)
+{
+	// Switch everything to uppercase to avoid need to check case each time
+	std::string spriteName = name;
+	for (char& c : spriteName) c = static_cast<char>(toupper(c));
+
+	Sprite s;
+	s.id = m_nTotalSprites++;
+	s.name = spriteName;
+	s.originX = s.originY = 0;
+	s.hCount = hCount;
+	s.vCount = vCount;
+	s.canvasBuffer = pixelData; // copy including pointer to pixel data
+
+	s.totalCount = s.hCount * s.vCount;
+	s.width = s.canvasBuffer.width / s.hCount;
+	s.height = s.canvasBuffer.height / s.vCount;
 
 	// Create a separate buffer with the pre-multiplyied alpha
-	s.pPreMultAlpha = new uint32_t[static_cast<size_t>(s.canvasWidth) * s.canvasHeight];
-	memset(s.pPreMultAlpha, 0, sizeof(uint32_t) * s.canvasWidth * s.canvasHeight);
-	PreMultiplyAlpha(s.pCanvasBuffer, s.pPreMultAlpha, s.canvasWidth, s.canvasHeight, s.width, 1.0f, 0x00FFFFFF);
+	s.preMultAlpha.pPixels = new Pixel[static_cast<size_t>(s.canvasBuffer.width) * s.canvasBuffer.height];
+	s.preMultAlpha.width = s.canvasBuffer.width;
+	s.preMultAlpha.height = s.canvasBuffer.height;
+	memset(s.preMultAlpha.pPixels, 0, sizeof(uint32_t) * s.canvasBuffer.width * s.canvasBuffer.height);
+	PreMultiplyAlpha(s.canvasBuffer.pPixels, s.preMultAlpha.pPixels, s.canvasBuffer.width, s.canvasBuffer.height, s.width, 1.0f, 0x00FFFFFF);
+	s.canvasBuffer.preMultiplied = true;
 
 	// Add the sprite to our vector
 	vSpriteData.push_back(s);
@@ -2344,38 +2454,75 @@ int PlayBlitter::LoadSpriteSheet(const std::string& path, const std::string& fil
 	return s.id;
 }
 
-int PlayBlitter::LoadBackground(const char* fileAndPath)
+int PlayGraphics::UpdateSprite(const std::string& name, PixelData& pixelData, int hCount, int vCount)
 {
-	int imageWidth, imageHeight;
-	uint32_t* pLoadBuffer, * pLoadBufferIt, * pBackgroundBufferIt;
+	// Switch everything to uppercase to avoid need to check case each time
+	std::string spriteName = name;
+	for (char& c : spriteName) c = static_cast<char>(toupper(c));
 
-	uint32_t* pBackgroundBuffer = new uint32_t[static_cast<size_t>(m_displayBufferWidth) * m_displayBufferHeight];
-	PB_ASSERT(pBackgroundBuffer);
+	for (Sprite& s : vSpriteData)
+	{
+		if (s.name.find(spriteName) != std::string::npos)
+		{
+			// delete the old premultiplied buffer
+			delete s.preMultAlpha.pPixels;
+
+			s.hCount = hCount;
+			s.vCount = vCount;
+			s.canvasBuffer = pixelData; // copy including pointer to pixel data
+
+			s.totalCount = s.hCount * s.vCount;
+			s.width = s.canvasBuffer.width / s.hCount;
+			s.height = s.canvasBuffer.height / s.vCount;
+
+			// Create a new buffer with the pre-multiplyied alpha
+			s.preMultAlpha.pPixels = new Pixel[static_cast<size_t>(s.canvasBuffer.width) * s.canvasBuffer.height];
+			s.preMultAlpha.width = s.canvasBuffer.width;
+			s.preMultAlpha.height = s.canvasBuffer.height;
+			memset(s.preMultAlpha.pPixels, 0, sizeof(uint32_t) * s.canvasBuffer.width * s.canvasBuffer.height);
+			PreMultiplyAlpha(s.canvasBuffer.pPixels, s.preMultAlpha.pPixels, s.canvasBuffer.width, s.canvasBuffer.height, s.width, 1.0f, 0x00FFFFFF);
+			s.canvasBuffer.preMultiplied = true;
+
+			return s.id;
+		}
+	}
+
+	return -1;
+}
+
+
+int PlayGraphics::LoadBackground(const char* fileAndPath)
+{
+	// The background image may not be the right size for the background so we make sure the buffer is 
+	PixelData backgroundImage;
+	Pixel* pSrc, * pDest;
+
+	Pixel* correctSizeBuffer = new Pixel[static_cast<size_t>(m_playBuffer.width) * m_playBuffer.height];
+	PLAY_ASSERT(correctSizeBuffer);
 
 	std::string pngFile(fileAndPath);
-	PB_ASSERT_MSG(std::filesystem::exists(fileAndPath), "The background png does not exist at the given location.");
-	PlayBuffer::LoadPNGImage(pngFile, imageWidth, imageHeight, pLoadBuffer); // Allocates memory in function as we don't know the size
+	PLAY_ASSERT_MSG(std::filesystem::exists(fileAndPath), "The background png does not exist at the given location.");
+	PlayWindow::LoadPNGImage(pngFile, backgroundImage); // Allocates memory in function as we don't know the size
 
-	pLoadBufferIt = pLoadBuffer;
-	pBackgroundBufferIt = pBackgroundBuffer;
+	pSrc = backgroundImage.pPixels;
+	pDest = correctSizeBuffer;
 
 	//Copy the image to our background buffer clipping where necessary
-	for (int h = 0; h < std::min(imageHeight, m_displayBufferHeight); h++)
+	for (int h = 0; h < std::min(backgroundImage.height, m_playBuffer.height); h++)
 	{
-		for (int w = 0; w < std::min(imageWidth, m_displayBufferWidth); w++)
-		{
-			*pBackgroundBufferIt++ = *pLoadBufferIt++;
-		}
+		for (int w = 0; w < std::min(backgroundImage.width, m_playBuffer.width); w++)
+			*pDest++ = *pSrc++;
 
 		// Skip pixels if we're clipping
-		pBackgroundBufferIt += std::max(m_displayBufferWidth - imageWidth, 0);
-		pLoadBufferIt += std::max(imageWidth - m_displayBufferWidth, 0);
+		pDest += std::max(m_playBuffer.width - backgroundImage.width, 0);
+		pSrc += std::max(backgroundImage.width - m_playBuffer.width, 0);
 	}
 
 	// Free up the loading buffer
-	delete pLoadBuffer;
+	delete backgroundImage.pPixels;
+	backgroundImage.pPixels = correctSizeBuffer;
 
-	vBackgroundData.push_back(pBackgroundBuffer);
+	vBackgroundData.push_back(backgroundImage);
 
 	return static_cast<int>(vBackgroundData.size()) - 1;
 }
@@ -2384,7 +2531,7 @@ int PlayBlitter::LoadBackground(const char* fileAndPath)
 //********************************************************************************************************************************
 // Sprite Getters and Setters
 //********************************************************************************************************************************
-int PlayBlitter::GetSpriteId(const char* name) const
+int PlayGraphics::GetSpriteId(const char* name) const
 {
 	std::string tofind(name);
 	for (char& c : tofind) c = static_cast<char>(toupper(c));
@@ -2397,33 +2544,33 @@ int PlayBlitter::GetSpriteId(const char* name) const
 	return -1;
 }
 
-const std::string& PlayBlitter::GetSpriteName(int spriteId)
+const std::string& PlayGraphics::GetSpriteName(int spriteId)
 {
-	PB_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to get name of invalid sprite id");
+	PLAY_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to get name of invalid sprite id");
 	return vSpriteData[spriteId].name;
 }
 
-Vector2f PlayBlitter::GetSpriteSize(int spriteId) const
+Vector2f PlayGraphics::GetSpriteSize(int spriteId) const
 {
-	PB_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to get width of invalid sprite id");
+	PLAY_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to get width of invalid sprite id");
 	return { vSpriteData[spriteId].width, vSpriteData[spriteId].height };
 }
 
-int PlayBlitter::GetSpriteFrames(int spriteId) const
+int PlayGraphics::GetSpriteFrames(int spriteId) const
 {
-	PB_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to get frames of invalid sprite id");
+	PLAY_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to get frames of invalid sprite id");
 	return vSpriteData[spriteId].totalCount;
 }
 
-Vector2f PlayBlitter::GetSpriteOrigin(int spriteId) const
+Vector2f PlayGraphics::GetSpriteOrigin(int spriteId) const
 {
-	PB_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to get origin with invalid sprite id");
+	PLAY_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to get origin with invalid sprite id");
 	return { vSpriteData[spriteId].originX, vSpriteData[spriteId].originY };
 }
 
-void PlayBlitter::SetSpriteOrigin(int spriteId, Vector2f newOrigin, bool relative)
+void PlayGraphics::SetSpriteOrigin(int spriteId, Vector2f newOrigin, bool relative)
 {
-	PB_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to set origin with invalid sprite id");
+	PLAY_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to set origin with invalid sprite id");
 	if (relative)
 	{
 		vSpriteData[spriteId].originX += static_cast<int>(newOrigin.x);
@@ -2436,18 +2583,18 @@ void PlayBlitter::SetSpriteOrigin(int spriteId, Vector2f newOrigin, bool relativ
 	}
 }
 
-void PlayBlitter::CentreSpriteOrigin(int spriteId)
+void PlayGraphics::CentreSpriteOrigin(int spriteId)
 {
 	SetSpriteOrigin(spriteId, GetSpriteSize(spriteId) / 2);
 }
 
-void PlayBlitter::CentreAllSpriteOrigins(void)
+void PlayGraphics::CentreAllSpriteOrigins(void)
 {
 	for (Sprite& s : vSpriteData)
 		CentreSpriteOrigin(s.id);
 }
 
-void PlayBlitter::SetSpriteOrigins(const char* rootName, Vector2f newOrigin, bool relative)
+void PlayGraphics::SetSpriteOrigins(const char* rootName, Vector2f newOrigin, bool relative)
 {
 	std::string tofind(rootName);
 	for (char& c : tofind) c = static_cast<char>(toupper(c));
@@ -2474,27 +2621,58 @@ void PlayBlitter::SetSpriteOrigins(const char* rootName, Vector2f newOrigin, boo
 // Drawing functions
 //********************************************************************************************************************************
 
-void PlayBlitter::DrawBackground(int backgroundId)
+void PlayGraphics::DrawTransparent(int spriteId, Point2f pos, int frameIndex, float alphaMultiply) const
 {
-	PB_ASSERT_MSG(m_displayBuffer, "Trying to draw background without initialising display!");
-	PB_ASSERT_MSG(static_cast<int>(vBackgroundData.size()) > backgroundId, "Background image out of range!");
-	// Takes about 1ms for 720p screen on i7-8550U
-	memcpy(m_displayBuffer, vBackgroundData[backgroundId], sizeof(uint32_t) * m_displayBufferWidth * m_displayBufferHeight);
+	const Sprite& spr = vSpriteData[spriteId];
+	int destx = static_cast<int>(pos.x + 0.5f) - spr.originX;
+	int desty = static_cast<int>(pos.y + 0.5f) - spr.originY;
+	frameIndex = frameIndex % spr.totalCount;
+	int frameX = frameIndex % spr.hCount;
+	int frameY = frameIndex / spr.hCount;
+	int pixelX = frameX * spr.width;
+	int pixelY = frameY * spr.height;
+	int frameOffset = pixelX + (spr.canvasBuffer.width * pixelY);
+
+	m_blitter.BlitPixels(spr.preMultAlpha, frameOffset, destx, desty, spr.width, spr.height, alphaMultiply);
+};
+
+void PlayGraphics::DrawRotated(int spriteId, Point2f pos, int frameIndex, float angle, float scale, float alphaMultiply) const
+{
+	const Sprite& spr = vSpriteData[spriteId];
+	int destx = static_cast<int>(pos.x + 0.5f);
+	int desty = static_cast<int>(pos.y + 0.5f);
+	frameIndex = frameIndex % spr.totalCount;
+	int frameX = frameIndex % spr.hCount;
+	int frameY = frameIndex / spr.hCount;
+	int pixelX = frameX * spr.width;
+	int pixelY = frameY * spr.height;
+	int frameOffset = pixelX + (spr.canvasBuffer.width * pixelY);
+
+	m_blitter.RotateScalePixels(spr.preMultAlpha, frameOffset, destx, desty, spr.width, spr.height, spr.originX, spr.originY, angle, scale, alphaMultiply);
 }
 
-void PlayBlitter::ColourSprite(int spriteId, int r, int g, int b)
+
+void PlayGraphics::DrawBackground(int backgroundId)
 {
-	PB_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to colour invalid sprite id");
+	PLAY_ASSERT_MSG(m_playBuffer.pPixels, "Trying to draw background without initialising display!");
+	PLAY_ASSERT_MSG(vBackgroundData.size() > static_cast<size_t>(backgroundId), "Background image out of range!");
+	m_blitter.BlitBackground(vBackgroundData[backgroundId]);
+}
+
+void PlayGraphics::ColourSprite(int spriteId, int r, int g, int b)
+{
+	PLAY_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to colour invalid sprite id");
 
 	Sprite& s = vSpriteData[spriteId];
 	uint32_t col = ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
 
-	PreMultiplyAlpha(s.pCanvasBuffer, s.pPreMultAlpha, s.canvasWidth, s.canvasHeight, s.width, 1.0f, col);
+	PreMultiplyAlpha(s.canvasBuffer.pPixels, s.preMultAlpha.pPixels, s.canvasBuffer.width, s.canvasBuffer.height, s.width, 1.0f, col);
+	s.canvasBuffer.preMultiplied = true;
 }
 
-int PlayBlitter::DrawString(int fontId, Point2f pos, std::string text) const
+int PlayGraphics::DrawString(int fontId, Point2f pos, std::string text) const
 {
-	PB_ASSERT_MSG(fontId >= 0 && fontId < m_nTotalSprites, "Trying to use invalid sprite id for font");
+	PLAY_ASSERT_MSG(fontId >= 0 && fontId < m_nTotalSprites, "Trying to use invalid sprite id for font");
 
 	int width = 0;
 
@@ -2506,12 +2684,12 @@ int PlayBlitter::DrawString(int fontId, Point2f pos, std::string text) const
 	return width;
 }
 
-int PlayBlitter::DrawStringCentred(int fontId, Point2f pos, std::string text) const
+int PlayGraphics::DrawStringCentred(int fontId, Point2f pos, std::string text) const
 {
 	int totalWidth = 0;
 
 	for (char c : text)
-		totalWidth += PlayBlitter::Instance().GetFontCharWidth(fontId, c);
+		totalWidth += GetFontCharWidth(fontId, c);
 
 	pos.x -= totalWidth / 2;
 
@@ -2519,25 +2697,28 @@ int PlayBlitter::DrawStringCentred(int fontId, Point2f pos, std::string text) co
 	return totalWidth;
 }
 
-int PlayBlitter::DrawChar(int fontId, Point2f pos, char c) const
+int PlayGraphics::DrawChar(int fontId, Point2f pos, char c) const
 {
-	PB_ASSERT_MSG(fontId >= 0 && fontId < m_nTotalSprites, "Trying to use invalid sprite id for font");
-	BlitSprite(fontId, static_cast<int>(pos.x), static_cast<int>(pos.y), c - 32);
+	PLAY_ASSERT_MSG(fontId >= 0 && fontId < m_nTotalSprites, "Trying to use invalid sprite id for font");
+	Draw(fontId, { pos.x, pos.y }, c - 32);
 	return GetFontCharWidth(fontId, c);
 }
 
-int PlayBlitter::DrawCharRotated(int fontId, Point2f pos, float angle, float scale, char c) const
+int PlayGraphics::DrawCharRotated(int fontId, Point2f pos, float angle, float scale, char c) const
 {
-	PB_ASSERT_MSG(fontId >= 0 && fontId < m_nTotalSprites, "Trying to use invalid sprite id for font");
-	RotateScaleSprite(fontId, static_cast<int>(pos.x), static_cast<int>(pos.y), c - 32, angle, scale);
+	PLAY_ASSERT_MSG(fontId >= 0 && fontId < m_nTotalSprites, "Trying to use invalid sprite id for font");
+	DrawRotated(fontId, { pos.x, pos.y }, c - 32, angle, scale);
 	return GetFontCharWidth(fontId, c);
 }
 
-int PlayBlitter::GetFontCharWidth(int fontId, char c) const
+int PlayGraphics::GetFontCharWidth(int fontId, char c) const
 {
-	PB_ASSERT_MSG(fontId >= 0 && fontId < m_nTotalSprites, "Trying to use invalid sprite id for font");
-	return *(vSpriteData[fontId].pCanvasBuffer + (c - 32)) & 0xFF;
+	PLAY_ASSERT_MSG(fontId >= 0 && fontId < m_nTotalSprites, "Trying to use invalid sprite id for font");
+	return (vSpriteData[fontId].canvasBuffer.pPixels + (c - 32))->b; // character width hidden in pixel data
 }
+
+
+
 
 //********************************************************************************************************************************
 // Function:	SpriteCollide: function that checks by pixel if two sprites collide
@@ -2549,7 +2730,7 @@ int PlayBlitter::GetFontCharWidth(int fontId, char c) const
 // Returns: true if a single pixel or more overlap between the two sprites and false if not.
 // Notes:	rounding errors may cause it not to be pixel perfect.	
 //********************************************************************************************************************************
-bool PlayBlitter::SpriteCollide(int id_1, Point2f pos_1, int frame_1, float angle_1, int s1PixelColl[4], int id_2, Point2f pos_2, int frame_2, float angle_2, int s2PixelColl[4]) const
+bool PlayGraphics::SpriteCollide(int id_1, Point2f pos_1, int frame_1, float angle_1, int s1PixelColl[4], int id_2, Point2f pos_2, int frame_2, float angle_2, int s2PixelColl[4]) const
 {
 	//transform all co-ordinates of sprite2 into the frame of sprite 1.
 
@@ -2661,14 +2842,12 @@ bool PlayBlitter::SpriteCollide(int id_1, Point2f pos_1, int frame_1, float angl
 		frame_1 = frame_1 % s1.totalCount;
 		frame_2 = frame_2 % s2.totalCount;
 
-
 		//clip so we loop through sprite 1.
 		//Restrict the range we look in for pixel based collisions.
 		minv = (minv < s1PixelCollTL[1]) ? static_cast<float>(s1PixelCollTL[1]) : minv;
 		maxv = (maxv > s1PixelCollTL[3]) ? static_cast<float>(s1PixelCollTL[3]) : maxv;
 		minu = (minu < s1PixelCollTL[0]) ? static_cast<float>(s1PixelCollTL[0]) : minu;
 		maxu = (maxu > s1PixelCollTL[2]) ? static_cast<float>(s1PixelCollTL[2]) : maxu;
-
 
 		//Set up the starting position in sprite 2 frame. We know the box corners in u, v relative to the sprite 2 origin but we need to get them in a,b.
 		float minCa = (minu - originDiffu) * cosAngleDiff + (minv - originDiffv) * sinAngleDiff;
@@ -2688,21 +2867,19 @@ bool PlayBlitter::SpriteCollide(int id_1, Point2f pos_1, int frame_1, float angl
 
 		//Set up starting and finishing pointers for both the sprite 1 buffer and sprite 2 buffer 
 		//starting pointer for the sprite 1 buffer is the minu and minv.
-		int sprite1Offset = s1Width * frame_1 + iminu + iminv * s1.canvasWidth;
-		uint32_t* sprite1Src = s1.pCanvasBuffer + sprite1Offset;
+		int sprite1Offset = s1Width * frame_1 + iminu + iminv * s1.canvasBuffer.width;
+		Pixel* sprite1Src = s1.canvasBuffer.pPixels + sprite1Offset;
 
 		//The base pointer for the sprite2 will just be start of the correct frame in the canvas buffer.
 		int sprite2Offset = s2Width * frame_2;
-		uint32_t* sprite2Base = s2.pCanvasBuffer + sprite2Offset;
+		Pixel* sprite2Base = s2.canvasBuffer.pPixels + sprite2Offset;
 		//Define the number which we need to add to get down a row in sprite1.
-		int sprite1ChangeRow = s1.canvasWidth - (imaxu - iminu);
-
+		int sprite1ChangeRow = s1.canvasBuffer.width - (imaxu - iminu);
 
 		//Start of double for loop.
 		//Go through the overlapping region (warning may go out of the buffer of sprite 2.)
 		for (int v{ iminv }; v < imaxv; v++)
 		{
-
 			//store a and b to be the start of the row.
 			float a = rowstarta;
 			float b = rowstartb;
@@ -2714,11 +2891,11 @@ bool PlayBlitter::SpriteCollide(int id_1, Point2f pos_1, int frame_1, float angl
 				//If we are in sprite 2 then extract the look at the pixels.
 				if (a >= s2PixelCollTL[0] && b >= s2PixelCollTL[1] && a < s2PixelCollTL[2] && b < s2PixelCollTL[3])
 				{
-					int sprite2Pixel = static_cast<int>(a) + static_cast<int>(b) * s2.canvasWidth;
-					uint32_t sprite2Src = *(sprite2Base + sprite2Pixel);
+					int sprite2Pixel = static_cast<int>(a) + static_cast<int>(b) * s2.canvasBuffer.width;
+					Pixel sprite2Src = *(sprite2Base + sprite2Pixel);
 
 					//If both pixels at that position are opaque then there is a collision. 
-					if (sprite2Src > 0x00FFFFFF && *sprite1Src > 0x00FFFFFF)
+					if (sprite2Src.bits > 0x00FFFFFF && (*sprite1Src).bits > 0x00FFFFFF)
 					{
 						return true;
 					}
@@ -2743,352 +2920,36 @@ bool PlayBlitter::SpriteCollide(int id_1, Point2f pos_1, int frame_1, float angl
 }
 
 
-//********************************************************************************************************************************
-// Function:	BlitSprite - draws a sprite with and withough a global alpha multiply
-// Parameters:	spriteId = the id of the sprite to draw
-//				xpos, ypos = the position you want to draw the sprite
-//				frameIndex = which frame of the animation to draw (wrapped)
-// Notes:		Alpha multiply approach is relatively unoptimized
-//********************************************************************************************************************************
-void PlayBlitter::BlitSprite(int spriteId, int xpos, int ypos, int frameIndex, float alphaMultiply) const
-{
-	PB_ASSERT_MSG(m_displayBuffer, "DisplayBuffer not initialised");
-	PB_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to draw invalid sprite id");
 
-	const Sprite& spr = vSpriteData[spriteId];
-
-	// Nothing within the display buffer to draw
-	if ((xpos - spr.originX) > m_displayBufferWidth || (xpos - spr.originX) + spr.width < 0 || (ypos - spr.originY) > m_displayBufferHeight || (ypos - spr.originY) + spr.width < 0)
-		return;
-
-	// Work out if we need to clip to the display buffer (and by how much)
-	int xClipStart = -(xpos - spr.originX);
-	if (xClipStart < 0) { xClipStart = 0; }
-
-	int xClipEnd = ((xpos - spr.originX) + spr.width) - m_displayBufferWidth;
-	if (xClipEnd < 0) { xClipEnd = 0; }
-
-	int yClipStart = -(ypos - spr.originY);
-	if (yClipStart < 0) { yClipStart = 0; }
-
-	int yClipEnd = ((ypos - spr.originY) + spr.height) - m_displayBufferHeight;
-	if (yClipEnd < 0) { yClipEnd = 0; }
-
-	// Set up the source and destination pointers based on clipping
-	int destOffset = (m_displayBufferWidth * ((ypos - spr.originY) + yClipStart)) + ((xpos - spr.originX) + xClipStart);
-	uint32_t* destPixels = m_displayBuffer + destOffset;
-
-	frameIndex = frameIndex % spr.totalCount;
-	int imageX = frameIndex % spr.hCount;
-	int imageY = frameIndex / spr.hCount;
-	int pixelX = imageX * spr.width;
-	int pixelY = imageY * spr.height;
-	int frameOffset = pixelX + (spr.canvasWidth * pixelY);
-
-	int srcOffset = (spr.canvasWidth * yClipStart) + xClipStart;
-	uint32_t* srcPixels = spr.pPreMultAlpha + frameOffset + srcOffset;
-
-	// Work out in advance how much we need to add to src and dest to reach the next row 
-	int destInc = m_displayBufferWidth - spr.width + xClipEnd + xClipStart;
-	int srcInc = spr.canvasWidth - spr.width + xClipEnd + xClipStart;
-
-	//Work out final pixel in destination.
-	int destColOffset = (m_displayBufferWidth * (spr.height - yClipEnd - yClipStart - 1)) + (spr.width - xClipEnd - xClipStart);
-	uint32_t* destColEnd = destPixels + destColOffset;
-
-	//How many pixels per row in sprite.
-	int endRow = spr.width - xClipEnd - xClipStart;
-
-	if (alphaMultiply < 1.0f)
-	{
-		// *******************************************************************************************************************************************************
-		// A basic (unoptimized) approach which separates the channels and performs a 'typical' alpha blending operation: (src * srcAlpha)+(dest * (1-srcAlpha))
-		// Has the advantage that a global alpha multiplication can be easily added over the top, so we use this method when a global multiply is required
-		// *******************************************************************************************************************************************************
-
-		// Slightly more optimised iterations without the additions in the loop
-		while (destPixels < destColEnd)
-		{
-			uint32_t* destRowEnd = destPixels + endRow;
-
-			while (destPixels < destRowEnd)
-			{
-				uint32_t src = *srcPixels++;
-				uint32_t dest = *destPixels;
-
-				// If this isn't a fully transparent pixel 
-				if (src < 0xFF000000)
-				{
-					int srcAlpha = static_cast<int>((0xFF - (src >> 24)) * alphaMultiply);
-					int constAlpha = static_cast<int>(255 * alphaMultiply);
-
-					// Source pixels are already multiplied by srcAlpha so we just apply the constant alpha multiplier
-					int destRed = constAlpha * ((src >> 16) & 0xFF);
-					int destGreen = constAlpha * ((src >> 8) & 0xFF);
-					int destBlue = constAlpha * (src & 0xFF);
-
-					int invSrcAlpha = 0xFF - srcAlpha;
-
-					// Apply a standard Alpha blend [ src*srcAlpha + dest*(1-SrcAlpha) ]
-					destRed += invSrcAlpha * ((dest >> 16) & 0xFF);
-					destGreen += invSrcAlpha * ((dest >> 8) & 0xFF);
-					destBlue += invSrcAlpha * (dest & 0xFF);
-
-					// Bring back to the range 0-255
-					destRed >>= 8;
-					destGreen >>= 8;
-					destBlue >>= 8;
-
-					// Put ARGB components back together again
-					*destPixels++ = 0xFF000000 | (destRed << 16) | (destGreen << 8) | destBlue;
-				}
-				else
-				{
-					// If this is a fully transparent pixel then the low bits store how many there are in a row
-					// This means we can skip to the next pixel which isn't fully transparent
-					uint32_t skip = std::min(src & 0x00FFFFFF, (uint32_t)(destRowEnd - destPixels - 1));
-					srcPixels += skip;
-					++destPixels += skip;
-				}
-			}
-			// Increase buffers by pre-calculated amounts
-			destPixels += destInc;
-			srcPixels += srcInc;
-		}
-
-	}
-	else
-	{
-		// *******************************************************************************************************************************************************
-		// An optimized approach which uses pre-multiplied alpha, parallel channel multiplication and pixel skipping to achieve the same 'typical' alpha 
-		// blending operation (src * srcAlpha)+(dest * (1-srcAlpha)). Not easy to apply a global alpha multiplication over the top, but used everywhere else.
-		// *******************************************************************************************************************************************************
-
-		// Slightly more optimised iterations without the additions in the loop
-		while (destPixels < destColEnd)
-		{
-			uint32_t* destRowEnd = destPixels + endRow;
-
-			while (destPixels < destRowEnd)
-			{
-				uint32_t src = *srcPixels++;
-				uint32_t dest = *destPixels;
-
-				// If this isn't a fully transparent pixel 
-				if (src < 0xFF000000)
-				{
-					// This performes the dest*(1-srcAlpha) calculation for all channels in parallel with minor accuracy loss in dest colour.
-					// It does this by shifting all the destination channels down by 4 bits in order to "make room" for the later multiplication.
-					// After shifting down, it masks out the bits which have shifted into the adjacent channel data.
-					// This casues the RGB data to be rounded down to their nearest 16 producing a reduction in colour accuracy.
-					// This is then multiplied by the inverse alpha (inversed in PreMultiplyAlpha), also divided by 16 (hence >> 8+8+8+4).
-					// The multiplication brings our RGB values back up to their original bit ranges (albeit rounded to the nearest 16).
-					// As the colour accuracy only affects the desination pixels behind semi-transparent source pixels and so isn't very obvious.
-					dest = (((dest >> 4) & 0x000F0F0F) * (src >> 28));
-					// Add the (pre-multiplied Alpha) source to the destination and force alpha to opaque
-					*destPixels++ = (src + dest) | 0xFF000000;
-				}
-				else
-				{
-					// If this is a fully transparent pixel then the low bits store how many there are in a row
-					// This means we can skip to the next pixel which isn't fully transparent
-					uint32_t skip = std::min(src & 0x00FFFFFF, (uint32_t)(destRowEnd - destPixels - 1));
-					srcPixels += skip;
-					++destPixels += skip;
-				}
-			}
-			// Increase buffers by pre-calculated amounts
-			destPixels += destInc;
-			srcPixels += srcInc;
-		}
-
-	}
-
-	return;
-}
-
-
-
-//********************************************************************************************************************************
-// Function:	RotateScaleSprite - draws a rotated and scaled sprite with global alpha multiply
-// Parameters:	s = the sprite to draw
-//				xpos, ypos = the position of the center of rotation.
-//				frameIndex = which frame of the animation to draw (wrapped)
-//				angle = rotation angle
-//				scale = parameter to magnify the sprite.
-//				rotOffX, rotOffY = offset of centre of rotation to the top left of the sprite
-//				alpha = the fraction defining the amount of sprite and background that is draw. 255 = all sprite, 0 = all background.
-// Notes:		Pre-calculates roughly where the sprite will be in the display buffer and only processes those pixels. 
-//				Approx 15 times slower than not rotating.
-//********************************************************************************************************************************
-void PlayBlitter::RotateScaleSprite(int spriteId, int xpos, int ypos, int frameIndex, float angle, float scale, float alphaMultiply) const
-{
-	PB_ASSERT_MSG(m_displayBuffer, "DisplayBuffer not initialised");
-	PB_ASSERT_MSG(spriteId >= 0 && spriteId < m_nTotalSprites, "Trying to draw invalid sprite id");
-
-	const Sprite& spr = vSpriteData[spriteId];
-
-	frameIndex = frameIndex % spr.totalCount;
-	int imageX = frameIndex % spr.hCount;
-	int imageY = frameIndex / spr.hCount;
-	int pixelX = imageX * spr.width;
-	int pixelY = imageY * spr.height;
-	int frameOffset = pixelX + (spr.canvasWidth * pixelY);
-
-	//pointers to start of source and destination buffers
-	uint32_t* pSrcBase = spr.pPreMultAlpha + frameOffset;
-	uint32_t* pDstBase = m_displayBuffer;
-
-	//the centre of rotation in the sprite frame relative to the top corner
-	float fRotCentreU = static_cast<float>(spr.originX);
-	float fRotCentreV = static_cast<float>(spr.originY);
-
-	//u/v are co-ordinates in the rotated sprite frame. x/y are screen buffer co-ordinates.
-	//change in u/v for a unit change in x/y.
-	float dUdX = static_cast<float>(cos(-angle)) * (1.0f / scale);
-	float dVdX = static_cast<float>(sin(-angle)) * (1.0f / scale);
-	float dUdY = -dVdX;
-	float dVdY = dUdX;
-
-	//Position in the sprite rotated frame with origin at the center of rotation of the sprite corners.
-	float leftU = -fRotCentreU * scale;
-	float rightU = (spr.width + -fRotCentreU) * scale;
-	float topV = (-fRotCentreV) * scale;
-	float bottomV = (spr.height - fRotCentreV) * scale;
-
-	//Scale added in to cancel out the scale in dUdX.
-	float boundingBoxCorners[4][2]
-	{
-		{ (dUdX * leftU + dVdX * topV) * scale,			(dUdY * leftU + dVdY * topV) * scale		},	// Top left
-		{ (dUdX * leftU + dVdX * bottomV) * scale,		(dUdY * leftU + dVdY * bottomV) * scale		},	// Bottom left
-		{ (dUdX * rightU + dVdX * bottomV) * scale,		(dUdY * rightU + dVdY * bottomV) * scale	},	// Bottom right
-		{ (dUdX * rightU + dVdX * topV) * scale,			(dUdY * rightU + dVdY * topV) * scale,		},	// Top right
-	};
-
-	float minX = std::numeric_limits<float>::infinity();
-	float minY = std::numeric_limits<float>::infinity();
-	float maxX = -std::numeric_limits<float>::infinity();
-	float maxY = -std::numeric_limits<float>::infinity();
-
-	//calculate the extremes of the rotated corners.
-	for (int i = 0; i < 4; i++)
-	{
-		minX = std::min(minX, boundingBoxCorners[i][0]);
-		maxX = std::max(maxX, boundingBoxCorners[i][0]);
-		minY = std::min(minY, boundingBoxCorners[i][1]);
-		maxY = std::max(maxY, boundingBoxCorners[i][1]);
-	}
-
-	//clip the starting and finishing positions.
-	int startY = ypos + static_cast<int>(minY);
-	if (startY < 0) { startY = 0; minY = static_cast<float>(-ypos); }
-
-	int endY = ypos + static_cast<int>(maxY);
-	if (endY > m_displayBufferHeight) { endY = m_displayBufferHeight; }
-
-	int startX = xpos + static_cast<int>(minX);
-	if (startX < 0) { startX = 0; minX = static_cast<float>(-xpos); }
-
-	int endX = xpos + static_cast<int>(maxX);
-	if (endX > m_displayBufferWidth) { endX = m_displayBufferWidth; }
-
-	//rotate the basis so we get the edge of the bounding box in the sprite frame.
-	float startingU = dUdX * minX + dUdY * minY + fRotCentreU;
-	float startingV = dVdY * minY + dVdX * minX + fRotCentreV;
-
-	float rowU = startingU;
-	float rowV = startingV;
-
-	uint32_t* destPixels = pDstBase + (static_cast<size_t>(m_displayBufferWidth) * startY) + startX;
-	int nextRow = m_displayBufferWidth - (endX - startX);
-
-	uint32_t* srcPixels = pSrcBase;
-
-	//Start of double for loop. 
-	for (int y = startY; y < endY; y++)
-	{
-		float u = rowU;
-		float v = rowV;
-
-		for (int x = startX; x < endX; x++)
-		{
-			//Check to see if u and v correspond to a valid pixel in sprite.
-			if (u > 0 && v > 0 && u < spr.width && v < spr.height)
-			{
-				srcPixels = pSrcBase + static_cast<size_t>(u) + (static_cast<size_t>(v) * spr.canvasWidth);
-				uint32_t src = *srcPixels;
-
-				if (src < 0xFF000000)
-				{
-					int srcAlpha = static_cast<int>((0xFF - (src >> 24)) * alphaMultiply);
-					int constAlpha = static_cast<int>(255 * alphaMultiply);
-
-					// Source pixels are already multiplied by srcAlpha so we just apply the constant alpha multiplier
-					int destRed = constAlpha * ((src >> 16) & 0xFF);
-					int destGreen = constAlpha * ((src >> 8) & 0xFF);
-					int destBlue = constAlpha * (src & 0xFF);
-
-					uint32_t dest = *destPixels;
-					int invSrcAlpha = 0xFF - srcAlpha;
-
-					// Apply a standard Alpha blend [ src*srcAlpha + dest*(1-SrcAlpha) ]
-					destRed += invSrcAlpha * ((dest >> 16) & 0xFF);
-					destGreen += invSrcAlpha * ((dest >> 8) & 0xFF);
-					destBlue += invSrcAlpha * (dest & 0xFF);
-
-					// Bring back to the range 0-255
-					destRed >>= 8;
-					destGreen >>= 8;
-					destBlue >>= 8;
-
-					// Put ARGB components back together again
-					*destPixels = 0xFF000000 | (destRed << 16) | (destGreen << 8) | destBlue;
-				}
-			}
-
-			destPixels++;
-
-			//change the position in the sprite frame for changing X in the display
-			u += dUdX;
-			v += dVdX;
-		}
-
-		//work out the change in the sprite frame for changing Y in the display
-		rowU += dUdY;
-		rowV += dVdY;
-		//next row
-		destPixels += nextRow;
-	}
-}
 
 //********************************************************************************************************************************
 // Function:	PreMultiplyAlpha - calculates the (src*srcAlpha) alpha blending calculation in advance as it doesn't change
-// Parameters:	s = the sprite to precalculate data for
+// Parameters:	s = the sprite to pre-calculate data for
 // Notes:		Also inverts the alpha ready for the (dest*(1-srcAlpha)) calculation and stores information in the new
 //				buffer which provides the number of fully-transparent pixels in a row (so they can be skipped)
 //********************************************************************************************************************************
-void PlayBlitter::PreMultiplyAlpha(uint32_t* source, uint32_t* dest, int width, int height, int maxSkipWidth, float alphaMultiply = 1.0f, uint32_t colourMultiply = 0x00FFFFFF)
+void PlayGraphics::PreMultiplyAlpha(Pixel* source, Pixel* dest, int width, int height, int maxSkipWidth, float alphaMultiply = 1.0f, Pixel colourMultiply = 0x00FFFFFF)
 {
-	uint32_t* pSourcePixels = source;
-	uint32_t* pDestPixels = dest;
+	Pixel* pSourcePixels = source;
+	Pixel* pDestPixels = dest;
 
 	// Iterate through all the pixels in the entire canvas
 	for (int bh = 0; bh < height; bh++)
 	{
 		for (int bw = 0; bw < width; bw++)
 		{
-			uint32_t src = *pSourcePixels;
+			Pixel src = *pSourcePixels;
 
 			// Separate the channels and calculate src*srcAlpha
-			int srcAlpha = static_cast<int>((src >> 24) * alphaMultiply);
+			int srcAlpha = static_cast<int>((src.bits >> 24) * alphaMultiply);
 
-			int destRed = (srcAlpha * ((src >> 16) & 0xFF)) >> 8;
-			int destGreen = (srcAlpha * ((src >> 8) & 0xFF)) >> 8;
-			int destBlue = (srcAlpha * (src & 0xFF)) >> 8;
+			int destRed = (srcAlpha * ((src.bits >> 16) & 0xFF)) >> 8;
+			int destGreen = (srcAlpha * ((src.bits >> 8) & 0xFF)) >> 8;
+			int destBlue = (srcAlpha * (src.bits & 0xFF)) >> 8;
 
-			destRed = (destRed * ((colourMultiply >> 16) & 0xFF)) >> 8;
-			destGreen = (destGreen * ((colourMultiply >> 8) & 0xFF)) >> 8;
-			destBlue = (destBlue * (colourMultiply & 0xFF)) >> 8;
+			destRed = (destRed * ((colourMultiply.bits >> 16) & 0xFF)) >> 8;
+			destGreen = (destGreen * ((colourMultiply.bits >> 8) & 0xFF)) >> 8;
+			destBlue = (destBlue * (colourMultiply.bits & 0xFF)) >> 8;
 
 			srcAlpha = 0xFF - srcAlpha; // invert the alpha ready to multiply with the destination pixels
 			*pDestPixels = (srcAlpha << 24) | (destRed << 16) | (destGreen << 8) | destBlue;
@@ -3102,7 +2963,7 @@ void PlayBlitter::PreMultiplyAlpha(uint32_t* source, uint32_t* dest, int width, 
 
 				for (int zw = 1; zw < maxSkip; zw++)
 				{
-					if (*(pSourcePixels + zw) >> 24 == 0x00) // Another transparent pixel
+					if ((pSourcePixels + zw)->bits >> 24 == 0x00) // Another transparent pixel
 						repeats++;
 					else
 						break;
@@ -3117,47 +2978,290 @@ void PlayBlitter::PreMultiplyAlpha(uint32_t* source, uint32_t* dest, int width, 
 	}
 }
 
+//********************************************************************************************************************************
+// Basic drawing functions
+//********************************************************************************************************************************
+
+
+
+void PlayGraphics::DrawPixel(Point2f pos, Pixel srcPix)
+{
+	// Convert floating point co-ordinates to pixels
+	m_blitter.DrawPixel(static_cast<int>(pos.x + 0.5f), static_cast<int>(pos.y + 0.5f), srcPix);
+}
+
+void PlayGraphics::DrawLine(Point2f startPos, Point2f endPos, Pixel pix)
+{
+	// Convert floating point co-ordinates to pixels
+	int x1 = static_cast<int>(startPos.x + 0.5f);
+	int y1 = static_cast<int>(startPos.y + 0.5f);
+	int x2 = static_cast<int>(endPos.x + 0.5f);
+	int y2 = static_cast<int>(endPos.y + 0.5f);
+
+	m_blitter.DrawLine(x1, y1, x2, y2, pix);
+}
 
 
 
 
+void PlayGraphics::DrawRect(Point2f topLeft, Point2f bottomRight, Pixel pix, bool fill)
+{
+	// Convert floating point co-ordinates to pixels
+	int x1 = static_cast<int>(topLeft.x + 0.5f);
+	int x2 = static_cast<int>(bottomRight.x + 0.5f);
+	int y1 = static_cast<int>(topLeft.y + 0.5f);
+	int y2 = static_cast<int>(bottomRight.y + 0.5f);
 
+	if (fill)
+	{
+		for (int x = x1; x < x2; x++)
+		{
+			for (int y = y1; y < y2; y++)
+				m_blitter.DrawPixel(x, y, pix);
+		}
+	}
+	else
+	{
+		m_blitter.DrawLine(x1, y1, x2, y1, pix);
+		m_blitter.DrawLine(x2, y1, x2, y2, pix);
+		m_blitter.DrawLine(x2, y2, x1, y2, pix);
+		m_blitter.DrawLine(x1, y2, x1, y1, pix);
+	}
+}
 
+// Private function called by DrawCircle
+void PlayGraphics::DrawCircleOctants(int posX, int posY, int offX, int offY, Pixel pix)
+{
+	DrawPixel({ posX + offX , posY + offY }, pix);
+	DrawPixel({ posX - offX , posY + offY }, pix);
+	DrawPixel({ posX + offX , posY - offY }, pix);
+	DrawPixel({ posX - offX , posY - offY }, pix);
+	DrawPixel({ posX - offY , posY + offX }, pix);
+	DrawPixel({ posX + offY , posY - offX }, pix);
+	DrawPixel({ posX - offY , posY - offX }, pix);
+	DrawPixel({ posX + offY , posY + offX }, pix);
+}
 
+void PlayGraphics::DrawCircle(Point2f pos, int radius, Pixel pix)
+{
+	// Convert floating point co-ordinates to pixels
+	int x = static_cast<int>(pos.x + 0.5f);
+	int y = static_cast<int>(pos.y + 0.5f);
 
-//*******************************************************************
-// PLAY END: PlayBlitter.cpp
-//*******************************************************************
+	int dx = 0;
+	int dy = radius;
 
+	int d = 3 - 2 * radius;
+	DrawCircleOctants(x, y, dx, dy, pix);
 
-//*******************************************************************
-// PLAY BEGIN: PlaySpeaker.cpp
-//*******************************************************************
+	while (dy >= dx)
+	{
+		dx++;
+		if (d > 0)
+		{
+			dy--;
+			d = static_cast<int>(d + 4 * (dx - dy) + 10);
+		}
+		else
+		{
+			d = static_cast<int>(d + 4 * dx + 6);
+		}
+		DrawCircleOctants(x, y, dx, dy, pix);
+	}
+};
+
+void PlayGraphics::DrawPixelData(PixelData* pixelData, Point2f pos, float alpha)
+{
+	if (!pixelData->preMultiplied)
+	{
+		PreMultiplyAlpha(pixelData->pPixels, pixelData->pPixels, pixelData->width, pixelData->height, pixelData->width);
+		pixelData->preMultiplied = true;
+	}
+	m_blitter.BlitPixels(*pixelData, 0, static_cast<int>(pos.x), static_cast<int>(pos.y), pixelData->width, pixelData->height, alpha);
+}
+
 
 //********************************************************************************************************************************
-//* Copyright 2020 Sumo-Digital Limited
+// Debug font functions
+//********************************************************************************************************************************
+
+// Settings for the embedded debug font
+#define FONT_IMAGE_WIDTH	96
+#define FONT_IMAGE_HEIGHT	36
+#define FONT_CHAR_WIDTH		6
+#define FONT_CHAR_HEIGHT	12
+
+// A 96x36 font image @ 1bpp containing basic ASCII characters from 0x30 (0) to 0x5F (underscore) at 6x12 pixels each
+static const uint32_t debugFontData[] =
+{
+	0x87304178, 0x0800861F, 0xFFFFFFE1, 0x7BBFBE79, 0xF7FE79EF, 0xFFFFFFFE, 0x7BBFBE79, 0xF7FE79EC, 0xFFFFFFFE, 0x7BBFBE79, 0xF7FE79EC, 0xFFFFFFFE, 0x7BBFBE79, 0xF7FE79EF, 0xFFEE3DFE, 0x6BB86080,
+	0x1078860F, 0xE3DFFEFE, 0x5BB7FEFB, 0xE7BE7BEF, 0xFFBFFF41, 0x7BB7FEFB, 0xE7BE7BEC, 0xFFDFFEDF, 0x7BB7FEFB, 0xE7BE7BEC, 0xFFEE3DDF, 0x7BB7FEFB, 0xE7BE7BEF, 0xFFFFFFFF, 0x7BB7BEF9, 0xE7BE7BEF,
+	0xFFFFFFDF, 0x87B001F8, 0x187E87EF, 0xFFFFFFDF, 0x86106104, 0x00007A30, 0x1E7C5061, 0x79E79E79, 0xF7DF7B7F, 0x5E7DA79E, 0x79E79F79, 0xF7DF7B7F, 0x5E7DA79E, 0x79E79F79, 0xF7DF7B7F, 0x5E7DA79E,
+	0x59E79F79, 0xF7DF7B7F, 0x597DA79E, 0x58005F78, 0x30D0037F, 0x477DA79E, 0x59E79F79, 0xF7DE7B7F, 0x597DA79E, 0x59E79F79, 0xF7DE7B7F, 0x5E7DA79E, 0x41E79F79, 0xF7DE7B7F, 0x5E7DA79E, 0x7DE79F79,
+	0xF7DE7B7F, 0x5E7DA79E, 0x7DE79E79, 0xF7DE7B7F, 0x5E7DA79E, 0x81E06104, 0x07C17A38, 0xDE01A7A1, 0x06106101, 0xE79E79E0, 0x337F3FFF, 0x79E79EED, 0xE79E79EF, 0xB77FBFFF, 0x79E79FED, 0xE79E79EF,
+	0xB7BFBFFF, 0x79E79FED, 0xE79A79EF, 0xB7BFBFFF, 0x79E75FED, 0xE79AB5EF, 0x77DFBFFF, 0x05E0E1ED, 0xE79ACC0E, 0xF7DFBFFF, 0x7DE77EED, 0xE79AB7ED, 0xF7EFBFFF, 0x7DE7BEED, 0xE79A7BEB, 0xF7EFBFFF,
+	0x7DE7BEED, 0xE79A7BE7, 0xF7F7BFFF, 0x7DA7BEED, 0xE79A7BE7, 0xF7F7BCFF, 0x7DD79EED, 0xEB5A7BE7, 0xF7FBBCFF, 0x7C27A1EE, 0x1CE57810, 0x33FB3EC0
+};
+
+void PlayGraphics::DecompressDubugFont(void)
+{
+	m_pDebugFontBuffer = new uint8_t[FONT_IMAGE_WIDTH * FONT_IMAGE_HEIGHT];
+
+	for (int y = 0; y < FONT_IMAGE_HEIGHT; y++)
+	{
+		for (int x = 0; x < FONT_IMAGE_WIDTH; x++)
+		{
+			int bufferIndex = (y * FONT_IMAGE_WIDTH) + x;
+			int dataIndex = bufferIndex / 32;
+			int dataShift = 31 - (bufferIndex % 32);
+
+			// Convert 1bpp to an 8-bit array for easy data access
+			if ((debugFontData[dataIndex] >> dataShift) & 0x01)
+				m_pDebugFontBuffer[(y * FONT_IMAGE_WIDTH) + x] = 0; // not ARGB just 0 (no pixel)
+			else
+				m_pDebugFontBuffer[(y * FONT_IMAGE_WIDTH) + x] = 1; // not ARGB just 1 (a pixel)
+		}
+	}
+}
+
+int PlayGraphics::DrawDebugCharacter(Point2f pos, char c, Pixel pix)
+{
+	// Limited character set in the font (0x30-0x5F) so includes translation of useful chars outside that range
+	switch (c)
+	{
+	case 0x2C: c = 0x5E; break; // Map full stop to comma (nearly the same!)
+	case 0x2D: c = 0x3B; break; // Map minus to semi-colon (rarely used)
+	case 0x28: c = 0x5B; break; // Map brackets to square brackets
+	case 0x29: c = 0x5D; break; // Map brackets to square brackets
+	case 0x2E: c = 0x5E; break; // Map full stop to carot (never used)
+	}
+
+	if (c < 0x30 || c > 0x5F)
+		return FONT_CHAR_WIDTH;
+
+	int sourceX = ((c - 0x30) % 16) * FONT_CHAR_WIDTH;
+	int sourceY = ((c - 0x30) / 16) * FONT_CHAR_HEIGHT;
+
+	// Loop over the bounding box of the glyph
+	for (int x = 0; x < FONT_CHAR_WIDTH; x++)
+	{
+		for (int y = 0; y < FONT_CHAR_HEIGHT; y++)
+		{
+			if (m_pDebugFontBuffer[((sourceY + y) * FONT_IMAGE_WIDTH) + (sourceX + x)] > 0)
+				DrawPixel({ pos.x + x, pos.y + y }, pix);
+		}
+	}
+
+	return FONT_CHAR_WIDTH;
+}
+
+int PlayGraphics::DrawDebugString(Point2f pos, const std::string& s, Pixel pix, bool centred)
+{
+	if (m_pDebugFontBuffer == nullptr)
+		DecompressDubugFont();
+
+	if (centred)
+		pos.x -= GetDebugStringWidth(s) / 2;
+
+	pos.y -= 6; // half the height of the debug font
+
+	for (char c : s)
+		pos.x += DrawDebugCharacter(pos, static_cast<char>(toupper(c)), pix) + 1;
+
+	// Return horizontal position at the end of the string so strings can be concatenated easily
+	return static_cast<int>(pos.x);
+}
+
+int PlayGraphics::GetDebugStringWidth(const std::string& s)
+{
+	return static_cast<int>(s.length()) * (FONT_CHAR_WIDTH + 1);
+}
+
+//********************************************************************************************************************************
+// Timing bar functions
+//********************************************************************************************************************************
+
+LARGE_INTEGER PlayGraphics::EndTimingSegment()
+{
+	int size = static_cast<int>(m_vTimings.size());
+
+	LARGE_INTEGER now, freq;
+	QueryPerformanceCounter(&now);
+	QueryPerformanceFrequency(&freq);
+
+	if (size > 0)
+	{
+		m_vTimings[size - 1].end = now.QuadPart;
+		m_vTimings[size - 1].millisecs = static_cast<float>(m_vTimings[size - 1].end - m_vTimings[size - 1].begin);
+		m_vTimings[size - 1].millisecs = static_cast<float>((m_vTimings[size - 1].millisecs * 1000.0f) / freq.QuadPart);
+	}
+
+	return now;
+}
+
+int PlayGraphics::SetTimingBarColour(Pixel pix)
+{
+	TimingSegment newData;
+	newData.pix = pix;
+	newData.begin = EndTimingSegment().QuadPart;
+
+	m_vTimings.push_back(newData);
+
+	return static_cast<int>(m_vTimings.size());
+};
+
+void PlayGraphics::DrawTimingBar(Point2f pos, Point2f size)
+{
+	EndTimingSegment();
+
+	int startPixel{ 0 };
+	int endPixel{ 0 };
+	for (const TimingSegment& t : m_vPrevTimings)
+	{
+		endPixel += static_cast<int>((size.width * t.millisecs) / 16.667f);
+		DrawRect({ pos.x + startPixel, pos.y }, { pos.x + endPixel, pos.y + size.height }, t.pix, true);
+		startPixel = endPixel;
+	}
+
+	DrawRect({ pos.x, pos.y }, { pos.x + size.width, pos.y + size.height }, PIX_BLACK, false);
+	DrawRect({ pos.x - 1, pos.y - 1 }, { pos.x + size.width + 1 , pos.y + size.height + 1 }, PIX_WHITE, false);
+}
+
+float PlayGraphics::GetTimingSegmentDuration(int id) const
+{
+	PLAY_ASSERT_MSG(static_cast<size_t>(id) < m_vTimings.size(), "Invalid id for timing data.");
+	return m_vTimings[id].millisecs;
+}
+
+void PlayGraphics::TimingBarBegin(Pixel pix)
+{
+	EndTimingSegment();
+	m_vPrevTimings = m_vTimings;
+	m_vTimings.clear();
+	SetTimingBarColour(pix);
+}
 //********************************************************************************************************************************
 // File:		PlaySpeaker.cpp
-// Created:		March 2020 - Sumo Academy
 // Description:	Implementation of a very simple audio manager using the MCI
 // Platform:	Windows
-// Notes:		Uses MP3 format. Playback isn't always instentaneous and can 
-//				trigger small frame glitches when StartSound is called
+// Notes:		Uses MP3 format. The Windows multimedia library is extremely basic, but very quick easy to work with. 
+//				Playback isn't always instantaneous and can trigger small frame glitches when StartSound is called. 
+//				Consider XAudio2 as a potential next step.
 //********************************************************************************************************************************
-
 
 
 // Instruct Visual Studio to link the multimedia library  
 #pragma comment(lib, "winmm.lib")
 
-PlaySpeaker* PlaySpeaker::s_pInstance = nullptr;
+PlayAudio* PlayAudio::s_pInstance = nullptr;
 
 //********************************************************************************************************************************
-// Constructor and destrutor (private)
+// Constructor and destructor (private)
 //********************************************************************************************************************************
-PlaySpeaker::PlaySpeaker(const char* path)
+PlayAudio::PlayAudio(const char* path)
 {
-	PB_ASSERT_MSG(!s_pInstance, "PlaySpeaker is a singleton class: multiple instances not allowed!");
+	PLAY_ASSERT_MSG(!s_pInstance, "PlayAudio is a singleton class: multiple instances not allowed!");
+	PLAY_ASSERT_MSG(std::filesystem::is_directory(path), "Audio directory does not exist!");
 
 	// Iterate through the directory
 	for (auto& p : std::filesystem::directory_iterator(path))
@@ -3178,48 +3282,45 @@ PlaySpeaker::PlaySpeaker(const char* path)
 	s_pInstance = this;
 }
 
-PlaySpeaker::~PlaySpeaker(void)
+PlayAudio::~PlayAudio(void)
 {
 	for (std::string& s : vSoundStrings)
 	{
 		std::string command = "close " + s;
 		mciSendStringA(command.c_str(), NULL, 0, 0);
 	}
+
+	s_pInstance = nullptr;
 }
 
 //********************************************************************************************************************************
 // Instance access functions
 //********************************************************************************************************************************
 
-PlaySpeaker& PlaySpeaker::Instance()
+PlayAudio& PlayAudio::Instance()
 {
-	PB_ASSERT_MSG(s_pInstance, "Trying to use PlaySpeaker without initialising it!");
-
+	PLAY_ASSERT_MSG(s_pInstance, "Trying to use PlayAudio without initialising it!");
 	return *s_pInstance;
 }
 
-PlaySpeaker& PlaySpeaker::Instance(const char* path)
+PlayAudio& PlayAudio::Instance(const char* path)
 {
-	PB_ASSERT_MSG(!s_pInstance, "Trying to create multiple instances of singleton class!");
-
-	s_pInstance = new PlaySpeaker(path);
-
+	PLAY_ASSERT_MSG(!s_pInstance, "Trying to create multiple instances of singleton class!");
+	s_pInstance = new PlayAudio(path);
 	return *s_pInstance;
 }
 
-void PlaySpeaker::Destroy()
+void PlayAudio::Destroy()
 {
-	PB_ASSERT_MSG(s_pInstance, "Trying to use destroy PlaySpeaker which hasn't been instanced!");
-
+	PLAY_ASSERT_MSG(s_pInstance, "Trying to use destroy PlayAudio which hasn't been instanced!");
 	delete s_pInstance;
-
 	s_pInstance = nullptr;
 }
 
 //********************************************************************************************************************************
 // Sound playing functions
 //********************************************************************************************************************************
-void PlaySpeaker::StartSound(const char* name, bool bLoop)
+void PlayAudio::StartAudio(const char* name, bool bLoop)
 {
 	std::string filename(name);
 	for (char& c : filename) c = static_cast<char>(toupper(c));
@@ -3235,10 +3336,10 @@ void PlaySpeaker::StartSound(const char* name, bool bLoop)
 			return;
 		}
 	}
-	PB_ASSERT_MSG(false, std::string("Trying to play unknown sound effect: " + std::string(name)).c_str());
+	PLAY_ASSERT_MSG(false, std::string("Trying to play unknown sound effect: " + std::string(name)).c_str());
 }
 
-void PlaySpeaker::StopSound(const char* name)
+void PlayAudio::StopAudio(const char* name)
 {
 	std::string filename(name);
 	for (char& c : filename) c = static_cast<char>(toupper(c));
@@ -3253,25 +3354,91 @@ void PlaySpeaker::StopSound(const char* name)
 			return;
 		}
 	}
-	PB_ASSERT_MSG(false, std::string("Trying to stop unknown sound effect: " + std::string(name)).c_str());
+	PLAY_ASSERT_MSG(false, std::string("Trying to stop unknown sound effect: " + std::string(name)).c_str());
 }
-//*******************************************************************
-// PLAY END: PlaySpeaker.cpp
-//*******************************************************************
+//********************************************************************************************************************************
+// File:		PlayInput.cpp
+// Description:	Manages keyboard and mouse input 
+// Platform:	Windows
+// Notes:		Obtains mouse data from PlayWindow via MouseData structure
+//********************************************************************************************************************************
 
 
-//*******************************************************************
-// PLAY BEGIN: PlayManager.cpp
-//*******************************************************************
+PlayInput* PlayInput::s_pInstance = nullptr;
 
 //********************************************************************************************************************************
-// Copyright 2020 Sumo-Digital Limited
+// Constructor and destructor (private)
+//********************************************************************************************************************************
+PlayInput::PlayInput(void)
+{
+	PLAY_ASSERT_MSG(!s_pInstance, "PlayInput is a singleton class: multiple instances not allowed!");
+	s_pInstance = this;
+}
+
+PlayInput::~PlayInput(void)
+{
+	s_pInstance = nullptr;
+}
+
+//********************************************************************************************************************************
+// Instance access functions
+//********************************************************************************************************************************
+
+PlayInput& PlayInput::Instance()
+{
+	if (!s_pInstance)
+		s_pInstance = new PlayInput();
+
+	return *s_pInstance;
+}
+
+void PlayInput::Destroy()
+{
+	if (s_pInstance)
+		delete s_pInstance;
+}
+
+//********************************************************************************************************************************
+// Mouse functions
+//********************************************************************************************************************************
+
+bool PlayInput::GetMouseDown(MouseButton button) const
+{
+	PLAY_ASSERT_MSG(button == BUTTON_LEFT || button == BUTTON_RIGHT, "Invalid mouse button selected.");
+
+	if (button == BUTTON_LEFT)
+		return m_mouseData.left;
+	else
+		return m_mouseData.right;
+};
+
+bool PlayInput::KeyPressed(int vKey)
+{
+	static std::map< int, bool > keyMap;
+
+	bool& held = keyMap[vKey];
+
+	if (KeyDown(vKey) && !held)
+	{
+		held = true;
+		return true;
+	}
+
+	if (!KeyDown(vKey))
+		held = false;
+
+	return false;
+}
+
+bool PlayInput::KeyDown(int vKey)
+{
+	return GetAsyncKeyState(vKey) & 0x8000; // Don't want multiple calls to KeyState
+}
 //********************************************************************************************************************************
 // File:		PlayManager.cpp
-// Created:		October 2020 - Sumo Academy
 // Description:	A manager for providing simplified access to the PlayBuffer framework
 // Platform:	Independent
-// Notes:		The PlayManager is "opt in" as many will want to create their own GameObject
+// Notes:		The GameObject management is "opt in" as many will want to create their own GameObject class
 //********************************************************************************************************************************
 
 //**************************************************************************************************
@@ -3290,14 +3457,20 @@ GameObject::GameObject(int type, Point2f newPos, int collisionRadius, int sprite
 	m_id = uniqueId++;
 }
 
+#endif
+
 // The PlayManager is namespace rather than a class
 namespace Play
 {
+#ifdef PLAY_USING_GAMEOBJECT_MANAGER
+
 	// A map is used internally to store all the GameObjects and their unique ids
 	static std::map<int, GameObject&> objectMap;
 
 	// Used instead of Null return values, PlayMangager operations performed on this GameObject should fail transparently
 	static GameObject noObject{ -1,{ 0, 0 }, 0, -1 };
+
+#endif 
 
 	// A set of default colour definitions
 	Colour cBlack{ 0.0f, 0.0f, 0.0f };
@@ -3317,27 +3490,39 @@ namespace Play
 
 	void CreateManager(int displayWidth, int displayHeight, int displayScale)
 	{
-		PlayBuffer::Instance(displayWidth, displayHeight, displayScale);
-		PlayBlitter::Instance("Data\\Sprites\\");
-		PlayBlitter::Instance().SetDisplayBuffer(PlayBuffer::Instance().GetDisplayBuffer(), displayWidth, displayHeight);
-		PlaySpeaker::Instance("Data\\Audio\\");
+		PlayGraphics::Instance(displayWidth, displayHeight, "Data\\Sprites\\");
+		PlayWindow::Instance(PlayGraphics::Instance().GetDrawingBuffer(), displayScale);
+		PlayWindow::Instance().RegisterMouse(PlayInput::Instance().GetMouseData());
+		PlayAudio::Instance("Data\\Audio\\");
 		// Seed the game's random number generator based on the time
 		srand((int)time(NULL));
 	}
 
-	// Destroys the managers closes the window
 	void DestroyManager()
 	{
-		PlaySpeaker::Destroy();
-		PlayBlitter::Destroy();
-		PlayBuffer::Destroy();
+		PlayAudio::Destroy();
+		PlayGraphics::Destroy();
+		PlayWindow::Destroy();
+		PlayInput::Destroy();
+#ifdef PLAY_USING_GAMEOBJECT_MANAGER
 		for (std::pair<const int, GameObject&>& p : objectMap)
 			delete& p.second;
 		objectMap.clear();
+#endif
+	}
+
+	int GetBufferWidth()
+	{
+		return PlayWindow::Instance().GetWidth();
+	}
+
+	int GetBufferHeight()
+	{
+		return PlayWindow::Instance().GetHeight();
 	}
 
 	//**************************************************************************************************
-	// PlayBuffer functions
+	// PlayGraphics functions
 	//**************************************************************************************************
 
 	void ClearDrawingBuffer(Colour c)
@@ -3345,28 +3530,27 @@ namespace Play
 		int r = static_cast<int>(c.red * 2.55f);
 		int g = static_cast<int>(c.green * 2.55f);
 		int b = static_cast<int>(c.blue * 2.55f);
-		PlayBuffer::Instance().ClearBuffer({ r, g, b });
+		PlayGraphics::Instance().ClearBuffer({ r, g, b });
 	}
 
 	int LoadBackground(const char* pngFilename)
 	{
-		return PlayBlitter::Instance().LoadBackground(pngFilename);
+		return PlayGraphics::Instance().LoadBackground(pngFilename);
 	}
 
 	void DrawBackground(int background)
 	{
-		PlayBlitter::Instance().DrawBackground(background);
+		PlayGraphics::Instance().DrawBackground(background);
 	}
 
 	void DrawDebugText(Point2D pos, const char* text, Colour c, bool centred)
 	{
-		PlayBuffer::Instance().DrawDebugString(pos, text, { c.red * 2.55f, c.green * 2.55f, c.blue * 2.55f }, centred);
+		PlayGraphics::Instance().DrawDebugString(pos, text, { c.red * 2.55f, c.green * 2.55f, c.blue * 2.55f }, centred);
 	}
 
 	void PresentDrawingBuffer()
 	{
-		PlayBuffer& pbuf = PlayBuffer::Instance();
-		PlayBlitter& pblt = PlayBlitter::Instance();
+		PlayGraphics& pblt = PlayGraphics::Instance();
 		static bool debugInfo = false;
 
 		if (KeyPressed(VK_F1))
@@ -3377,11 +3561,13 @@ namespace Play
 			int textX = 10;
 			int textY = 10;
 			std::string s = "PlayBuffer Version:" + std::string(PLAY_VERSION);
-			pbuf.DrawDebugString({ textX - 1, textY - 1 }, s, PlayBuffer::pixBlack, false);
-			pbuf.DrawDebugString({ textX + 1, textY + 1 }, s, PlayBuffer::pixBlack, false);
-			pbuf.DrawDebugString({ textX + 1, textY - 1 }, s, PlayBuffer::pixBlack, false);
-			pbuf.DrawDebugString({ textX - 1, textY + 1 }, s, PlayBuffer::pixBlack, false);
-			pbuf.DrawDebugString({ textX, textY }, s, PlayBuffer::pixYellow, false);
+			pblt.DrawDebugString({ textX - 1, textY - 1 }, s, PIX_BLACK, false);
+			pblt.DrawDebugString({ textX + 1, textY + 1 }, s, PIX_BLACK, false);
+			pblt.DrawDebugString({ textX + 1, textY - 1 }, s, PIX_BLACK, false);
+			pblt.DrawDebugString({ textX - 1, textY + 1 }, s, PIX_BLACK, false);
+			pblt.DrawDebugString({ textX, textY }, s, PIX_YELLOW, false);
+
+#ifdef PLAY_USING_GAMEOBJECT_MANAGER
 
 			for (std::pair<const int, GameObject&>& i : objectMap)
 			{
@@ -3407,27 +3593,24 @@ namespace Play
 				DrawLine({ obj.pos.x + 20, obj.pos.y - 20 }, { obj.pos.x - 20, obj.pos.y + 20 }, cWhite);
 
 				s = pblt.GetSpriteName(obj.spriteId) + " f[" + std::to_string(obj.frame) + "]";
-				pbuf.DrawDebugString({ (p0.x + p1.x) / 2.0f, p0.y - 20 }, s, PlayBuffer::pixWhite, true);
+				pblt.DrawDebugString({ (p0.x + p1.x) / 2.0f, p0.y - 20 }, s, PIX_WHITE, true);
 			}
+#endif
 		}
 
-		PlayBuffer::Instance().Present();
-	}
-
-	int HandleWindows(PLAY_WINARGS_IN, const char* windowName)
-	{
-		int wide_count = MultiByteToWideChar(CP_UTF8, 0, windowName, -1, NULL, 0);
-		wchar_t* wideWindowName = new wchar_t[wide_count];
-		MultiByteToWideChar(CP_UTF8, 0, windowName, -1, wideWindowName, wide_count);
-		int r = PlayBuffer::Instance().HandleWindows(PLAY_WINARGS_OUT, wideWindowName);
-		delete wideWindowName;
-		return r;
+		PlayWindow::Instance().Present();
 	}
 
 	Point2D GetMousePos()
 	{
-		PlayBuffer& pbuf = PlayBuffer::Instance();
-		return pbuf.GetMousePos();
+		PlayInput& input = PlayInput::Instance();
+		return input.GetMousePos();
+	}
+
+	bool GetMouseButton(Align button)
+	{
+		PlayInput& input = PlayInput::Instance();
+		return input.GetMouseDown(static_cast<PlayInput::MouseButton>(button));
 	}
 
 	//**************************************************************************************************
@@ -3436,136 +3619,178 @@ namespace Play
 
 	void PlayAudio(const char* fileName)
 	{
-		PlaySpeaker::Instance().StartSound(fileName, false);
+		PlayAudio::Instance().StartAudio(fileName, false);
 	}
 
 	void StartAudioLoop(const char* fileName)
 	{
-		PlaySpeaker::Instance().StartSound(fileName, true);
+		PlayAudio::Instance().StartAudio(fileName, true);
 	}
 
 	void StopAudioLoop(const char* fileName)
 	{
-		PlaySpeaker::Instance().StopSound(fileName);
+		PlayAudio::Instance().StopAudio(fileName);
 	}
 
 	//**************************************************************************************************
-	// PlayBlitter functions
+	// PlayBuffer functions
 	//**************************************************************************************************
-
 
 	int GetSpriteId(const char* spriteName)
 	{
-		return PlayBlitter::Instance().GetSpriteId(spriteName);
+		return PlayGraphics::Instance().GetSpriteId(spriteName);
 	}
 
 	int GetSpriteHeight(const char* spriteName)
 	{
-		return static_cast<int>(PlayBlitter::Instance().GetSpriteSize(GetSpriteId(spriteName)).height);
+		return static_cast<int>(PlayGraphics::Instance().GetSpriteSize(GetSpriteId(spriteName)).height);
 	}
 
 	int GetSpriteWidth(const char* spriteName)
 	{
-		return static_cast<int>(PlayBlitter::Instance().GetSpriteSize(GetSpriteId(spriteName)).width);
+		return static_cast<int>(PlayGraphics::Instance().GetSpriteSize(GetSpriteId(spriteName)).width);
+	}
+
+	int GetSpriteHeight(int spriteId)
+	{
+		return static_cast<int>(PlayGraphics::Instance().GetSpriteSize(spriteId).height);
+	}
+
+	int GetSpriteWidth(int spriteId)
+	{
+		return static_cast<int>(PlayGraphics::Instance().GetSpriteSize(spriteId).width);
+	}
+
+	Point2D GetSpriteOrigin(const char* spriteName)
+	{
+		return PlayGraphics::Instance().GetSpriteOrigin(GetSpriteId(spriteName));
+	}
+
+	Point2D GetSpriteOrigin(int spriteId)
+	{
+		return PlayGraphics::Instance().GetSpriteOrigin(spriteId);
 	}
 
 	const char* GetSpriteName(int spriteId)
 	{
-		return PlayBlitter::Instance().GetSpriteName(spriteId).c_str();
+		return PlayGraphics::Instance().GetSpriteName(spriteId).c_str();
+	}
+
+	int GetSpriteFrames(int spriteId)
+	{
+		return static_cast<int>(PlayGraphics::Instance().GetSpriteFrames(spriteId));
 	}
 
 	void ColourSprite(const char* spriteName, Colour c)
 	{
-		int spriteId = PlayBlitter::Instance().GetSpriteId(spriteName);
-		PlayBlitter::Instance().ColourSprite(spriteId, static_cast<int>(c.red * 2.55f), static_cast<int>(c.green * 2.55f), static_cast<int>(c.blue * 2.55f));
+		int spriteId = PlayGraphics::Instance().GetSpriteId(spriteName);
+		PlayGraphics::Instance().ColourSprite(spriteId, static_cast<int>(c.red * 2.55f), static_cast<int>(c.green * 2.55f), static_cast<int>(c.blue * 2.55f));
 	}
 
 	void CentreSpriteOrigin(const char* spriteName)
 	{
-		PlayBlitter& pblt = PlayBlitter::Instance();
+		PlayGraphics& pblt = PlayGraphics::Instance();
 		int spriteId = pblt.GetSpriteId(spriteName);
 		pblt.SetSpriteOrigin(spriteId, pblt.GetSpriteSize(spriteId) / 2, false);
 	}
 
 	void CentreMatchingSpriteOrigins(const char* rootName)
 	{
-		PlayBlitter& pblt = PlayBlitter::Instance();
+		PlayGraphics& pblt = PlayGraphics::Instance();
 		int spriteId = pblt.GetSpriteId(rootName); // Finds the first matching sprite and assumes same dimensions
 		pblt.SetSpriteOrigins(rootName, pblt.GetSpriteSize(spriteId) / 2, false);
 	}
 
 	void CentreAllSpriteOrigins()
 	{
-		PlayBlitter& pblt = PlayBlitter::Instance();
+		PlayGraphics& pblt = PlayGraphics::Instance();
 
 		for (int i = 0; i < pblt.GetTotalLoadedSprites(); i++)
 			pblt.SetSpriteOrigin(i, pblt.GetSpriteSize(i) / 2, false);
 	}
 
-	void MoveSpriteOrigin(const char* spriteName, int xoffset, int yoffset)
+	void MoveSpriteOrigin(const char* spriteName, int xOffset, int yOffset)
 	{
-		PlayBlitter& pblt = PlayBlitter::Instance();
+		PlayGraphics& pblt = PlayGraphics::Instance();
 		int spriteId = pblt.GetSpriteId(spriteName);
-		pblt.SetSpriteOrigin(spriteId, { xoffset, yoffset }, true); // relative option set
+		pblt.SetSpriteOrigin(spriteId, { xOffset, yOffset }, true); // relative option set
 	}
 
 	void MoveMatchingSpriteOrigins(const char* rootName, int xoffset, int yoffset)
 	{
-		PlayBlitter& pblt = PlayBlitter::Instance();
+		PlayGraphics& pblt = PlayGraphics::Instance();
 		pblt.SetSpriteOrigins(rootName, { xoffset, yoffset }, true); // relative option set
 	}
 
 	void MoveAllSpriteOrigins()
 	{
-		PlayBlitter& pblt = PlayBlitter::Instance();
+		PlayGraphics& pblt = PlayGraphics::Instance();
 
 		for (int i = 0; i < pblt.GetTotalLoadedSprites(); i++)
 			pblt.SetSpriteOrigin(i, pblt.GetSpriteSize(i) / 2, true);
 	}
 
+	void SetSpriteOrigin(int spriteId, int xOrigin, int yOrigin)
+	{
+		PlayGraphics& pblt = PlayGraphics::Instance();
+		pblt.SetSpriteOrigin(spriteId, { xOrigin, yOrigin });
+	}
+
+	void SetSpriteOrigin(const char* spriteName, int xOrigin, int yOrigin)
+	{
+		PlayGraphics& pblt = PlayGraphics::Instance();
+		int spriteId = pblt.GetSpriteId(spriteName);
+		pblt.SetSpriteOrigin(spriteId, { xOrigin, yOrigin });
+	}
+
 	void DrawSprite(const char* spriteName, Point2D pos, int frameIndex)
 	{
-		PlayBlitter::Instance().Draw(PlayBlitter::Instance().GetSpriteId(spriteName), pos, frameIndex);
+		PlayGraphics::Instance().Draw(PlayGraphics::Instance().GetSpriteId(spriteName), pos, frameIndex);
 	}
 
 	void DrawSprite(int spriteID, Point2D pos, int frameIndex)
 	{
-		PlayBlitter::Instance().Draw(spriteID, pos, frameIndex);
+		PlayGraphics::Instance().Draw(spriteID, pos, frameIndex);
 	}
 
 	void DrawSpriteTransparent(const char* spriteName, Point2D pos, int frameIndex, float opacity)
 	{
-		PlayBlitter::Instance().DrawTransparent(PlayBlitter::Instance().GetSpriteId(spriteName), pos, frameIndex, opacity);
+		PlayGraphics::Instance().DrawTransparent(PlayGraphics::Instance().GetSpriteId(spriteName), pos, frameIndex, opacity);
 	}
 
 	void DrawSpriteTransparent(int spriteID, Point2D pos, int frameIndex, float opacity)
 	{
-		PlayBlitter::Instance().DrawTransparent(spriteID, pos, frameIndex, opacity);
+		PlayGraphics::Instance().DrawTransparent(spriteID, pos, frameIndex, opacity);
 	}
 
 	void DrawSpriteRotated(const char* spriteName, Point2D pos, int frameIndex, float angle, float scale, float opacity)
 	{
-		PlayBlitter::Instance().DrawRotated(PlayBlitter::Instance().GetSpriteId(spriteName), pos, frameIndex, angle, scale, opacity);
+		PlayGraphics::Instance().DrawRotated(PlayGraphics::Instance().GetSpriteId(spriteName), pos, frameIndex, angle, scale, opacity);
 	}
 
 	void DrawSpriteRotated(int spriteID, Point2D pos, int frameIndex, float angle, float scale, float opacity)
 	{
-		PlayBlitter::Instance().DrawRotated(spriteID, pos, frameIndex, angle, scale, opacity);
+		PlayGraphics::Instance().DrawRotated(spriteID, pos, frameIndex, angle, scale, opacity);
 	}
 
 	void DrawLine(Point2f start, Point2f end, Colour c)
 	{
-		return PlayBuffer::Instance().DrawLine(start, end, { c.red * 2.55f, c.green * 2.55f, c.blue * 2.55f });
+		return PlayGraphics::Instance().DrawLine(start, end, { c.red * 2.55f, c.green * 2.55f, c.blue * 2.55f });
 	}
 
 	void DrawCircle(Point2D pos, int radius, Colour c)
 	{
-		PlayBuffer::Instance().DrawCircle(pos, radius, { c.red * 2.55f, c.green * 2.55f, c.blue * 2.55f });
+		PlayGraphics::Instance().DrawCircle(pos, radius, { c.red * 2.55f, c.green * 2.55f, c.blue * 2.55f });
+	}
+
+	void DrawRect(Point2D topLeft, Point2D bottomRight, Colour c, bool fill)
+	{
+		PlayGraphics::Instance().DrawRect(topLeft, bottomRight, { c.red * 2.55f, c.green * 2.55f, c.blue * 2.55f }, fill);
 	}
 
 	void DrawSpriteLine(Point2f startPos, Point2f endPos, const char* penSprite, Colour c)
 	{
-		int spriteId = PlayBlitter::Instance().GetSpriteId(penSprite);
+		int spriteId = PlayGraphics::Instance().GetSpriteId(penSprite);
 		ColourSprite(penSprite, c);
 
 		//Draws a line in any angle
@@ -3623,7 +3848,7 @@ namespace Play
 
 	void DrawSpriteCircle(int x, int y, int radius, const char* penSprite, Colour c)
 	{
-		int spriteId = PlayBlitter::Instance().GetSpriteId(penSprite);
+		int spriteId = PlayGraphics::Instance().GetSpriteId(penSprite);
 		ColourSprite(penSprite, c);
 
 		int ox = 0, oy = radius;
@@ -3648,11 +3873,11 @@ namespace Play
 
 	void DrawFontText(const char* fontId, std::string text, Point2D pos, Align justify)
 	{
-		int font = PlayBlitter::Instance().GetSpriteId(fontId);
+		int font = PlayGraphics::Instance().GetSpriteId(fontId);
 
 		int totalWidth{ 0 };
 		for (char c : text)
-			totalWidth += PlayBlitter::Instance().GetFontCharWidth(font, c);
+			totalWidth += PlayGraphics::Instance().GetFontCharWidth(font, c);
 
 		switch (justify)
 		{
@@ -3666,16 +3891,34 @@ namespace Play
 			break;
 		}
 
-		PlayBlitter::Instance().DrawString(font, pos, text);
+		PlayGraphics::Instance().DrawString(font, pos, text);
 	}
+
+	void BeginTimingBar(Colour c)
+	{
+		PlayGraphics::Instance().TimingBarBegin(Pixel(c.red * 2.55f, c.green * 2.55f, c.blue * 2.55f));
+	}
+
+	int ColourTimingBar(Colour c)
+	{
+		return PlayGraphics::Instance().SetTimingBarColour(Pixel(c.red * 2.55f, c.green * 2.55f, c.blue * 2.55f));
+	}
+
+	void DrawTimingBar(Point2f pos, Point2f size)
+	{
+		PlayGraphics::Instance().DrawTimingBar(pos, size);
+	}
+
 
 	//**************************************************************************************************
 	// GameObject functions
 	//**************************************************************************************************
 
+#ifdef PLAY_USING_GAMEOBJECT_MANAGER
+
 	int CreateGameObject(int type, Point2f newPos, int collisionRadius, const char* spriteName)
 	{
-		int spriteId = PlayBlitter::Instance().GetSpriteId(spriteName);
+		int spriteId = PlayGraphics::Instance().GetSpriteId(spriteName);
 		// Deletion is handled in DestroyGameObject()
 		GameObject* pObj = new GameObject(type, newPos, collisionRadius, spriteId);
 		int id = pObj->GetId();
@@ -3749,7 +3992,7 @@ namespace Play
 	{
 		if (objectMap.find(ID) == objectMap.end())
 		{
-			PB_ASSERT_MSG(false, "Unable to find object with given ID");
+			PLAY_ASSERT_MSG(false, "Unable to find object with given ID");
 		}
 		else
 		{
@@ -3762,7 +4005,7 @@ namespace Play
 	void DestroyGameObjectsByType(int objType)
 	{
 		std::vector<int> typeVec = CollectGameObjectIDsByType(objType);
-		for (int i = 1; i < typeVec.size(); i++)
+		for (size_t i = 1; i < typeVec.size(); i++)
 			DestroyGameObject(typeVec[i]);
 	}
 
@@ -3784,8 +4027,8 @@ namespace Play
 	{
 		if (obj.type == -1) return false; // Not for noObject
 
-		PlayBlitter& pblt = PlayBlitter::Instance();
-		PlayBuffer& pbuf = PlayBuffer::Instance();
+		PlayGraphics& pblt = PlayGraphics::Instance();
+		PlayWindow& pbuf = PlayWindow::Instance();
 
 		int spriteID = obj.spriteId;
 		Vector2f spriteSize = pblt.GetSpriteSize(obj.spriteId);
@@ -3799,8 +4042,8 @@ namespace Play
 	{
 		if (obj.type == -1) return false; // Not for noObject
 
-		PlayBuffer& pbuf = PlayBuffer::Instance();
-		PlayBlitter& pblt = PlayBlitter::Instance();
+		PlayWindow& pbuf = PlayWindow::Instance();
+		PlayGraphics& pblt = PlayGraphics::Instance();
 
 		int spriteID = obj.spriteId;
 		Vector2f spriteSize = pblt.GetSpriteSize(obj.spriteId);
@@ -3830,7 +4073,7 @@ namespace Play
 	bool IsAnimationComplete(GameObject& obj)
 	{
 		if (obj.type == -1) return false; // Not for noObject
-		return obj.frame >= PlayBlitter::Instance().GetSpriteFrames(obj.spriteId) - 1;
+		return obj.frame >= PlayGraphics::Instance().GetSpriteFrames(obj.spriteId) - 1;
 	}
 
 	void SetGameObjectDirection(GameObject& obj, int speed, float angle)
@@ -3856,7 +4099,7 @@ namespace Play
 
 	void SetSprite(GameObject& obj, const char* spriteName, float animSpeed)
 	{
-		int newSprite = PlayBlitter::Instance().GetSpriteId(spriteName);
+		int newSprite = PlayGraphics::Instance().GetSpriteId(spriteName);
 		// Only reset the animation back to the start when it is new
 		if (newSprite != obj.spriteId)
 			obj.frame = 0;
@@ -3867,21 +4110,22 @@ namespace Play
 	void DrawObject(GameObject& obj)
 	{
 		if (obj.type == -1) return; // Don't draw noObject
-		PlayBlitter::Instance().Draw(obj.spriteId, obj.pos, obj.frame);
+		PlayGraphics::Instance().Draw(obj.spriteId, obj.pos, obj.frame);
 	}
 
 	void DrawObjectTransparent(GameObject& obj, float opacity)
 	{
 		if (obj.type == -1) return; // Don't draw noObject
-		PlayBlitter::Instance().DrawTransparent(obj.spriteId, obj.pos, obj.frame, opacity);
+		PlayGraphics::Instance().DrawTransparent(obj.spriteId, obj.pos, obj.frame, opacity);
 	}
 
 	void DrawObjectRotated(GameObject& obj, float opacity)
 	{
 		if (obj.type == -1) return; // Don't draw noObject
-		PlayBlitter::Instance().DrawRotated(obj.spriteId, obj.pos, obj.frame, obj.rotation, obj.scale, opacity);
+		PlayGraphics::Instance().DrawRotated(obj.spriteId, obj.pos, obj.frame, obj.rotation, obj.scale, opacity);
 	}
 
+#endif
 
 	//**************************************************************************************************
 	// Miscellaneous functions
@@ -3889,25 +4133,12 @@ namespace Play
 
 	bool KeyPressed(int vKey)
 	{
-		static std::map< int, bool > keyMap;
-
-		bool& held = keyMap[vKey];
-
-		if (KeyDown(vKey) && !held)
-		{
-			held = true;
-			return true;
-		}
-
-		if (!KeyDown(vKey))
-			held = false;
-
-		return false;
+		return PlayInput::Instance().KeyPressed(vKey);
 	}
 
 	bool KeyDown(int vKey)
 	{
-		return GetAsyncKeyState(vKey) & 0x8000;
+		return PlayInput::Instance().KeyDown(vKey);
 	}
 
 	int RandomRoll(int sides)
@@ -3925,11 +4156,8 @@ namespace Play
 			return end + rnd;
 	}
 }
-
-#endif
-
-//*******************************************************************
-// PLAY END: PlayManager.cpp
-//*******************************************************************
-
 #endif // PLAY_IMPLEMENTATION
+
+#ifdef PLAY_IMPLEMENTATION
+#undef PLAY_IMPLEMENTATION // try to prevent multiple implementations
+#endif

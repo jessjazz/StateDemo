@@ -3,9 +3,7 @@
 
 void JumpingState::StateUpdate(Player& player)
 {
-	PlayBuffer& buff = PlayBuffer::Instance();
-
-	if (!buff.KeyDown(VK_SPACE))
+	if (!Play::KeyDown(VK_SPACE))
 	{
 		player.SetState(State::STATE_IDLE);
 	}
@@ -13,11 +11,9 @@ void JumpingState::StateUpdate(Player& player)
 
 void JumpingState::HandleInput(Player& player)
 {
-	PlayBuffer& buff = PlayBuffer::Instance();
-
 	Point2f currentPos = player.GetPosition();
 
-	if (buff.KeyPressed(VK_SPACE))
+	if (Play::KeyPressed(VK_SPACE))
 	{
 		player.SetPosition({ player.GetPosition().x, player.GetPosition().y - 50 }); //this line doesn't actually move the player up
 	}
