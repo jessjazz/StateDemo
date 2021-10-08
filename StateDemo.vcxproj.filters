@@ -45,6 +45,12 @@
     <ClInclude Include="RunLeftState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DashRightState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DashLeftState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame.cpp">
@@ -72,6 +78,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RunLeftState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DashRightState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DashLeftState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

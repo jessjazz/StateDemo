@@ -1,6 +1,8 @@
 #include "JumpingState.h"
 #include "Player.h"
 
+constexpr int DISPLAY_HEIGHT = 720;
+
 void JumpingState::StateUpdate(Player& player)
 {
 	if (!Play::KeyDown(VK_SPACE))
@@ -13,12 +15,13 @@ void JumpingState::HandleInput(Player& player)
 {
 	Point2f currentPos = player.GetPosition();
 
-	if (Play::KeyPressed(VK_SPACE))
+	if (Play::KeyDown(VK_SPACE) && player.GetPosition().y >= 600)
 	{
-		player.SetPosition({ player.GetPosition().x, player.GetPosition().y - 50 }); //this line doesn't actually move the player up
+		player.SetPosition({ player.GetPosition().x, player.GetPosition().y - 50 });
 	}
-	else
+	else if (!Play::KeyDown(VK_SPACE))
 	{
-		player.SetPosition(currentPos);
+		player.SetPosition({ currentPos.x, DISPLAY_HEIGHT - 90 });
 	}
+
 }

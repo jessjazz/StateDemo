@@ -9,6 +9,8 @@ class JumpingState;
 class CrouchingState;
 class RunRightState;
 class RunLeftState;
+class DashRightState;
+class DashLeftState;
 
 class Player : public GameObject
 {
@@ -33,4 +35,6 @@ private:
 	static CrouchingState s_crouchingState;
 	static RunRightState s_runRightState;
 	static RunLeftState s_runLeftState;
+	static DashRightState s_dashRightState;
+	static DashLeftState s_dashLeftState;
 };

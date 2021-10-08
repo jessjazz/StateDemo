@@ -144,6 +144,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CrouchingState.h" />
+    <ClInclude Include="DashLeftState.h" />
+    <ClInclude Include="DashRightState.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="IdleState.h" />
     <ClInclude Include="JumpingState.h" />
@@ -156,6 +158,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CrouchingState.cpp" />
+    <ClCompile Include="DashLeftState.cpp" />
+    <ClCompile Include="DashRightState.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="JumpingState.cpp" />

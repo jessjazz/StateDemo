@@ -5,12 +5,16 @@
 #include "CrouchingState.h"
 #include "RunLeftState.h"
 #include "RunRightState.h"
+#include "DashRightState.h"
+#include "DashLeftState.h"
 
 IdleState Player::s_idleState;
 JumpingState Player::s_jumpingState;
 CrouchingState Player::s_crouchingState;
 RunRightState Player::s_runRightState;
 RunLeftState Player::s_runLeftState;
+DashRightState Player::s_dashRightState;
+DashLeftState Player::s_dashLeftState;
 
 
 Player::Player(Point2f pos)
@@ -50,6 +54,12 @@ void Player::Update(GameState& gState)
 		case State::STATE_RUN_LEFT:
 			m_pCurrentState = &s_runLeftState;
 			break;
+		case State::STATE_DASH_RIGHT:
+			m_pCurrentState = &s_dashRightState;
+			break;
+		case State::STATE_DASH_LEFT:
+			m_pCurrentState = &s_dashLeftState;
+			break;
 		default:
 			break;
 		}
@@ -79,6 +89,15 @@ void Player::Draw(GameState& gState) const
 		break;
 	case State::STATE_CROUCH:
 		Play::DrawSprite(Play::GetSpriteId("large_crouch_6"), m_pos, 5.0f * gState.time);
+		break;
+	case State::STATE_DASH_RIGHT:
+		Play::DrawSprite(Play::GetSpriteId("large_dash_right_4"), m_pos, 10.0f * gState.time);
+		break;
+	case State::STATE_DASH_LEFT:
+		Play::DrawSprite(Play::GetSpriteId("large_dash_left_4"), m_pos, 10.0f * gState.time);
+		break;
+	default:
+		break;
 	}
 }
 

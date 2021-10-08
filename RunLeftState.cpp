@@ -7,6 +7,11 @@ void RunLeftState::StateUpdate(Player& player)
 	{
 		player.SetState(State::STATE_IDLE);
 	}
+
+	if (Play::KeyDown(VK_LEFT) && Play::KeyPressed(VK_SHIFT))
+	{
+		player.SetState(State::STATE_DASH_LEFT);
+	}
 }
 
 void RunLeftState::HandleInput(Player& player)
