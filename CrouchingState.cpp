@@ -1,14 +1,17 @@
 #include "CrouchingState.h"
+#include "IdleState.h"
 #include "Player.h"
 
-void CrouchingState::StateUpdate(Player& player)
+PlayerState* CrouchingState::HandleInput(Player& player)
 {
 	if (!Play::KeyDown(VK_DOWN))
 	{
-		player.SetState(State::STATE_IDLE);
+		player.SetDrawState(State::STATE_IDLE);
+		return new IdleState;
 	}
+	return nullptr;
 }
 
-void CrouchingState::HandleInput(Player& player)
+void CrouchingState::StateUpdate(Player& player)
 {
 }

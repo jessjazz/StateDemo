@@ -1,72 +1,29 @@
+#include "IdleState.h"
 #include "Player.h"
 #include "PlayerState.h"
-#include "IdleState.h"
-#include "JumpingState.h"
-#include "CrouchingState.h"
-#include "RunLeftState.h"
-#include "RunRightState.h"
-#include "DashRightState.h"
-#include "DashLeftState.h"
-
-IdleState Player::s_idleState;
-JumpingState Player::s_jumpingState;
-CrouchingState Player::s_crouchingState;
-RunRightState Player::s_runRightState;
-RunLeftState Player::s_runLeftState;
-DashRightState Player::s_dashRightState;
-DashLeftState Player::s_dashLeftState;
-
 
 Player::Player(Point2f pos)
 	: GameObject(pos), 
 	m_speed(5),
-	m_state(State::STATE_INVALID),
-	m_pendingState(State::STATE_IDLE),
-	m_pCurrentState(&s_idleState)
+	m_state(State::STATE_IDLE)
 {
 	SetPosition(pos);
 	SetType(OBJ_PLAYER);
-	SetState(State::STATE_IDLE);
+	m_pCurrentState = new IdleState;
 }
 
 Player::~Player() {}
 
 void Player::Update(GameState& gState)
 {
-	m_pCurrentState->HandleInput(*this);
+	PlayerState* pState = m_pCurrentState->HandleInput(*this);
 
-	if (m_pendingState != m_state)
+	if (pState != nullptr)
 	{
-		switch (m_pendingState)
-		{
-		case State::STATE_IDLE:
-			m_pCurrentState = &s_idleState;
-			break;
-		case State::STATE_JUMP:
-			m_pCurrentState = &s_jumpingState;
-			break;
-		case State::STATE_CROUCH:
-			m_pCurrentState = &s_crouchingState;
-			break;
-		case State::STATE_RUN_RIGHT:
-			m_pCurrentState = &s_runRightState;
-			break;
-		case State::STATE_RUN_LEFT:
-			m_pCurrentState = &s_runLeftState;
-			break;
-		case State::STATE_DASH_RIGHT:
-			m_pCurrentState = &s_dashRightState;
-			break;
-		case State::STATE_DASH_LEFT:
-			m_pCurrentState = &s_dashLeftState;
-			break;
-		default:
-			break;
-		}
-
-		m_state = m_pendingState;
+		delete m_pCurrentState;
+		m_pCurrentState = pState;
 	}
-
+	
 	m_pCurrentState->StateUpdate(*this);
 }
 
@@ -101,9 +58,19 @@ void Player::Draw(GameState& gState) const
 	}
 }
 
-void Player::SetState(State newState)
+void Player::SetState(PlayerState* playerState)
 {
-	m_pendingState = newState;
+	m_pCurrentState = playerState;
+}
+
+void Player::SetDrawState(State state)
+{
+	m_state = state;
+}
+
+PlayerState* Player::GetState() const
+{
+	return m_pCurrentState;
 }
 
 int Player::GetSpeed() const

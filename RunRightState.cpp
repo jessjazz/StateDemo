@@ -1,25 +1,28 @@
+#include "DashRightState.h"
+#include "IdleState.h"
 #include "RunRightState.h"
 #include "Player.h"
 
-void RunRightState::StateUpdate(Player& player)
+PlayerState* RunRightState::HandleInput(Player& player)
 {
 	if (!Play::KeyDown(VK_RIGHT))
 	{
-		player.SetState(State::STATE_IDLE);
+		player.SetDrawState(State::STATE_IDLE);
+		return new IdleState;
 	}
 
 	if (Play::KeyDown(VK_RIGHT) && Play::KeyPressed(VK_SHIFT))
 	{
-		player.SetState(State::STATE_DASH_RIGHT);
+		player.SetDrawState(State::STATE_DASH_RIGHT);
+		return new DashRightState();
 	}
+
+	return nullptr;
 }
 
-void RunRightState::HandleInput(Player& player)
+void RunRightState::StateUpdate(Player& player)
 {
 	int speed = player.GetSpeed();
 
-	if (Play::KeyDown(VK_RIGHT))
-	{
-		player.SetPosition({ player.GetPosition().x + speed, player.GetPosition().y });
-	}
+	player.SetPosition({ player.GetPosition().x + speed, player.GetPosition().y });
 }

@@ -6,9 +6,14 @@ class Player;
 class DashRightState : public PlayerState
 {
 public:
-	DashRightState() {}
+	DashRightState() 
+		: m_dashTime(0.0f)
+	{}
 
+	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player) override;
-	void HandleInput(Player& player) override;
+
+private:
+	float m_dashTime;
 };
 

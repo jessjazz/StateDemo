@@ -9,7 +9,7 @@ class IdleState : public PlayerState
 public:
 	IdleState() {}
 
-	void StateUpdate(Player& player) override;
-	void HandleInput(Player& player);
+	PlayerState* HandleInput(Player& player) override;
+	void StateUpdate(Player& player);
 };
 

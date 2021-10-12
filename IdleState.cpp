@@ -1,26 +1,43 @@
 #include "IdleState.h"
 #include "Player.h"
+#include "JumpingState.h"
+#include "CrouchingState.h"
+#include "RunLeftState.h"
+#include "RunRightState.h"
 
-void IdleState::StateUpdate(Player& player)
+constexpr int DISPLAY_HEIGHT = 720;
+
+PlayerState* IdleState::HandleInput(Player& player)
 {
 	if (Play::KeyDown(VK_RIGHT))
 	{
-		player.SetState(State::STATE_RUN_RIGHT);
+		player.SetDrawState(State::STATE_RUN_RIGHT);
+		return new RunRightState;
 	}
 	else if (Play::KeyDown(VK_LEFT))
 	{
-		player.SetState(State::STATE_RUN_LEFT);
+		player.SetDrawState(State::STATE_RUN_LEFT);
+		return new RunLeftState;
 	}
 	else if (Play::KeyPressed(VK_SPACE))
 	{
-		player.SetState(State::STATE_JUMP);
+		player.SetDrawState(State::STATE_JUMP);
+		return new JumpingState;
 	}
 	else if (Play::KeyPressed(VK_DOWN))
 	{
-		player.SetState(State::STATE_CROUCH);
+		player.SetDrawState(State::STATE_CROUCH);
+		return new CrouchingState;
 	}
+	return nullptr;
 }
 
-void IdleState::HandleInput(Player& player)
+void IdleState::StateUpdate(Player& player)
 {
+	Point2f currentPos = player.GetPosition();
+
+	if (player.GetPosition().y <= 650)
+	{
+		player.SetPosition({ currentPos.x, DISPLAY_HEIGHT - 90 });
+	}
 }

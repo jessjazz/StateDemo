@@ -8,7 +8,7 @@ class RunLeftState : public PlayerState
 public:
 	RunLeftState() {}
 
+	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player) override;
-	void HandleInput(Player& player) override;
 };
 

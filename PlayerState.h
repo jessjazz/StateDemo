@@ -10,7 +10,7 @@ class PlayerState
 public:
 	PlayerState() {}
 	virtual ~PlayerState() {}
+	virtual PlayerState* HandleInput(Player& player) = 0;
 	virtual void StateUpdate(Player& player) = 0;
-	virtual void HandleInput(Player& player) = 0;
 };
 

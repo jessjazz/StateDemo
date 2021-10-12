@@ -4,14 +4,6 @@
 #include "MainGame.h"
 #include "GameObject.h"
 
-class IdleState;
-class JumpingState;
-class CrouchingState;
-class RunRightState;
-class RunLeftState;
-class DashRightState;
-class DashLeftState;
-
 class Player : public GameObject
 {
 public:
@@ -20,21 +12,14 @@ public:
 
 	void Update(GameState& gState) override;
 	void Draw(GameState& gState) const override;
-	void SetState(State newState);
+	void SetState(PlayerState* playerState);
+	void SetDrawState(State state);
+	PlayerState* GetState() const;
 	int GetSpeed() const;
 
 private:
 	State m_state;
-	State m_pendingState;
 	PlayerState* m_pCurrentState;
 
 	int m_speed;
-
-	static IdleState s_idleState;
-	static JumpingState s_jumpingState;
-	static CrouchingState s_crouchingState;
-	static RunRightState s_runRightState;
-	static RunLeftState s_runLeftState;
-	static DashRightState s_dashRightState;
-	static DashLeftState s_dashLeftState;
 };
