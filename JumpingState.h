@@ -6,9 +6,14 @@ class Player;
 class JumpingState : public PlayerState
 {
 public:
-	JumpingState() {}
+	JumpingState() 
+		: m_jumpTime(0.0f)
+	{}
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player) override;
+
+private:
+	float m_jumpTime;
 };
 

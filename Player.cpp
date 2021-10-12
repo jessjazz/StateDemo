@@ -53,6 +53,12 @@ void Player::Draw(GameState& gState) const
 	case State::STATE_DASH_LEFT:
 		Play::DrawSprite(Play::GetSpriteId("large_dash_left_4"), m_pos, 10.0f * gState.time);
 		break;
+	case State::STATE_CRAWL_RIGHT:
+		Play::DrawSprite(Play::GetSpriteId("large_crawl_right_8"), m_pos, 10.0f * gState.time);
+		break;
+	case State::STATE_CRAWL_LEFT:
+		Play::DrawSprite(Play::GetSpriteId("large_crawl_left_8"), m_pos, 10.0f * gState.time);
+		break;
 	default:
 		break;
 	}

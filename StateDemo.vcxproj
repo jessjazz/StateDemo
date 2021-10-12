@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CrawlLeftState.h" />
+    <ClInclude Include="CrawlRightState.h" />
     <ClInclude Include="CrouchingState.h" />
     <ClInclude Include="DashLeftState.h" />
     <ClInclude Include="DashRightState.h" />
@@ -157,6 +159,8 @@
     <ClInclude Include="RunRightState.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CrawlLeftState.cpp" />
+    <ClCompile Include="CrawlRightState.cpp" />
     <ClCompile Include="CrouchingState.cpp" />
     <ClCompile Include="DashLeftState.cpp" />
     <ClCompile Include="DashRightState.cpp" />
