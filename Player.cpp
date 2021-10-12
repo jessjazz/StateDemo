@@ -33,31 +33,46 @@ void Player::Draw(GameState& gState) const
 	switch (m_state)
 	{
 	case State::STATE_IDLE:
-		Play::DrawSprite(Play::GetSpriteId("large_idle_7"), m_pos, 5.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("idle_7"), m_pos, 5.0f * gState.time);
+		break;
+	case State::STATE_IDLE_LEFT:
+		Play::DrawSprite(Play::GetSpriteId("idle_left_7"), m_pos, 5.0f * gState.time);
 		break;
 	case State::STATE_RUN_RIGHT:
-		Play::DrawSprite(Play::GetSpriteId("large_run_right_8"), m_pos, 12.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("run_right_8"), m_pos, 12.0f * gState.time);
 		break;
 	case State::STATE_RUN_LEFT:
-		Play::DrawSprite(Play::GetSpriteId("large_run_left_8"), m_pos, 12.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("run_left_8"), m_pos, 12.0f * gState.time);
 		break;
 	case State::STATE_JUMP:
-		Play::DrawSprite(Play::GetSpriteId("large_jump_3"), m_pos, 8.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("jump_3"), m_pos, 5.0f * gState.time);
+		break;
+	case State::STATE_JUMP_LEFT:
+		Play::DrawSprite(Play::GetSpriteId("jump_left_3"), m_pos, 5.0f * gState.time);
 		break;
 	case State::STATE_CROUCH:
-		Play::DrawSprite(Play::GetSpriteId("large_crouch_6"), m_pos, 5.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("crouch_6"), m_pos, 5.0f * gState.time);
+		break;
+	case State::STATE_CROUCH_LEFT:
+		Play::DrawSprite(Play::GetSpriteId("crouch_left_6"), m_pos, 5.0f * gState.time);
 		break;
 	case State::STATE_DASH_RIGHT:
-		Play::DrawSprite(Play::GetSpriteId("large_dash_right_4"), m_pos, 10.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("dash_right_4"), m_pos, 10.0f * gState.time);
 		break;
 	case State::STATE_DASH_LEFT:
-		Play::DrawSprite(Play::GetSpriteId("large_dash_left_4"), m_pos, 10.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("dash_left_4"), m_pos, 10.0f * gState.time);
 		break;
 	case State::STATE_CRAWL_RIGHT:
-		Play::DrawSprite(Play::GetSpriteId("large_crawl_right_8"), m_pos, 10.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("crawl_right_8"), m_pos, 10.0f * gState.time);
 		break;
 	case State::STATE_CRAWL_LEFT:
-		Play::DrawSprite(Play::GetSpriteId("large_crawl_left_8"), m_pos, 10.0f * gState.time);
+		Play::DrawSprite(Play::GetSpriteId("crawl_left_8"), m_pos, 10.0f * gState.time);
+		break;
+	case State::STATE_SLIDE_RIGHT:
+		Play::DrawSprite(Play::GetSpriteId("slide_right_4"), m_pos, 10.0f * gState.time);
+		break;
+	case State::STATE_SLIDE_LEFT:
+		Play::DrawSprite(Play::GetSpriteId("slide_left_4"), m_pos, 10.0f * gState.time);
 		break;
 	default:
 		break;

@@ -1,4 +1,4 @@
-#include "CrawlRightState.h"
+#include "SlideRightState.h"
 #include "DashRightState.h"
 #include "IdleState.h"
 #include "JumpingState.h"
@@ -23,8 +23,8 @@ PlayerState* RunRightState::HandleInput(Player& player)
 
 	if (Play::KeyPressed(VK_DOWN))
 	{
-		player.SetDrawState(State::STATE_CRAWL_RIGHT);
-		return new CrawlRightState;
+		player.SetDrawState(State::STATE_SLIDE_RIGHT);
+		return new SlideRightState;
 	}
 
 	if (Play::KeyPressed(VK_SPACE))

@@ -1,5 +1,5 @@
 #include "CrawlLeftState.h"
-#include "CrouchingState.h"
+#include "CrouchLeftState.h"
 #include "RunLeftState.h"
 #include "Player.h"
 
@@ -7,8 +7,8 @@ PlayerState* CrawlLeftState::HandleInput(Player& player)
 {
 	if (!Play::KeyDown(VK_LEFT))
 	{
-		player.SetDrawState(State::STATE_CROUCH);
-		return new CrouchingState;
+		player.SetDrawState(State::STATE_CROUCH_LEFT);
+		return new CrouchLeftState;
 	}
 
 	if (!Play::KeyDown(VK_DOWN))

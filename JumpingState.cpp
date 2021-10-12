@@ -24,11 +24,11 @@ PlayerState* JumpingState::HandleInput(Player& player)
 			player.SetDrawState(State::STATE_RUN_RIGHT);
 			return new RunRightState;
 		}
-		else if (Play::KeyDown(VK_LEFT))
-		{
-			player.SetDrawState(State::STATE_RUN_LEFT);
-			return new RunLeftState;
-		}
+		//else if (Play::KeyDown(VK_LEFT))
+		//{
+		//	player.SetDrawState(State::STATE_RUN_LEFT);
+		//	return new RunLeftState;
+		//}
 		else
 		{
 			player.SetDrawState(State::STATE_IDLE);
@@ -53,8 +53,8 @@ void JumpingState::StateUpdate(Player& player)
 		player.SetPosition({ player.GetPosition().x + 12, player.GetPosition().y });
 	}
 
-	if (Play::KeyDown(VK_LEFT))
-	{
-		player.SetPosition({ player.GetPosition().x - 12, player.GetPosition().y });
-	}
+	//if (Play::KeyDown(VK_LEFT))
+	//{
+	//	player.SetPosition({ player.GetPosition().x - 12, player.GetPosition().y });
+	//}
 }

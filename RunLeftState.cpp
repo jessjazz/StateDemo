@@ -1,7 +1,7 @@
-#include "CrawlLeftState.h"
+#include "SlideLeftState.h"
 #include "DashLeftState.h"
-#include "IdleState.h"
-#include "JumpingState.h"
+#include "IdleLeftState.h"
+#include "JumpLeftState.h"
 #include "RunLeftState.h"
 #include "Player.h"
 
@@ -11,26 +11,26 @@ PlayerState* RunLeftState::HandleInput(Player& player)
 {
 	if (!Play::KeyDown(VK_LEFT))
 	{
-		player.SetDrawState(State::STATE_IDLE);
-		return new IdleState;
+		player.SetDrawState(State::STATE_IDLE_LEFT);
+		return new IdleLeftState;
 	}
 
 	if (Play::KeyPressed(VK_SHIFT))
 	{
 		player.SetDrawState(State::STATE_DASH_LEFT);
-		return new DashLeftState();
+		return new DashLeftState;
 	}
 
 	if (Play::KeyPressed(VK_DOWN))
 	{
-		player.SetDrawState(State::STATE_CRAWL_LEFT);
-		return new CrawlLeftState;
+		player.SetDrawState(State::STATE_SLIDE_LEFT);
+		return new SlideLeftState;
 	}
 
 	if (Play::KeyPressed(VK_SPACE))
 	{
-		player.SetDrawState(State::STATE_JUMP);
-		return new JumpingState;
+		player.SetDrawState(State::STATE_JUMP_LEFT);
+		return new JumpLeftState;
 	}
 
 	return nullptr;

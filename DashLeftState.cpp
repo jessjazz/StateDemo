@@ -6,7 +6,6 @@ constexpr float MAX_DASH = 10.0f;
 
 PlayerState* DashLeftState::HandleInput(Player& player)
 {
-	player.SetDrawState(State::STATE_DASH_LEFT);
 	m_dashTime++;
 
 	if (m_dashTime > MAX_DASH)
