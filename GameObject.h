@@ -10,6 +10,7 @@ public:
     {
         OBJ_NONE = -1,
         OBJ_PLAYER = 0,
+        OBJ_PLATFORM,
         OBJ_ALL = 999
     };
 
@@ -24,6 +25,12 @@ public:
 
     void SetVelocity(Vector2f vel) { m_velocity = vel; }
     Vector2f GetVelocity() const { return m_velocity; };
+
+    void SetWidth(int width) { m_width = width; }
+    int GetWidth() const { return m_width; }
+
+    void SetHeight(int Height) { m_height = Height; }
+    int GetHeight() const { return m_height; }
 
     void SetType(Type type) { m_type = type; }
     Type GetType() const { return m_type; }
@@ -51,6 +58,8 @@ protected:
     Point2f m_pos{ 0, 0 };
     Vector2f m_velocity{ 0, 0 };
     int spriteId{ -1 };
+    int m_width{ 0 };
+    int m_height{ 0 };
 
     int m_drawOrder{ 0 };
     int m_updateOrder{ 0 };

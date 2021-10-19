@@ -1,7 +1,10 @@
 #include "CrawlRightState.h"
 #include "CrouchingState.h"
+#include "FallRightState.h"
 #include "RunRightState.h"
 #include "Player.h"
+
+
 
 PlayerState* CrawlRightState::HandleInput(Player& player)
 {
@@ -17,12 +20,43 @@ PlayerState* CrawlRightState::HandleInput(Player& player)
 		return new RunRightState;
 	}
 
+	if (!player.IsGrounded())
+	{
+		player.SetDrawState(State::STATE_FALL_RIGHT);
+		return new FallRightState;
+	}
+
 	return nullptr;
 }
 
-void CrawlRightState::StateUpdate(Player& player)
+void CrawlRightState::StateUpdate(Player& player, GameObject* p_gameObject)
 {
-	int speed = player.GetSpeed() / 2;
+	Point2f oldPos = player.GetPosition();
+	Point2f currentPos = oldPos;
+	
+	int spriteId = Play::GetSpriteId("crawl_right_8");
+	player.SetHeight(Play::GetSpriteHeight(spriteId));
+	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
-	player.SetPosition({ player.GetPosition().x + speed, player.GetPosition().y });
+	int speed = player.GetSpeed();
+	player.SetVelocity({ speed / 2, 0 });
+	Vector2f velocity = player.GetVelocity();
+
+	if (player.IsColliding(player, p_gameObject))
+	{
+		if (player.GetPosition().y <= DISPLAY_HEIGHT - p_gameObject->GetHeight())
+		{
+			player.SetPosition(currentPos + velocity);
+		}
+		else
+		{
+			player.SetPosition(oldPos);
+		}
+	}
+	else
+	{
+		player.SetVelocity({ 0, 0 + player.GetGravity() });
+		player.SetPosition(currentPos + player.GetVelocity());
+		player.SetGrounded(false);
+	}
 }

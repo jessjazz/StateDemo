@@ -1,60 +1,48 @@
 #include "IdleState.h"
+#include "FallRightState.h"
 #include "JumpingState.h"
 #include "Player.h"
 #include "RunRightState.h"
 #include "RunLeftState.h"
 
-constexpr int DISPLAY_HEIGHT = 720;
-constexpr float MAX_JUMP = 10.0f;
+constexpr float MAX_JUMP_TIME = 10.0f;
+constexpr int LANDING_POS = 600;
+constexpr int JUMP_HEIGHT = 10;
+constexpr int JUMP_DISTANCE = 5;
 
 PlayerState* JumpingState::HandleInput(Player& player)
 {
 	m_jumpTime++;
 	
-	if (!Play::KeyDown(VK_SPACE))
+	if (!Play::KeyDown(VK_SPACE) || m_jumpTime > MAX_JUMP_TIME)
 	{
-		player.SetDrawState(State::STATE_IDLE);
-		return new IdleState;
-	}
-
-	if (m_jumpTime > MAX_JUMP)
-	{
-		if (Play::KeyDown(VK_RIGHT))
-		{
-			player.SetDrawState(State::STATE_RUN_RIGHT);
-			return new RunRightState;
-		}
-		//else if (Play::KeyDown(VK_LEFT))
-		//{
-		//	player.SetDrawState(State::STATE_RUN_LEFT);
-		//	return new RunLeftState;
-		//}
-		else
-		{
-			player.SetDrawState(State::STATE_IDLE);
-			return new IdleState;
-		}
+		player.SetDrawState(State::STATE_FALL_RIGHT);
+		return new FallRightState;
 	}
 
 	return nullptr;
 }
 
-void JumpingState::StateUpdate(Player& player)
+void JumpingState::StateUpdate(Player& player, GameObject* p_gameObject)
 {
-	Point2f currentPos = player.GetPosition();
+	int spriteId = Play::GetSpriteId("jump_right");
+	player.SetHeight(Play::GetSpriteHeight(spriteId));
+	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
-	if (player.GetPosition().y >= 600)
+	Point2f oldPos = player.GetPosition();
+	Point2f currentPos = oldPos;
+
+	if (player.IsGrounded())
 	{
-		player.SetPosition({ player.GetPosition().x, player.GetPosition().y - 50 });
+		player.SetVelocity({ 0, player.GetVelocity().y - JUMP_HEIGHT });
 	}
-
-	if (Play::KeyDown(VK_RIGHT))
+	
+	if (!player.IsGrounded() && Play::KeyDown(VK_RIGHT))
 	{
-		player.SetPosition({ player.GetPosition().x + 12, player.GetPosition().y });
+		player.SetVelocity({ JUMP_DISTANCE, player.GetVelocity().y });
 	}
+	 
+	player.SetPosition(currentPos + player.GetVelocity());
 
-	//if (Play::KeyDown(VK_LEFT))
-	//{
-	//	player.SetPosition({ player.GetPosition().x - 12, player.GetPosition().y });
-	//}
+	player.SetGrounded(false);
 }

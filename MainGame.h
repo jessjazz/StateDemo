@@ -2,6 +2,12 @@
 #pragma once
 
 class Player;
+class Platform;
+class GameObject;
+
+constexpr int DISPLAY_WIDTH = 1280;
+constexpr int DISPLAY_HEIGHT = 720;
+constexpr int DISPLAY_SCALE = 1;
 
 enum State
 {
@@ -19,6 +25,8 @@ enum State
 	STATE_CRAWL_LEFT,
 	STATE_SLIDE_RIGHT,
 	STATE_SLIDE_LEFT,
+	STATE_FALL_RIGHT,
+	STATE_FALL_LEFT,
 	STATE_INVALID = -1,
 };
 
@@ -26,5 +34,6 @@ struct GameState
 {
 	float time{ 0.f };
 	Player* player;
+	Platform* platform;
 	State playerState{ STATE_IDLE };
 };

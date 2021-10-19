@@ -9,6 +9,6 @@ public:
 	RunRightState() {}
 
 	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player) override;
+	void StateUpdate(Player& player, GameObject* p_gameObject) override;
 };
 

@@ -9,6 +9,6 @@ public:
 	CrawlRightState() {}
 
 	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player);
+	void StateUpdate(Player& player, GameObject* p_gameObject);
 };
 

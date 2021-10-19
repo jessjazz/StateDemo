@@ -11,7 +11,7 @@ public:
 	{}
 
 	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player) override;
+	void StateUpdate(Player& player, GameObject* p_gameObject) override;
 
 private:
 	float m_dashTime;
