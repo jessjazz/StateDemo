@@ -34,6 +34,10 @@ struct GameState
 {
 	float time{ 0.f };
 	Player* player;
-	Platform* platform;
+
+	static std::vector< GameObject* > s_vMap;
+
 	State playerState{ STATE_IDLE };
 };
+
+void CreateMap(GameState& gState);

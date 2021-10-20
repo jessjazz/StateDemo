@@ -6,7 +6,6 @@
 #include "RunRightState.h"
 #include "Player.h"
 
-//constexpr int DISPLAY_HEIGHT = 720;
 constexpr int JUMP_HEIGHT = 600;
 
 PlayerState* RunRightState::HandleInput(Player& player)
@@ -44,7 +43,7 @@ PlayerState* RunRightState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void RunRightState::StateUpdate(Player& player, GameObject* p_gameObject)
+void RunRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
 {
 	Point2f oldPos = player.GetPosition();
 	Point2f currentPos = oldPos;
@@ -55,22 +54,27 @@ void RunRightState::StateUpdate(Player& player, GameObject* p_gameObject)
 
 	int speed = player.GetSpeed();
 
-	if (player.IsColliding(player, p_gameObject))
+	for (GameObject* p : map)
 	{
-		if (player.GetPosition().y <= DISPLAY_HEIGHT - p_gameObject->GetHeight())
+		if (player.IsColliding(player, p))
 		{
-			player.SetVelocity({ speed, 0 });
-			player.SetPosition({ currentPos.x + player.GetVelocity().x, (p_gameObject->GetPosition().y - player.GetHeight() + 1)});
+			if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
+			{
+				player.SetVelocity({ speed, 0 });
+				player.SetPosition({ currentPos.x + player.GetVelocity().x, (p->GetPosition().y - player.GetHeight() + 1) });
+			}
+			else
+			{
+				player.SetPosition(oldPos);
+			}
+			player.SetGrounded(true);
+			break;
 		}
 		else
 		{
-			player.SetPosition(oldPos);
+			player.SetVelocity({ 0, 0 + player.GetGravity() });
+			player.SetPosition(currentPos + player.GetVelocity());
+			player.SetGrounded(false);
 		}
-	}
-	else
-	{
-		player.SetVelocity({ 0, 0 + player.GetGravity() });
-		player.SetPosition(currentPos + player.GetVelocity());
-		player.SetGrounded(false);
 	}
 }

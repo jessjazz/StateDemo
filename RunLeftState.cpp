@@ -1,8 +1,9 @@
-#include "SlideLeftState.h"
 #include "DashLeftState.h"
+#include "FallLeftState.h"
 #include "IdleLeftState.h"
 #include "JumpLeftState.h"
 #include "RunLeftState.h"
+#include "SlideLeftState.h"
 #include "Player.h"
 
 constexpr int JUMP_HEIGHT = 650;
@@ -33,10 +34,16 @@ PlayerState* RunLeftState::HandleInput(Player& player)
 		return new JumpLeftState;
 	}
 
+	if (!player.IsGrounded())
+	{
+		player.SetDrawState(State::STATE_FALL_LEFT);
+		return new FallLeftState;
+	}
+
 	return nullptr;
 }
 
-void RunLeftState::StateUpdate(Player& player, GameObject* p_gameObject)
+void RunLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
 {
 	Point2f oldPos = player.GetPosition();
 	Point2f currentPos = oldPos;
@@ -47,22 +54,27 @@ void RunLeftState::StateUpdate(Player& player, GameObject* p_gameObject)
 
 	int speed = player.GetSpeed();
 
-	if (player.IsColliding(player, p_gameObject))
+	for (GameObject* p : map)
 	{
-		if (player.GetPosition().y <= DISPLAY_HEIGHT - p_gameObject->GetHeight())
+		if (player.IsColliding(player, p))
 		{
-			player.SetVelocity({ -speed, 0 });
-			player.SetPosition({ currentPos.x + player.GetVelocity().x, (p_gameObject->GetPosition().y - player.GetHeight() + 1) });
+			if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
+			{
+				player.SetVelocity({ -speed, 0 });
+				player.SetPosition({ currentPos.x + player.GetVelocity().x, (p->GetPosition().y - player.GetHeight() + 1) });
+			}
+			else
+			{
+				player.SetPosition(oldPos);
+			}
+			player.SetGrounded(true);
+			break;
 		}
 		else
 		{
-			player.SetPosition(oldPos);
+			player.SetVelocity({ 0, 0 + player.GetGravity() });
+			player.SetPosition(currentPos + player.GetVelocity());
+			player.SetGrounded(false);
 		}
-	}
-	else
-	{
-		player.SetVelocity({ 0, 0 + player.GetGravity() });
-		player.SetPosition(currentPos + player.GetVelocity());
-		player.SetGrounded(false);
 	}
 }

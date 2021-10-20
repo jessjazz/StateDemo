@@ -9,5 +9,5 @@ public:
 	CrouchLeftState() {}
 
 	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, GameObject* p_gameObject);
+	void StateUpdate(Player& player, std::vector<GameObject*> map);
 };

@@ -30,7 +30,7 @@ PlayerState* IdleState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void IdleState::StateUpdate(Player& player, GameObject* p_gameObject)
+void IdleState::StateUpdate(Player& player, std::vector<GameObject*> map)
 {
 	Point2f oldPos = player.GetPosition();
 	Point2f currentPos = oldPos;
@@ -39,22 +39,13 @@ void IdleState::StateUpdate(Player& player, GameObject* p_gameObject)
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
-	if (player.GetPosition().y > DISPLAY_HEIGHT - player.GetHeight() && !player.IsColliding(player, p_gameObject))
+	for (GameObject* p : map)
 	{
-		player.SetVelocity({ 0, 0 });
-		player.SetPosition({ currentPos.x, DISPLAY_HEIGHT - player.GetHeight() });
-		player.SetGrounded(true);
-	}
-
-	if (player.IsColliding(player, p_gameObject) && !player.IsGrounded())
-	{
-		player.SetPosition({ currentPos.x, p_gameObject->GetPosition().y - player.GetHeight() });
-		player.SetVelocity({ 0,0 });
-		player.SetGrounded(true);
-	}
-	else if (!player.IsColliding(player, p_gameObject) && !player.IsGrounded())
-	{
-		player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y + player.GetGravity() });
-		player.SetPosition(currentPos + player.GetVelocity());
+		if (player.IsColliding(player, p) && !player.IsGrounded())
+		{
+			player.SetPosition({ currentPos.x, p->GetPosition().y - player.GetHeight() });
+			player.SetVelocity({ 0,0 });
+			player.SetGrounded(true);
+		}
 	}
 }

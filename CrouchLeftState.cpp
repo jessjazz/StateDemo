@@ -26,7 +26,7 @@ PlayerState* CrouchLeftState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void CrouchLeftState::StateUpdate(Player& player, GameObject* p_gameObject)
+void CrouchLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
 {
 	int spriteId = Play::GetSpriteId("crouch_left_6");
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
@@ -35,8 +35,12 @@ void CrouchLeftState::StateUpdate(Player& player, GameObject* p_gameObject)
 	Point2f oldPos = player.GetPosition();
 	Point2f currentPos = oldPos;
 
-	if (player.IsColliding(player, p_gameObject))
+	for (GameObject* p : map)
 	{
-		player.SetPosition(oldPos);
+		if (player.IsColliding(player, p))
+		{
+			player.SetPosition(oldPos);
+			player.SetGrounded(true);
+		}
 	}
 }

@@ -23,7 +23,7 @@ PlayerState* JumpingState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void JumpingState::StateUpdate(Player& player, GameObject* p_gameObject)
+void JumpingState::StateUpdate(Player& player, std::vector<GameObject*> map)
 {
 	int spriteId = Play::GetSpriteId("jump_right");
 	player.SetHeight(Play::GetSpriteHeight(spriteId));

@@ -9,6 +9,6 @@ public:
 	RunLeftState() {}
 
 	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, GameObject* p_gameObject) override;
+	void StateUpdate(Player& player, std::vector<GameObject*> map) override;
 };
 

@@ -24,7 +24,7 @@ PlayerState* SlideRightState::HandleInput(Player& player)
     return nullptr;
 }
 
-void SlideRightState::StateUpdate(Player& player, GameObject* p_gameObject)
+void SlideRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
 {
     int spriteId = Play::GetSpriteId("slide_right_4");
     player.SetHeight(Play::GetSpriteHeight(spriteId));
@@ -37,21 +37,26 @@ void SlideRightState::StateUpdate(Player& player, GameObject* p_gameObject)
     player.SetVelocity({ speed, 0 });
     Vector2f velocity = player.GetVelocity();
 
-    if (player.IsColliding(player, p_gameObject))
+    for (GameObject* p : map)
     {
-        if (player.GetPosition().y <= DISPLAY_HEIGHT - p_gameObject->GetHeight())
+        if (player.IsColliding(player, p))
         {
-            player.SetPosition(currentPos + velocity);
+            if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
+            {
+                player.SetPosition(currentPos + velocity);
+            }
+            else
+            {
+                player.SetPosition(oldPos);
+            }
+            player.SetGrounded(true);
+            break;
         }
         else
         {
-            player.SetPosition(oldPos);
+            player.SetVelocity({ 0, 0 + player.GetGravity() });
+            player.SetPosition(currentPos + player.GetVelocity());
+            player.SetGrounded(false);
         }
-    }
-    else
-    {
-        player.SetVelocity({ 0, 0 + player.GetGravity() });
-        player.SetPosition(currentPos + player.GetVelocity());
-        player.SetGrounded(false);
     }
 }

@@ -12,7 +12,7 @@ PlayerState* FallRightState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void FallRightState::StateUpdate(Player& player, GameObject* p_gameObject)
+void FallRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
 {
 	Point2f oldPos = player.GetPosition();
 	Point2f currentPos = oldPos;
@@ -20,8 +20,16 @@ void FallRightState::StateUpdate(Player& player, GameObject* p_gameObject)
 	player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y + player.GetGravity() });
 	player.SetPosition(currentPos + player.GetVelocity());
 
-	if (player.IsColliding(player, p_gameObject) || player.GetPosition().y <= p_gameObject->GetHeight() - player.GetHeight())
+	for (GameObject* p : map)
 	{
-		player.SetGrounded(true);
+		if (player.IsColliding(player, p))
+		{
+			player.SetGrounded(true);
+		}
+	}
+
+	if (player.GetPosition().y > DISPLAY_HEIGHT)
+	{
+		player.SetDead(true);
 	}
 }

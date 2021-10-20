@@ -12,6 +12,6 @@ public:
 	PlayerState() {}
 	virtual ~PlayerState() {}
 	virtual PlayerState* HandleInput(Player& player) = 0;
-	virtual void StateUpdate(Player& player, GameObject* p_gameObject) = 0;
+	virtual void StateUpdate(Player& player, std::vector<GameObject*> map) = 0;
 };
 

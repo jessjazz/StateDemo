@@ -23,7 +23,7 @@ PlayerState* JumpLeftState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void JumpLeftState::StateUpdate(Player& player, GameObject* p_gameObject)
+void JumpLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
 {	
 	int spriteId = Play::GetSpriteId("jump_left");
 	player.SetHeight(Play::GetSpriteHeight(spriteId));

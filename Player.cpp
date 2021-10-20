@@ -13,6 +13,7 @@ Player::Player(Point2f pos)
 	SetVelocity({ 0,0 });
 	SetType(OBJ_PLAYER);
 	SetDrawOrder(1);
+	SetDead(false);
 	m_pCurrentState = new IdleState;
 }
 
@@ -20,15 +21,33 @@ Player::~Player() {}
 
 void Player::Update(GameState& gState)
 {
-	PlayerState* pState = m_pCurrentState->HandleInput(*this);
-
-	if (pState != nullptr)
+	if (!b_isDead)
 	{
-		delete m_pCurrentState;
-		m_pCurrentState = pState;
+		PlayerState* pState = m_pCurrentState->HandleInput(*this);
+
+		if (pState != nullptr)
+		{
+			delete m_pCurrentState;
+			m_pCurrentState = pState;
+		}
+
+		m_pCurrentState->StateUpdate(*this, gState.s_vMap);
 	}
-	
-	m_pCurrentState->StateUpdate(*this, gState.platform);
+	else
+	{
+		Play::CentreSpriteOrigin("151px");
+		Play::CentreSpriteOrigin("64px");
+		Play::DrawFontText("151px", "Game Over", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
+		Play::DrawFontText("64px", "Press enter to play again!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
+
+		if (Play::KeyPressed(VK_RETURN))
+		{
+			m_pos = { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 140 };
+			b_isDead = false;
+			SetDrawState(State::STATE_IDLE);
+			m_pCurrentState = new IdleState;
+		}
+	}
 }
 
 void Player::Draw(GameState& gState) const
@@ -90,21 +109,24 @@ void Player::Draw(GameState& gState) const
 
 bool Player::IsColliding(GameObject& object1, GameObject* object2)
 {
-	int object1_y = object1.GetPosition().y;
-	int object1_x = object1.GetPosition().x;
-	int object2_x = object2->GetPosition().x;
-	int object2_y = object2->GetPosition().y;
-	
-	int object1_w = object1.GetWidth();
-	int object1_h = object1.GetHeight();
-	int object2_w = object2->GetWidth();
-	int object2_h = object2->GetHeight();
+	int xoffset = 5;
+	int vert_dist = 15;
+
+	int object1_x1 = object1.GetPosition().x - xoffset;
+	int object1_y1 = object1.GetPosition().y + object1.GetHeight();
+	int object1_x2 = object1.GetPosition().x + object1.GetWidth() + xoffset;
+	int object1_y2 = object1.GetPosition().y + object1.GetHeight() + vert_dist;
+
+	int object2_x1 = object2->GetPosition().x;
+	int object2_y1 = object2->GetPosition().y;
+	int object2_x2 = object2->GetPosition().x + object2->GetWidth();
+	int object2_y2 = object2->GetPosition().y + vert_dist;
 
 
-	if (object1_x < object2_x + object2_w &&
-		object1_x + object1_w > object2_x &&
-		object1_y < object2_y + object2_h &&
-		object1_y + object1_h > object2_y)
+	if (object1_x1 < object2_x2 &&
+		object1_x2 > object2_x1 &&
+		object1_y1 < object2_y2 &&
+		object1_y2 > object2_y1)
 	{
 		return true;
 	}

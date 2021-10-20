@@ -26,6 +26,9 @@ public:
 	bool IsGrounded() const { return b_onGround; }
 	void SetGrounded(bool onGround) { b_onGround = onGround; }
 
+	bool IsDead() const { return b_isDead; }
+	void SetDead(bool lifeState) { b_isDead = lifeState; }
+
 	bool IsColliding(GameObject& object1, GameObject* object2);
 
 private:
@@ -34,4 +37,5 @@ private:
 	int m_speed;
 	float m_gravity;
 	bool b_onGround;
+	bool b_isDead;
 };
