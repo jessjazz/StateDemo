@@ -4,12 +4,20 @@
 
 class Player;
 
-class IdleState : public PlayerState
+class IdleRightState : public PlayerState
 {
 public:
-	IdleState() {}
+	IdleRightState() {}
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, std::vector<GameObject*> map);
 };
 
+class IdleLeftState : public PlayerState
+{
+public:
+	IdleLeftState() {}
+
+	PlayerState* HandleInput(Player& player) override;
+	void StateUpdate(Player& player, std::vector<GameObject*> map);
+};

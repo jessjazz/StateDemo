@@ -30,25 +30,13 @@
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CrawlLeftState.h">
-      <Filter>Header Files\MovementStates</Filter>
-    </ClInclude>
-    <ClInclude Include="CrawlRightState.h">
+    <ClInclude Include="CrawlState.h">
       <Filter>Header Files\MovementStates</Filter>
     </ClInclude>
     <ClInclude Include="CrouchingState.h">
       <Filter>Header Files\MovementStates</Filter>
     </ClInclude>
-    <ClInclude Include="CrouchLeftState.h">
-      <Filter>Header Files\MovementStates</Filter>
-    </ClInclude>
-    <ClInclude Include="DashLeftState.h">
-      <Filter>Header Files\MovementStates</Filter>
-    </ClInclude>
-    <ClInclude Include="DashRightState.h">
-      <Filter>Header Files\MovementStates</Filter>
-    </ClInclude>
-    <ClInclude Include="IdleLeftState.h">
+    <ClInclude Include="DashState.h">
       <Filter>Header Files\MovementStates</Filter>
     </ClInclude>
     <ClInclude Include="IdleState.h">
@@ -57,22 +45,13 @@
     <ClInclude Include="JumpingState.h">
       <Filter>Header Files\MovementStates</Filter>
     </ClInclude>
-    <ClInclude Include="JumpLeftState.h">
-      <Filter>Header Files\MovementStates</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerState.h">
       <Filter>Header Files\MovementStates</Filter>
     </ClInclude>
-    <ClInclude Include="RunLeftState.h">
+    <ClInclude Include="RunningState.h">
       <Filter>Header Files\MovementStates</Filter>
     </ClInclude>
-    <ClInclude Include="RunRightState.h">
-      <Filter>Header Files\MovementStates</Filter>
-    </ClInclude>
-    <ClInclude Include="SlideLeftState.h">
-      <Filter>Header Files\MovementStates</Filter>
-    </ClInclude>
-    <ClInclude Include="SlideRightState.h">
+    <ClInclude Include="SlideState.h">
       <Filter>Header Files\MovementStates</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
@@ -81,10 +60,7 @@
     <ClInclude Include="Platform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FallLeftState.h">
-      <Filter>Header Files\MovementStates</Filter>
-    </ClInclude>
-    <ClInclude Include="FallRightState.h">
+    <ClInclude Include="FallState.h">
       <Filter>Header Files\MovementStates</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,25 +71,13 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CrawlLeftState.cpp">
-      <Filter>Source Files\MovementStates</Filter>
-    </ClCompile>
-    <ClCompile Include="CrawlRightState.cpp">
+    <ClCompile Include="CrawlState.cpp">
       <Filter>Source Files\MovementStates</Filter>
     </ClCompile>
     <ClCompile Include="CrouchingState.cpp">
       <Filter>Source Files\MovementStates</Filter>
     </ClCompile>
-    <ClCompile Include="CrouchLeftState.cpp">
-      <Filter>Source Files\MovementStates</Filter>
-    </ClCompile>
-    <ClCompile Include="DashLeftState.cpp">
-      <Filter>Source Files\MovementStates</Filter>
-    </ClCompile>
-    <ClCompile Include="DashRightState.cpp">
-      <Filter>Source Files\MovementStates</Filter>
-    </ClCompile>
-    <ClCompile Include="IdleLeftState.cpp">
+    <ClCompile Include="DashState.cpp">
       <Filter>Source Files\MovementStates</Filter>
     </ClCompile>
     <ClCompile Include="IdleState.cpp">
@@ -122,22 +86,13 @@
     <ClCompile Include="JumpingState.cpp">
       <Filter>Source Files\MovementStates</Filter>
     </ClCompile>
-    <ClCompile Include="JumpLeftState.cpp">
-      <Filter>Source Files\MovementStates</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerState.cpp">
       <Filter>Source Files\MovementStates</Filter>
     </ClCompile>
-    <ClCompile Include="RunLeftState.cpp">
+    <ClCompile Include="RunningState.cpp">
       <Filter>Source Files\MovementStates</Filter>
     </ClCompile>
-    <ClCompile Include="RunRightState.cpp">
-      <Filter>Source Files\MovementStates</Filter>
-    </ClCompile>
-    <ClCompile Include="SlideLeftState.cpp">
-      <Filter>Source Files\MovementStates</Filter>
-    </ClCompile>
-    <ClCompile Include="SlideRightState.cpp">
+    <ClCompile Include="SlideState.cpp">
       <Filter>Source Files\MovementStates</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
@@ -146,10 +101,7 @@
     <ClCompile Include="Platform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FallLeftState.cpp">
-      <Filter>Source Files\MovementStates</Filter>
-    </ClCompile>
-    <ClCompile Include="FallRightState.cpp">
+    <ClCompile Include="FallState.cpp">
       <Filter>Source Files\MovementStates</Filter>
     </ClCompile>
   </ItemGroup>

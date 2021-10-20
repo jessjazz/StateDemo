@@ -3,10 +3,10 @@
 
 class Player;
 
-class JumpingState : public PlayerState
+class JumpRightState : public PlayerState
 {
 public:
-	JumpingState() 
+	JumpRightState() 
 		: m_jumpTime(0.0f)
 	{}
 
@@ -17,3 +17,16 @@ private:
 	float m_jumpTime;
 };
 
+class JumpLeftState : public PlayerState
+{
+public:
+	JumpLeftState()
+		: m_jumpTime(0.0f)
+	{}
+
+	PlayerState* HandleInput(Player& player) override;
+	void StateUpdate(Player& player, std::vector<GameObject*> map) override;
+
+private:
+	float m_jumpTime;
+};

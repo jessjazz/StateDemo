@@ -143,51 +143,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CrawlLeftState.h" />
-    <ClInclude Include="CrawlRightState.h" />
+    <ClInclude Include="CrawlState.h" />
     <ClInclude Include="CrouchingState.h" />
-    <ClInclude Include="CrouchLeftState.h" />
-    <ClInclude Include="DashLeftState.h" />
-    <ClInclude Include="DashRightState.h" />
-    <ClInclude Include="FallLeftState.h" />
-    <ClInclude Include="FallRightState.h" />
+    <ClInclude Include="DashState.h" />
+    <ClInclude Include="FallState.h" />
     <ClInclude Include="GameObject.h" />
-    <ClInclude Include="IdleLeftState.h" />
     <ClInclude Include="IdleState.h" />
     <ClInclude Include="JumpingState.h" />
-    <ClInclude Include="JumpLeftState.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Play.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerState.h" />
-    <ClInclude Include="RunLeftState.h" />
-    <ClInclude Include="RunRightState.h" />
-    <ClInclude Include="SlideLeftState.h" />
-    <ClInclude Include="SlideRightState.h" />
+    <ClInclude Include="RunningState.h" />
+    <ClInclude Include="SlideState.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CrawlLeftState.cpp" />
-    <ClCompile Include="CrawlRightState.cpp" />
+    <ClCompile Include="CrawlState.cpp" />
     <ClCompile Include="CrouchingState.cpp" />
-    <ClCompile Include="CrouchLeftState.cpp" />
-    <ClCompile Include="DashLeftState.cpp" />
-    <ClCompile Include="DashRightState.cpp" />
-    <ClCompile Include="FallLeftState.cpp" />
-    <ClCompile Include="FallRightState.cpp" />
+    <ClCompile Include="DashState.cpp" />
+    <ClCompile Include="FallState.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="IdleLeftState.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="JumpingState.cpp" />
-    <ClCompile Include="JumpLeftState.cpp" />
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerState.cpp" />
-    <ClCompile Include="RunLeftState.cpp" />
-    <ClCompile Include="RunRightState.cpp" />
-    <ClCompile Include="SlideLeftState.cpp" />
-    <ClCompile Include="SlideRightState.cpp" />
+    <ClCompile Include="RunningState.cpp" />
+    <ClCompile Include="SlideState.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

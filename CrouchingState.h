@@ -3,10 +3,19 @@
 
 class Player;
 
-class CrouchingState : public PlayerState
+class CrouchRightState : public PlayerState
 {
 public:
-	CrouchingState() {}
+	CrouchRightState() {}
+
+	PlayerState* HandleInput(Player& player) override;
+	void StateUpdate(Player& player, std::vector<GameObject*> map);
+};
+
+class CrouchLeftState : public PlayerState
+{
+public:
+	CrouchLeftState() {}
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, std::vector<GameObject*> map);

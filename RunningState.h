@@ -12,3 +12,11 @@ public:
 	void StateUpdate(Player& player, std::vector<GameObject*> map) override;
 };
 
+class RunLeftState : public PlayerState
+{
+public:
+	RunLeftState() {}
+
+	PlayerState* HandleInput(Player& player) override;
+	void StateUpdate(Player& player, std::vector<GameObject*> map) override;
+};

@@ -14,7 +14,7 @@ Player::Player(Point2f pos)
 	SetType(OBJ_PLAYER);
 	SetDrawOrder(1);
 	SetDead(false);
-	m_pCurrentState = new IdleState;
+	m_pCurrentState = new IdleRightState;
 }
 
 Player::~Player() {}
@@ -45,7 +45,7 @@ void Player::Update(GameState& gState)
 			m_pos = { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 140 };
 			b_isDead = false;
 			SetDrawState(State::STATE_IDLE);
-			m_pCurrentState = new IdleState;
+			m_pCurrentState = new IdleRightState;
 		}
 	}
 }

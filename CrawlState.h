@@ -12,3 +12,12 @@ public:
 	void StateUpdate(Player& player, std::vector<GameObject*> map);
 };
 
+class CrawlLeftState : public PlayerState
+{
+public:
+	CrawlLeftState() {}
+
+	PlayerState* HandleInput(Player& player) override;
+	void StateUpdate(Player& player, std::vector<GameObject*> map);
+};
+
