@@ -54,7 +54,7 @@ void RunRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
 	for (GameObject* p : map)
 	{
-		if (player.IsColliding(player, p))
+		if (player.IsStandingOn(player, p))
 		{
 			if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
 			{
@@ -125,7 +125,7 @@ void RunLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
 	for (GameObject* p : map)
 	{
-		if (player.IsColliding(player, p))
+		if (player.IsStandingOn(player, p))
 		{
 			if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
 			{

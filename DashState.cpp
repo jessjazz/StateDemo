@@ -39,7 +39,7 @@ void DashRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
 	for (GameObject* p : map)
 	{
-		if (player.IsColliding(player, p))
+		if (player.IsStandingOn(player, p))
 		{
 			if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
 			{
@@ -95,7 +95,7 @@ void DashLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
 	for (GameObject* p : map)
 	{
-		if (player.IsColliding(player, p))
+		if (player.IsStandingOn(player, p))
 		{
 			if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
 			{

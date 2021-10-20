@@ -11,7 +11,7 @@ PlayerState* SlideRightState::HandleInput(Player& player)
 
     if (m_slideTime > MAX_SLIDE)
     {
-        player.SetDrawState(STATE_CRAWL_RIGHT);
+        player.SetDrawState(State::STATE_CRAWL_RIGHT);
         return new CrawlRightState;
     }
 
@@ -39,7 +39,7 @@ void SlideRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
     for (GameObject* p : map)
     {
-        if (player.IsColliding(player, p))
+        if (player.IsStandingOn(player, p))
         {
             if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
             {
@@ -67,7 +67,7 @@ PlayerState* SlideLeftState::HandleInput(Player& player)
 
     if (m_slideTime > MAX_SLIDE)
     {
-        player.SetDrawState(STATE_CRAWL_LEFT);
+        player.SetDrawState(State::STATE_CRAWL_LEFT);
         return new CrawlLeftState;
     }
 
@@ -95,7 +95,7 @@ void SlideLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
     for (GameObject* p : map)
     {
-        if (player.IsColliding(player, p))
+        if (player.IsStandingOn(player, p))
         {
             if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
             {

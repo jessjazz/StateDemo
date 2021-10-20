@@ -22,7 +22,7 @@ void FallRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
 	for (GameObject* p : map)
 	{
-		if (player.IsColliding(player, p))
+		if (player.IsStandingOn(player, p))
 		{
 			player.SetGrounded(true);
 		}
@@ -54,7 +54,7 @@ void FallLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
 	for (GameObject* p : map)
 	{
-		if (player.IsColliding(player, p))
+		if (player.IsStandingOn(player, p))
 		{
 			player.SetGrounded(true);
 		}

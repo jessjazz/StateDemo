@@ -29,7 +29,7 @@ public:
 	bool IsDead() const { return b_isDead; }
 	void SetDead(bool lifeState) { b_isDead = lifeState; }
 
-	bool IsColliding(GameObject& object1, GameObject* object2);
+	bool IsStandingOn(GameObject& object1, GameObject* object2);
 
 private:
 	State m_state;
@@ -38,4 +38,6 @@ private:
 	float m_gravity;
 	bool b_onGround;
 	bool b_isDead;
+
+	void HandleGameOver();
 };

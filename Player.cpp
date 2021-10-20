@@ -7,13 +7,13 @@ Player::Player(Point2f pos)
 	m_speed(5),
 	m_state(State::STATE_IDLE),
 	m_gravity(1.0f),
-	b_onGround(false)
+	b_onGround(false),
+	b_isDead(false)
 {
 	SetPosition(pos);
 	SetVelocity({ 0,0 });
 	SetType(OBJ_PLAYER);
 	SetDrawOrder(1);
-	SetDead(false);
 	m_pCurrentState = new IdleRightState;
 }
 
@@ -35,18 +35,7 @@ void Player::Update(GameState& gState)
 	}
 	else
 	{
-		Play::CentreSpriteOrigin("151px");
-		Play::CentreSpriteOrigin("64px");
-		Play::DrawFontText("151px", "Game Over", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
-		Play::DrawFontText("64px", "Press enter to play again!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
-
-		if (Play::KeyPressed(VK_RETURN))
-		{
-			m_pos = { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 140 };
-			b_isDead = false;
-			SetDrawState(State::STATE_IDLE);
-			m_pCurrentState = new IdleRightState;
-		}
+		HandleGameOver();
 	}
 }
 
@@ -107,7 +96,7 @@ void Player::Draw(GameState& gState) const
 	}
 }
 
-bool Player::IsColliding(GameObject& object1, GameObject* object2)
+bool Player::IsStandingOn(GameObject& object1, GameObject* object2)
 {
 	int xoffset = 5;
 	int vert_dist = 15;
@@ -132,4 +121,20 @@ bool Player::IsColliding(GameObject& object1, GameObject* object2)
 	}
 
 	return false;
+}
+
+void Player::HandleGameOver()
+{
+	Play::CentreSpriteOrigin("151px");
+	Play::CentreSpriteOrigin("64px");
+	Play::DrawFontText("151px", "Game Over", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
+	Play::DrawFontText("64px", "Press enter to play again!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
+
+	if (Play::KeyPressed(VK_RETURN))
+	{
+		m_pos = { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 140 };
+		b_isDead = false;
+		SetDrawState(State::STATE_IDLE);
+		m_pCurrentState = new IdleRightState;
+	}
 }

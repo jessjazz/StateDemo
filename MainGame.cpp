@@ -5,8 +5,8 @@
 #define PLAY_IMPLEMENTATION
 #include "Play.h"
 
-GameState gState;
 std::vector< GameObject* > GameState::s_vMap;
+GameState gState;
 
 // The entry point for a Windows program
 void MainGameEntry( PLAY_IGNORE_COMMAND_LINE )

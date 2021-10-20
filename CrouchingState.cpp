@@ -36,7 +36,7 @@ void CrouchRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
 	for (GameObject* p : map)
 	{
-		if (player.IsColliding(player, p))
+		if (player.IsStandingOn(player, p))
 		{
 			player.SetPosition(oldPos);
 			player.SetGrounded(true);
@@ -77,7 +77,7 @@ void CrouchLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
 	for (GameObject* p : map)
 	{
-		if (player.IsColliding(player, p))
+		if (player.IsStandingOn(player, p))
 		{
 			player.SetPosition(oldPos);
 			player.SetGrounded(true);

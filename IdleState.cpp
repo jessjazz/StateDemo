@@ -40,7 +40,7 @@ void IdleRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
 	for (GameObject* p : map)
 	{
-		if (player.IsColliding(player, p) && !player.IsGrounded())
+		if (player.IsStandingOn(player, p) && !player.IsGrounded())
 		{
 			player.SetPosition({ currentPos.x, p->GetPosition().y - player.GetHeight() });
 			player.SetVelocity({ 0,0 });
@@ -85,7 +85,7 @@ void IdleLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
 	for (GameObject* p : map)
 	{
-		if (player.IsColliding(player, p) && !player.IsGrounded())
+		if (player.IsStandingOn(player, p) && !player.IsGrounded())
 		{
 			player.SetPosition({ currentPos.x, p->GetPosition().y - player.GetHeight() });
 			player.SetVelocity({ 0,0 });

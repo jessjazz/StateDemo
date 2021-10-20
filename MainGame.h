@@ -9,7 +9,7 @@ constexpr int DISPLAY_WIDTH = 1280;
 constexpr int DISPLAY_HEIGHT = 720;
 constexpr int DISPLAY_SCALE = 1;
 
-enum State
+enum class State
 {
 	STATE_IDLE = 0,
 	STATE_IDLE_LEFT,
@@ -37,7 +37,7 @@ struct GameState
 
 	static std::vector< GameObject* > s_vMap;
 
-	State playerState{ STATE_IDLE };
+	State playerState = State::STATE_IDLE;
 };
 
 void CreateMap(GameState& gState);
