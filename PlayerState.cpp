@@ -11,15 +11,16 @@ void PlayerState::HandleCollision(Player& player, const std::vector<GameObject*>
 	{
 		if (player.IsStandingOn(&player, p))
 		{
-			player.SetVelocity({ speed, 0 });
 
 			switch (direction)
 			{
 			case RIGHT:
+				player.SetVelocity({ speed, 0 });
 				player.SetPosition({ currentPos.x + player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
 				break;
 			case LEFT:
-				player.SetPosition({ currentPos.x - player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
+				player.SetVelocity({ -speed, 0 });
+				player.SetPosition({ currentPos.x + player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
 				break;
 			default:
 				break;
@@ -30,8 +31,6 @@ void PlayerState::HandleCollision(Player& player, const std::vector<GameObject*>
 		}
 		else
 		{
-  			player.SetVelocity({ 0, 0 + player.GetGravity() });
-			player.SetPosition(currentPos + player.GetVelocity());
 			player.SetGrounded(false);
 		}
 	}

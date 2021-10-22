@@ -20,7 +20,7 @@ void FallRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	
 	Point2f currentPos = player.GetPosition();;
 
-	player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y + player.GetGravity() });
+	player.SetVelocity(player.GetVelocity() + player.GetGravity());
 	player.SetPosition(currentPos + player.GetVelocity());
 
 	for (GameObject* p : map)
@@ -55,7 +55,7 @@ void FallLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 
 	Point2f currentPos = player.GetPosition();;
 
-	player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y + player.GetGravity() });
+	player.SetVelocity(player.GetVelocity() + player.GetGravity());
 	player.SetPosition(currentPos + player.GetVelocity());
 
 	for (GameObject* p : map)

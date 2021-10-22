@@ -48,7 +48,7 @@ void CreateMap(GameState& gState, const int platformNum)
 	PlatformArgs platform4{ { 0, 520 }, 250, 50 };
 	PlatformArgs platform5{ { 0, 310 }, 300, 50 };
 	PlatformArgs platform6{ { 930, 570 }, 350, 50 };
-	PlatformArgs platform7{ { 440, 420 }, 400, 50 };
+	PlatformArgs platform7{ { 440, 420 }, 300, 50 };
 	PlatformArgs platform8{ { 390, 180 }, 300, 50 };
 	PlatformArgs platform9{ { 840, 180 }, 100, 50 };
 	PlatformArgs platform10{ { 1080, 180 }, 200, 50 };

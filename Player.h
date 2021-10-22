@@ -20,8 +20,8 @@ public:
 	int GetSpeed() const { return m_speed; }
 	void SetSpeed(const int speed) { m_speed = speed; }
 
-	float GetGravity() const { return m_gravity; }
-	void SetGravity(const float gravity) { m_gravity = gravity; }
+	Vector2f GetGravity() const { return m_gravity; }
+	void SetGravity(const Vector2f gravity) { m_gravity = gravity; }
 
 	bool IsGrounded() const { return b_onGround; }
 	void SetGrounded(const bool onGround) { b_onGround = onGround; }
@@ -35,13 +35,9 @@ private:
 	State m_state;
 	PlayerState* m_pCurrentState;
 	int m_speed;
-	float m_gravity;
+	Vector2f m_gravity;
 	bool b_onGround;
 	bool b_isDead;
 
 	void HandleGameOver();
-
-//public:
-//	int idleRight, idleLeft, runRight, runLeft, jumpRight, jumpLeft, crouchRight, crouchLeft, 
-//		dashRight, dashLeft, crawlRight, crawlLeft, slideRight, slideLeft, fallRight, fallLeft;
 };

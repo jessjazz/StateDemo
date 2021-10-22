@@ -6,7 +6,7 @@ Player::Player(Point2f pos)
 	: GameObject(pos),
 	m_speed(5),
 	m_state(State::STATE_IDLE),
-	m_gravity(1.0f),
+	m_gravity({ 0, 1 }),
 	b_onGround(false),
 	b_isDead(false)
 {
