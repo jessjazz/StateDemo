@@ -31,7 +31,7 @@ void Player::Update(GameState& gState)
 			m_pCurrentState = pState;
 		}
 
-		m_pCurrentState->StateUpdate(*this, gState.s_vMap);
+		m_pCurrentState->StateUpdate(*this, gState.s_vMap, gState);
 	}
 	else
 	{
@@ -44,67 +44,70 @@ void Player::Draw(GameState& gState) const
 	switch (m_state)
 	{
 	case State::STATE_IDLE:
-		Play::DrawSprite(Play::GetSpriteId("idle_7"), m_pos, 5 * gState.time);
+		Play::DrawSprite(gState.sprites.idleRight, m_pos, 5 * gState.time);
 		break;
 	case State::STATE_IDLE_LEFT:
-		Play::DrawSprite(Play::GetSpriteId("idle_left_7"), m_pos, 5 * gState.time);
+		Play::DrawSprite(gState.sprites.idleLeft, m_pos, 5 * gState.time);
 		break;
 	case State::STATE_RUN_RIGHT:
-		Play::DrawSprite(Play::GetSpriteId("run_right_8"), m_pos, 12 * gState.time);
+		Play::DrawSprite(gState.sprites.runRight, m_pos, 12 * gState.time);
 		break;
 	case State::STATE_RUN_LEFT:
-		Play::DrawSprite(Play::GetSpriteId("run_left_8"), m_pos, 12 * gState.time);
+		Play::DrawSprite(gState.sprites.runLeft, m_pos, 12 * gState.time);
 		break;
 	case State::STATE_JUMP:
-		Play::DrawSprite(Play::GetSpriteId("jump_right_1"), m_pos, 1);
+		Play::DrawSprite(gState.sprites.jumpRight, m_pos, 1);
 		break;
 	case State::STATE_JUMP_LEFT:
-		Play::DrawSprite(Play::GetSpriteId("jump_left_1"), m_pos, 1);
+		Play::DrawSprite(gState.sprites.jumpLeft, m_pos, 1);
 		break;
 	case State::STATE_CROUCH:
-		Play::DrawSprite(Play::GetSpriteId("crouch_6"), m_pos, 5 * gState.time);
+		Play::DrawSprite(gState.sprites.crouchRight, m_pos, 5 * gState.time);
 		break;
 	case State::STATE_CROUCH_LEFT:
-		Play::DrawSprite(Play::GetSpriteId("crouch_left_6"), m_pos, 5 * gState.time);
+		Play::DrawSprite(gState.sprites.crouchLeft, m_pos, 5 * gState.time);
 		break;
 	case State::STATE_DASH_RIGHT:
-		Play::DrawSprite(Play::GetSpriteId("dash_right_4"), m_pos, 10 * gState.time);
+		Play::DrawSprite(gState.sprites.dashRight, m_pos, 10 * gState.time);
 		break;
 	case State::STATE_DASH_LEFT:
-		Play::DrawSprite(Play::GetSpriteId("dash_left_4"), m_pos, 10 * gState.time);
+		Play::DrawSprite(gState.sprites.dashLeft, m_pos, 10 * gState.time);
 		break;
 	case State::STATE_CRAWL_RIGHT:
-		Play::DrawSprite(Play::GetSpriteId("crawl_right_8"), m_pos, 10 * gState.time);
+		Play::DrawSprite(gState.sprites.crawlRight, m_pos, 10 * gState.time);
 		break;
 	case State::STATE_CRAWL_LEFT:
-		Play::DrawSprite(Play::GetSpriteId("crawl_left_8"), m_pos, 10 * gState.time);
+		Play::DrawSprite(gState.sprites.crawlLeft, m_pos, 10 * gState.time);
 		break;
 	case State::STATE_SLIDE_RIGHT:
-		Play::DrawSprite(Play::GetSpriteId("slide_right_4"), m_pos, 10 * gState.time);
+		Play::DrawSprite(gState.sprites.slideRight, m_pos, 10 * gState.time);
 		break;
 	case State::STATE_SLIDE_LEFT:
-		Play::DrawSprite(Play::GetSpriteId("slide_left_4"), m_pos, 10 * gState.time);
+		Play::DrawSprite(gState.sprites.slideLeft, m_pos, 10 * gState.time);
 		break;
 	case State::STATE_FALL_RIGHT:
-		Play::DrawSprite(Play::GetSpriteId("fall_right_1"), m_pos, 1);
+		Play::DrawSprite(gState.sprites.fallRight, m_pos, 1);
 		break;
 	case State::STATE_FALL_LEFT:
-		Play::DrawSprite(Play::GetSpriteId("fall_left_1"), m_pos, 1);
+		Play::DrawSprite(gState.sprites.fallLeft, m_pos, 1);
 		break;
 	default:
 		break;
 	}
 }
 
-bool Player::IsStandingOn(GameObject& object1, GameObject* object2)
+bool Player::IsStandingOn(const GameObject* object1, const GameObject* object2) const
 {
+	PLAY_ASSERT_MSG(object1, "object1 cannot be null");
+	PLAY_ASSERT_MSG(object2, "object2 cannot be null");
+
 	int xoffset = 5;
 	int vert_dist = 15;
 
-	int object1_x1 = object1.GetPosition().x - xoffset;
-	int object1_y1 = object1.GetPosition().y + object1.GetHeight();
-	int object1_x2 = object1.GetPosition().x + object1.GetWidth() + xoffset;
-	int object1_y2 = object1.GetPosition().y + object1.GetHeight() + vert_dist;
+	int object1_x1 = object1->GetPosition().x - xoffset;
+	int object1_y1 = object1->GetPosition().y + object1->GetHeight();
+	int object1_x2 = object1->GetPosition().x + object1->GetWidth() + xoffset;
+	int object1_y2 = object1->GetPosition().y + object1->GetHeight() + vert_dist;
 
 	int object2_x1 = object2->GetPosition().x;
 	int object2_y1 = object2->GetPosition().y;
@@ -138,3 +141,4 @@ void Player::HandleGameOver()
 		m_pCurrentState = new IdleRightState;
 	}
 }
+

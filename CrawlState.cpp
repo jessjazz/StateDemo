@@ -27,41 +27,15 @@ PlayerState* CrawlRightState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void CrawlRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
+void CrawlRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-	Point2f oldPos = player.GetPosition();
-	Point2f currentPos = oldPos;
-	
-	int spriteId = Play::GetSpriteId("crawl_right_8");
+	int spriteId = gState.sprites.crawlRight;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
-	int speed = player.GetSpeed();
-	player.SetVelocity({ speed / 2, 0 });
-	Vector2f velocity = player.GetVelocity();
+	int speed = player.GetSpeed() / 2;
 
-	for (GameObject* p : map)
-	{
-		if (player.IsStandingOn(player, p))
-		{
-			if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
-			{
-				player.SetPosition(currentPos + velocity);
-			}
-			else
-			{
-				player.SetPosition(oldPos);
-			}
-			player.SetGrounded(true);
-			break;
-		}
-		else
-		{
-			player.SetVelocity({ 0, 0 + player.GetGravity() });
-			player.SetPosition(currentPos + player.GetVelocity());
-			player.SetGrounded(false);
-		}
-	}
+	HandleCollision(player, map, speed, RIGHT);
 }
 
 PlayerState* CrawlLeftState::HandleInput(Player& player)
@@ -87,39 +61,13 @@ PlayerState* CrawlLeftState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void CrawlLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
+void CrawlLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-	Point2f oldPos = player.GetPosition();
-	Point2f currentPos = oldPos;
-
-	int spriteId = Play::GetSpriteId("crawl_left_8");
+	int spriteId = gState.sprites.crawlLeft;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
-	int speed = player.GetSpeed();
-	player.SetVelocity({ speed / 2, 0 });
-	Vector2f velocity = player.GetVelocity();
+	int speed = player.GetSpeed() / 2;
 
-	for (GameObject* p : map)
-	{
-		if (player.IsStandingOn(player, p))
-		{
-			if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
-			{
-				player.SetPosition(currentPos - velocity);
-			}
-			else
-			{
-				player.SetPosition(oldPos);
-			}
-			player.SetGrounded(true);
-			break;
-		}
-		else
-		{
-			player.SetVelocity({ 0, 0 + player.GetGravity() });
-			player.SetPosition(currentPos + player.GetVelocity());
-			player.SetGrounded(false);
-		}
-	}
+	HandleCollision(player, map, speed, LEFT);
 }

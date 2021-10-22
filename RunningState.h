@@ -9,7 +9,7 @@ public:
 	RunRightState() {}
 
 	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, std::vector<GameObject*> map) override;
+	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
 };
 
 class RunLeftState : public PlayerState
@@ -18,5 +18,5 @@ public:
 	RunLeftState() {}
 
 	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, std::vector<GameObject*> map) override;
+	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
 };

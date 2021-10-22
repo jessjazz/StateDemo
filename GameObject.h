@@ -20,25 +20,25 @@ public:
     virtual void Update(GameState& gState) = 0;
     virtual void Draw(GameState& gState) const = 0;
 
-    void SetPosition(Point2f pos) { m_pos = pos; }
+    void SetPosition( const Point2f pos) { m_pos = pos; }
     Point2f GetPosition() const { return m_pos; };
 
-    void SetVelocity(Vector2f vel) { m_velocity = vel; }
+    void SetVelocity(const Vector2f vel) { m_velocity = vel; }
     Vector2f GetVelocity() const { return m_velocity; };
 
-    void SetWidth(int width) { m_width = width; }
+    void SetWidth(const int width) { m_width = width; }
     int GetWidth() const { return m_width; }
 
-    void SetHeight(int Height) { m_height = Height; }
+    void SetHeight(const int Height) { m_height = Height; }
     int GetHeight() const { return m_height; }
 
-    void SetType(Type type) { m_type = type; }
+    void SetType(const Type type) { m_type = type; }
     Type GetType() const { return m_type; }
 
-    void SetDrawOrder(int drawOrder) { m_drawOrder = drawOrder; }
+    void SetDrawOrder(const int drawOrder) { m_drawOrder = drawOrder; }
     int GetDrawOrder() const { return m_drawOrder; };
 
-    void SetUpdateOrder(int updateOrder) { m_updateOrder = updateOrder; }
+    void SetUpdateOrder(const int updateOrder) { m_updateOrder = updateOrder; }
     int GetUpdateOrder() const { return m_updateOrder; };
 
     static int GetObjectCount(Type eType);

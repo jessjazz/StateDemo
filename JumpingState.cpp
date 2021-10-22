@@ -3,7 +3,6 @@
 #include "Player.h"
 
 constexpr float MAX_JUMP_TIME = 10.0f;
-constexpr int LANDING_POS = 600;
 constexpr int JUMP_HEIGHT = 10;
 constexpr int JUMP_DISTANCE = 5;
 
@@ -20,14 +19,13 @@ PlayerState* JumpRightState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void JumpRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
+void JumpRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-	int spriteId = Play::GetSpriteId("jump_right");
+	int spriteId = gState.sprites.jumpRight;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
-	Point2f oldPos = player.GetPosition();
-	Point2f currentPos = oldPos;
+	Point2f currentPos = player.GetPosition();;
 
 	if (player.IsGrounded())
 	{
@@ -57,14 +55,13 @@ PlayerState* JumpLeftState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void JumpLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
+void JumpLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-	int spriteId = Play::GetSpriteId("jump_left");
+	int spriteId = gState.sprites.jumpLeft;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
-	Point2f oldPos = player.GetPosition();
-	Point2f currentPos = oldPos;
+	Point2f currentPos = player.GetPosition();;
 
 	if (player.IsGrounded())
 	{

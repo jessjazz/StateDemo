@@ -11,7 +11,7 @@ public:
 	{}
 
 	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, std::vector<GameObject*> map) override;
+	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
 
 private:
 	float m_jumpTime;
@@ -25,7 +25,7 @@ public:
 	{}
 
 	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, std::vector<GameObject*> map) override;
+	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
 
 private:
 	float m_jumpTime;

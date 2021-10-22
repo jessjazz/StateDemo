@@ -29,18 +29,17 @@ PlayerState* IdleRightState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void IdleRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
+void IdleRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-	Point2f oldPos = player.GetPosition();
-	Point2f currentPos = oldPos;
+	Point2f currentPos = player.GetPosition();;
 
-	int spriteId = Play::GetSpriteId("idle_7");
+	int spriteId = gState.sprites.idleRight;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(player, p) && !player.IsGrounded())
+		if (player.IsStandingOn(&player, p))
 		{
 			player.SetPosition({ currentPos.x, p->GetPosition().y - player.GetHeight() });
 			player.SetVelocity({ 0,0 });
@@ -74,18 +73,17 @@ PlayerState* IdleLeftState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void IdleLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
+void IdleLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-	Point2f oldPos = player.GetPosition();
-	Point2f currentPos = oldPos;
+	Point2f currentPos = player.GetPosition();;
 
-	int spriteId = Play::GetSpriteId("idle_left_7");
+	int spriteId = gState.sprites.idleLeft;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(player, p) && !player.IsGrounded())
+		if (player.IsStandingOn(&player, p))
 		{
 			player.SetPosition({ currentPos.x, p->GetPosition().y - player.GetHeight() });
 			player.SetVelocity({ 0,0 });

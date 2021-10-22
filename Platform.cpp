@@ -1,4 +1,5 @@
 #include "Platform.h"
+#include "MainGame.h"
 
 Platform::Platform(Point2f pos, int width, int height)
 	: GameObject(pos)

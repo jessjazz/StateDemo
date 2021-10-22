@@ -1,28 +1,31 @@
 #include "FallState.h"
 #include "Player.h"
-#include "RunningState.h"
+#include "IdleState.h"
 
 PlayerState* FallRightState::HandleInput(Player& player)
 {
 	if (player.IsGrounded())
 	{
-		player.SetDrawState(State::STATE_RUN_RIGHT);
-		return new RunRightState;
+		player.SetDrawState(State::STATE_IDLE);
+		return new IdleRightState;
 	}
 	return nullptr;
 }
 
-void FallRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
+void FallRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-	Point2f oldPos = player.GetPosition();
-	Point2f currentPos = oldPos;
+	int spriteId = gState.sprites.fallRight;
+	player.SetHeight(Play::GetSpriteHeight(spriteId));
+	player.SetWidth(Play::GetSpriteWidth(spriteId));
+	
+	Point2f currentPos = player.GetPosition();;
 
 	player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y + player.GetGravity() });
 	player.SetPosition(currentPos + player.GetVelocity());
 
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(player, p))
+		if (player.IsStandingOn(&player, p))
 		{
 			player.SetGrounded(true);
 		}
@@ -38,23 +41,26 @@ PlayerState* FallLeftState::HandleInput(Player& player)
 {
 	if (player.IsGrounded())
 	{
-		player.SetDrawState(State::STATE_RUN_LEFT);
-		return new RunLeftState;
+		player.SetDrawState(State::STATE_IDLE_LEFT);
+		return new IdleLeftState;
 	}
 	return nullptr;
 }
 
-void FallLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
+void FallLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-	Point2f oldPos = player.GetPosition();
-	Point2f currentPos = oldPos;
+	int spriteId = gState.sprites.fallLeft;
+	player.SetHeight(Play::GetSpriteHeight(spriteId));
+	player.SetWidth(Play::GetSpriteWidth(spriteId));
+
+	Point2f currentPos = player.GetPosition();;
 
 	player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y + player.GetGravity() });
 	player.SetPosition(currentPos + player.GetVelocity());
 
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(player, p))
+		if (player.IsStandingOn(&player, p))
 		{
 			player.SetGrounded(true);
 		}

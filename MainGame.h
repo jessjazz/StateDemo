@@ -30,14 +30,29 @@ enum class State
 	STATE_INVALID = -1,
 };
 
+struct Sprites
+{
+	int idleRight, idleLeft, runRight, runLeft, jumpRight, jumpLeft, crouchRight, crouchLeft,
+		dashRight, dashLeft, crawlRight, crawlLeft, slideRight, slideLeft, fallRight, fallLeft;
+};
+
 struct GameState
 {
 	float time{ 0.f };
 	Player* player;
-
 	static std::vector< GameObject* > s_vMap;
-
 	State playerState = State::STATE_IDLE;
+	Sprites sprites;
 };
 
-void CreateMap(GameState& gState);
+struct PlatformArgs
+{
+	Point2f pos;
+	int width;
+	int height;
+};
+
+
+void CreateMap(GameState& gState, const int platformNum);
+
+void LoadSprites(Sprites& sprites);

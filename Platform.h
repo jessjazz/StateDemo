@@ -1,5 +1,8 @@
 #pragma once
 #include "GameObject.h"
+
+struct PlatformArgs;
+
 class Platform : public GameObject
 {
 public:

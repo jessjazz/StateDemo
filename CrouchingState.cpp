@@ -25,18 +25,18 @@ PlayerState* CrouchRightState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void CrouchRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
+void CrouchRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
 	Point2f oldPos = player.GetPosition();
 	Point2f currentPos = oldPos;
 
-	int spriteId = Play::GetSpriteId("crouch_6");
+	int spriteId = gState.sprites.crouchRight;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(player, p))
+		if (player.IsStandingOn(&player, p))
 		{
 			player.SetPosition(oldPos);
 			player.SetGrounded(true);
@@ -66,9 +66,9 @@ PlayerState* CrouchLeftState::HandleInput(Player& player)
 	return nullptr;
 }
 
-void CrouchLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
+void CrouchLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-	int spriteId = Play::GetSpriteId("crouch_left_6");
+	int spriteId = gState.sprites.crouchLeft;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
@@ -77,7 +77,7 @@ void CrouchLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
 
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(player, p))
+		if (player.IsStandingOn(&player, p))
 		{
 			player.SetPosition(oldPos);
 			player.SetGrounded(true);

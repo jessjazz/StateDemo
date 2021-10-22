@@ -24,41 +24,15 @@ PlayerState* SlideRightState::HandleInput(Player& player)
     return nullptr;
 }
 
-void SlideRightState::StateUpdate(Player& player, std::vector<GameObject*> map)
+void SlideRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-    int spriteId = Play::GetSpriteId("slide_right_4");
+    int spriteId = gState.sprites.slideRight;
     player.SetHeight(Play::GetSpriteHeight(spriteId));
     player.SetWidth(Play::GetSpriteWidth(spriteId));
 
-    Point2f oldPos = player.GetPosition();
-    Point2f currentPos = oldPos;
-
     int speed = player.GetSpeed();
-    player.SetVelocity({ speed, 0 });
-    Vector2f velocity = player.GetVelocity();
 
-    for (GameObject* p : map)
-    {
-        if (player.IsStandingOn(player, p))
-        {
-            if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
-            {
-                player.SetPosition(currentPos + velocity);
-            }
-            else
-            {
-                player.SetPosition(oldPos);
-            }
-            player.SetGrounded(true);
-            break;
-        }
-        else
-        {
-            player.SetVelocity({ 0, 0 + player.GetGravity() });
-            player.SetPosition(currentPos + player.GetVelocity());
-            player.SetGrounded(false);
-        }
-    }
+    HandleCollision(player, map, speed, RIGHT);
 }
 
 PlayerState* SlideLeftState::HandleInput(Player& player)
@@ -80,39 +54,13 @@ PlayerState* SlideLeftState::HandleInput(Player& player)
     return nullptr;
 }
 
-void SlideLeftState::StateUpdate(Player& player, std::vector<GameObject*> map)
+void SlideLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-    int spriteId = Play::GetSpriteId("slide_left_4");
+    int spriteId = gState.sprites.slideLeft;
     player.SetHeight(Play::GetSpriteHeight(spriteId));
     player.SetWidth(Play::GetSpriteWidth(spriteId));
 
-    Point2f oldPos = player.GetPosition();
-    Point2f currentPos = oldPos;
-
     int speed = player.GetSpeed();
-    player.SetVelocity({ speed, 0 });
-    Vector2f velocity = player.GetVelocity();
 
-    for (GameObject* p : map)
-    {
-        if (player.IsStandingOn(player, p))
-        {
-            if (player.GetPosition().y <= DISPLAY_HEIGHT - p->GetHeight())
-            {
-                player.SetPosition(currentPos - velocity);
-            }
-            else
-            {
-                player.SetPosition(oldPos);
-            }
-            player.SetGrounded(true);
-            break;
-        }
-        else
-        {
-            player.SetVelocity({ 0, 0 + player.GetGravity() });
-            player.SetPosition(currentPos + player.GetVelocity());
-            player.SetGrounded(false);
-        }
-    }
+    HandleCollision(player, map, speed, LEFT);
 }
