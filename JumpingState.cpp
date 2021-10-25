@@ -25,7 +25,7 @@ void JumpRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
-	Point2f currentPos = player.GetPosition();;
+	Point2f currentPos = player.GetPosition();
 
 	if (player.IsGrounded())
 	{
@@ -36,7 +36,15 @@ void JumpRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	{
 		player.SetVelocity({ JUMP_DISTANCE, player.GetVelocity().y });
 	}
-	 
+	
+	for (GameObject* p : map)
+	{
+		if (player.DetectCollision(&player, p) == 1)
+		{
+			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1 });
+		}
+	}
+
 	player.SetPosition(currentPos + player.GetVelocity());
 
 	player.SetGrounded(false);
@@ -61,7 +69,7 @@ void JumpLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
-	Point2f currentPos = player.GetPosition();;
+	Point2f currentPos = player.GetPosition();
 
 	if (player.IsGrounded())
 	{
@@ -71,6 +79,14 @@ void JumpLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 	if (!player.IsGrounded() && Play::KeyDown(VK_LEFT))
 	{
 		player.SetVelocity({ -JUMP_DISTANCE, player.GetVelocity().y });
+	}
+
+	for (GameObject* p : map)
+	{
+		if (player.DetectCollision(&player, p) == 1)
+		{
+			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1 });
+		}
 	}
 
 	player.SetPosition(currentPos + player.GetVelocity());

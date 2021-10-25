@@ -30,6 +30,7 @@ public:
 	void SetDead(const bool lifeState) { b_isDead = lifeState; }
 
 	bool IsStandingOn(const GameObject* object1, const GameObject* object2) const;
+	int DetectCollision(GameObject* object1, GameObject* object2) const;
 
 private:
 	State m_state;

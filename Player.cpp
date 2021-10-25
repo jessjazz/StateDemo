@@ -126,6 +126,58 @@ bool Player::IsStandingOn(const GameObject* object1, const GameObject* object2) 
 	return false;
 }
 
+int Player::DetectCollision(GameObject* object1, GameObject* object2) const
+{
+	int offset = 3;
+
+	int object1_y = object1->GetPosition().y;
+	int object2_y = object2->GetPosition().y;
+	int object1_x = object1->GetPosition().x;
+	int object2_x = object2->GetPosition().x;
+	int object1_yh = object1->GetPosition().y + object1->GetHeight();
+	int object2_yh = object2->GetPosition().y + object2->GetHeight();
+	int object1_xw = object1->GetPosition().x + object1->GetWidth();
+	int object2_xw = object2->GetPosition().x + object2->GetWidth();
+
+	int object1_y_offset = object1->GetPosition().y + offset;
+	int object2_yh_offset = object2->GetPosition().y + object2->GetHeight() - offset;
+
+	int object1_x_offset = object1->GetPosition().x - offset;
+	int object2_xw_offset = object2->GetPosition().x + object2->GetWidth() + offset;
+
+	int object1_xw_offset = object1->GetPosition().x + object1->GetWidth() + offset;
+	int object2_x_offset = object2->GetPosition().x - offset;
+
+	// Check for collision above
+	if (object1_x < object2_xw &&
+		object1_xw > object2_x &&
+		object1_y < object2_yh &&
+		object1_y_offset > object2_yh_offset)
+	{
+		return 1;
+	}
+	// Check for collision to the left of player
+	else if (object1_x_offset < object2_xw_offset &&
+		object1_x > object2_xw &&
+		object1_y < object2_yh &&
+		object1_yh > object2_y)
+	{
+		return -1;
+	}
+	// Check for collision to right of player
+	else if (object1_xw < object2_x &&
+		object1_xw_offset > object2_x_offset &&
+		object1_y < object2_yh &&
+		object1_yh > object2_y)
+	{
+		return 2;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 void Player::HandleGameOver()
 {
 	Play::CentreSpriteOrigin("151px");

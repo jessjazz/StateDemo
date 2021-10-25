@@ -43,6 +43,7 @@ PlayerState* RunRightState::HandleInput(Player& player)
 
 void RunRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
+	Point2f oldPos = player.GetPosition();
 	int spriteId = gState.sprites.runRight;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
@@ -89,6 +90,7 @@ PlayerState* RunLeftState::HandleInput(Player& player)
 
 void RunLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
+	Point2f oldPos = player.GetPosition();
 	int spriteId = gState.sprites.runLeft;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
