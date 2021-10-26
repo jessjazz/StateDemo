@@ -11,22 +11,51 @@ void PlayerState::HandleCollision(Player& player, const std::vector<GameObject*>
 	{
 		if (player.IsStandingOn(&player, p))
 		{
-			switch (direction)
+			if (p->GetType() != GameObject::Type::OBJ_DECAYING_PLATFORM)
 			{
-			case RIGHT:
-				player.SetVelocity({ speed, 0 });
-				player.SetPosition({ currentPos.x + player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
-				break;
-			case LEFT:
-				player.SetVelocity({ -speed, 0 });
-				player.SetPosition({ currentPos.x + player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
-				break;
-			default:
+				switch (direction)
+				{
+				case RIGHT:
+					player.SetVelocity({ speed, 0 });
+					player.SetPosition({ currentPos.x + player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
+					break;
+				case LEFT:
+					player.SetVelocity({ -speed, 0 });
+					player.SetPosition({ currentPos.x + player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
+					break;
+				default:
+					break;
+				}
+
+				player.SetGrounded(true);
 				break;
 			}
+			else
+			{
+				if (p->IsCollidable())
+				{
+					switch (direction)
+					{
+					case RIGHT:
+						player.SetVelocity({ speed, 0 });
+						player.SetPosition({ currentPos.x + player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
+						break;
+					case LEFT:
+						player.SetVelocity({ -speed, 0 });
+						player.SetPosition({ currentPos.x + player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
+						break;
+					default:
+						break;
+					}
 
-			player.SetGrounded(true);
-			break;
+					player.SetGrounded(true);
+					break;
+				}
+				else
+				{
+					player.SetGrounded(false);
+				}
+			}
 		}
 		else
 		{

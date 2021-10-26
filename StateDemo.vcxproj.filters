@@ -72,6 +72,9 @@
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DecayingPlatform.h">
+      <Filter>Header Files\Platforms</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame.cpp">
@@ -115,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DecayingPlatform.cpp">
+      <Filter>Source Files\Platforms</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

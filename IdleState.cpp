@@ -1,7 +1,8 @@
-#include "IdleState.h"
-#include "Player.h"
-#include "JumpingState.h"
 #include "CrouchingState.h"
+#include "FallState.h"
+#include "IdleState.h"
+#include "JumpingState.h"
+#include "Player.h"
 #include "RunningState.h"
 
 PlayerState* IdleRightState::HandleInput(Player& player)
@@ -26,6 +27,12 @@ PlayerState* IdleRightState::HandleInput(Player& player)
 		player.SetDrawState(State::STATE_CROUCH);
 		return new CrouchRightState;
 	}
+	
+	if (!player.IsGrounded())
+	{
+		player.SetDrawState(State::STATE_FALL_RIGHT);
+		return new FallRightState;
+	}
 	return nullptr;
 }
 
@@ -45,6 +52,19 @@ void IdleRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 			{
 				player.SetPosition({ currentPos.x + p->GetVelocity().x, p->GetPosition().y - player.GetHeight() });
 				player.SetGrounded(true);
+			}
+			else if (p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM)
+			{
+				if (p->IsCollidable())
+				{
+					player.SetPosition({ currentPos.x, p->GetPosition().y - player.GetHeight() });
+					player.SetVelocity({ 0,0 });
+					player.SetGrounded(true);
+				}
+				else
+				{
+					player.SetGrounded(false);
+				}
 			}
 			else
 			{
@@ -78,6 +98,12 @@ PlayerState* IdleLeftState::HandleInput(Player& player)
 		player.SetDrawState(State::STATE_CROUCH_LEFT);
 		return new CrouchLeftState;
 	}
+
+	if (!player.IsGrounded())
+	{
+		player.SetDrawState(State::STATE_FALL_LEFT);
+		return new FallLeftState;
+	}
 	return nullptr;
 }
 
@@ -97,6 +123,19 @@ void IdleLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 			{
 				player.SetPosition({ currentPos.x + p->GetVelocity().x, p->GetPosition().y - player.GetHeight() });
 				player.SetGrounded(true);
+			}
+			else if (p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM)
+			{
+				if (p->IsCollidable())
+				{
+					player.SetPosition({ currentPos.x, p->GetPosition().y - player.GetHeight() });
+					player.SetVelocity({ 0,0 });
+					player.SetGrounded(true);
+				}
+				else
+				{
+					player.SetGrounded(false);
+				}
 			}
 			else
 			{

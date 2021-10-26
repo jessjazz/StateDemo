@@ -43,13 +43,15 @@ struct CameraRect
 struct Sprites
 {
 	int idleRight, idleLeft, runRight, runLeft, jumpRight, jumpLeft, crouchRight, crouchLeft,
-		dashRight, dashLeft, crawlRight, crawlLeft, slideRight, slideLeft, fallRight, fallLeft;
+		dashRight, dashLeft, crawlRight, crawlLeft, slideRight, slideLeft, fallRight, fallLeft, platform;
 };
 
 struct GameState
 {
+	float deltaTime;
 	float time{ 0.f };
 	Player* player;
+	Point2f originalPlayerPos{ 40, 488 };
 	static std::vector< GameObject* > s_vMap;
 	State playerState = State::STATE_IDLE;
 	Sprites sprites;

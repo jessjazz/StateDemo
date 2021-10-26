@@ -44,6 +44,6 @@ private:
 	bool b_isDead;
 	int m_lives;
 
-	void HandleGameOver();
-	void HandleLifeLost();
+	void HandleGameOver(GameState& gState);
+	void HandleLifeLost(GameState& gState);
 };

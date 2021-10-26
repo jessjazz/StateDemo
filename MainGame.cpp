@@ -1,5 +1,6 @@
 #include "MainGame.h"
 #include "GameObject.h"
+#include "DecayingPlatform.h"
 #include "MovingPlatform.h"
 #include "Player.h"
 #define PLAY_IMPLEMENTATION
@@ -15,14 +16,15 @@ void MainGameEntry( PLAY_IGNORE_COMMAND_LINE )
 
 	// Do things here that only need to be performed once at the start of your application
 	Play::LoadBackground("Data\\Backgrounds\\background.png");
-	CreateMap(gState, 10);
+	CreateMap(gState, 9);
 	LoadSprites(gState.sprites);
 	gState.camera = { 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT };
-	gState.player = new Player({ DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 140 });
+	gState.player = new Player(gState.originalPlayerPos);
 }
 
 bool MainGameUpdate(float elapsedTime)
 {
+	gState.deltaTime = elapsedTime;
 	gState.time += elapsedTime;
 
 	Play::DrawBackground();
@@ -57,13 +59,12 @@ void CreateMap(GameState& gState, const int platformNum)
 	PlatformArgs platform4{ { 0, 520 }, 250, 50 };
 	PlatformArgs platform5{ { 0, 310 }, 300, 50 };
 	PlatformArgs platform6{ { 930, 570 }, 350, 50 };
-	PlatformArgs platform7{ { 440, 420 }, 300, 50 };
+	PlatformArgs platform7{ { 440, 440 }, 300, 50 };
 	PlatformArgs platform8{ { 390, 180 }, 300, 50 };
-	PlatformArgs platform9{ { 840, 180 }, 100, 50 };
-	PlatformArgs platform10{ { 1080, 180 }, 200, 50 };
+	PlatformArgs platform9{ { 1080, 180 }, 200, 50 };
 
-	PlatformArgs Platforms [10] = { platform1, platform2, platform3, platform5, platform6, 
-									platform7, platform8, platform9, platform10 };
+	PlatformArgs Platforms [9] = { platform1, platform2, platform3, platform5, platform6, 
+									platform7, platform8, platform9 };
 
 	for (int i = 0; i < platformNum; i++)
 	{
@@ -74,6 +75,9 @@ void CreateMap(GameState& gState, const int platformNum)
 	PlatformArgs movingPlatform2{ {1285, 180}, 100, 50 };
 	gState.s_vMap.push_back(new MovingPlatform(movingPlatform1.pos, movingPlatform1.width, movingPlatform1.height, 0));
 	gState.s_vMap.push_back(new MovingPlatform(movingPlatform2.pos, movingPlatform2.width, movingPlatform2.height, 1));
+
+	PlatformArgs decayingPlatform1{ {840, 180}, Play::GetSpriteWidth(gState.sprites.platform), Play::GetSpriteHeight(gState.sprites.platform) };
+	gState.s_vMap.push_back(new DecayingPlatform(decayingPlatform1.pos, decayingPlatform1.width, decayingPlatform1.height));
 }
 
 void MoveCamera(GameObject* player, CameraRect& cam)
@@ -117,4 +121,5 @@ void LoadSprites(Sprites& sprites)
 	sprites.slideLeft = Play::GetSpriteId("slide_left");
 	sprites.fallRight = Play::GetSpriteId("fall_right");
 	sprites.fallLeft = Play::GetSpriteId("fall_left");
+	sprites.platform = Play::GetSpriteId("platform");
 }

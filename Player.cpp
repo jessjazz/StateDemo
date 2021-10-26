@@ -36,11 +36,11 @@ void Player::Update(GameState& gState)
 	}
 	else if (b_isDead && m_lives > 0)
 	{
-		HandleLifeLost();
+		HandleLifeLost(gState);
 	}
 	else
 	{
-		HandleGameOver();
+		HandleGameOver(gState);
 	}
 }
 
@@ -186,7 +186,7 @@ int Player::DetectCollision(GameObject* object1, GameObject* object2) const
 	}
 }
 
-void Player::HandleGameOver()
+void Player::HandleGameOver(GameState& gState)
 {
 	Play::CentreSpriteOrigin("151px");
 	Play::CentreSpriteOrigin("64px");
@@ -195,16 +195,17 @@ void Player::HandleGameOver()
 
 	if (Play::KeyPressed(VK_RETURN))
 	{
-		HandleLifeLost();
+		HandleLifeLost(gState);
 		m_lives = 3;
 	}
 }
 
-void Player::HandleLifeLost()
+void Player::HandleLifeLost(GameState& gState)
 {
-	m_pos = { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 140 };
+	m_pos = { gState.originalPlayerPos };
 	b_isDead = false;
 	SetDrawState(State::STATE_IDLE);
 	m_pCurrentState = new IdleRightState;
+	b_onGround = true;
 }
 

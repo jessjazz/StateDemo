@@ -34,9 +34,16 @@ void FallRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(&player, p))
+		if (player.IsStandingOn(&player, p) && p->GetType() != GameObject::Type::OBJ_DECAYING_PLATFORM)
 		{
 			player.SetGrounded(true);
+		}
+		else if (player.IsStandingOn(&player, p) && p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM)
+		{
+			if (p->IsCollidable())
+			{
+				player.SetGrounded(true);
+			}
 		}
 	}
 
@@ -79,9 +86,16 @@ void FallLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(&player, p))
+		if (player.IsStandingOn(&player, p) && p->GetType() != GameObject::Type::OBJ_DECAYING_PLATFORM)
 		{
 			player.SetGrounded(true);
+		}
+		else if (player.IsStandingOn(&player, p) && p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM)
+		{
+			if (p->IsCollidable())
+			{
+				player.SetGrounded(true);
+			}
 		}
 	}
 

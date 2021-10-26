@@ -12,6 +12,7 @@ public:
         OBJ_PLAYER = 0,
         OBJ_PLATFORM,
         OBJ_MOVING_PLATFORM,
+        OBJ_DECAYING_PLATFORM,
         OBJ_ALL = 999
     };
 
@@ -36,6 +37,9 @@ public:
     void SetType(const Type type) { m_type = type; }
     Type GetType() const { return m_type; }
 
+    void SetCollidable(const bool collidable) { b_collidable = collidable; }
+    bool IsCollidable() const { return b_collidable; }
+
     void SetDrawOrder(const int drawOrder) { m_drawOrder = drawOrder; }
     int GetDrawOrder() const { return m_drawOrder; };
 
@@ -56,6 +60,7 @@ protected:
 
     Type m_type{ OBJ_NONE };
     bool m_active{ true };
+    bool b_collidable{ true };
     Point2f m_pos{ 0, 0 };
     Vector2f m_velocity{ 0, 0 };
     int spriteId{ -1 };

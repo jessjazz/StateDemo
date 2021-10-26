@@ -146,6 +146,7 @@
     <ClInclude Include="CrawlState.h" />
     <ClInclude Include="CrouchingState.h" />
     <ClInclude Include="DashState.h" />
+    <ClInclude Include="DecayingPlatform.h" />
     <ClInclude Include="FallState.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="IdleState.h" />
@@ -163,6 +164,7 @@
     <ClCompile Include="CrawlState.cpp" />
     <ClCompile Include="CrouchingState.cpp" />
     <ClCompile Include="DashState.cpp" />
+    <ClCompile Include="DecayingPlatform.cpp" />
     <ClCompile Include="FallState.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="IdleState.cpp" />
