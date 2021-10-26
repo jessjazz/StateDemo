@@ -20,6 +20,9 @@ public:
 	int GetSpeed() const { return m_speed; }
 	void SetSpeed(const int speed) { m_speed = speed; }
 
+	int GetLives() const { return m_lives; }
+	void SetLives(const int lives) { m_lives = lives; }
+
 	Vector2f GetGravity() const { return m_gravity; }
 	void SetGravity(const Vector2f gravity) { m_gravity = gravity; }
 
@@ -39,6 +42,8 @@ private:
 	Vector2f m_gravity;
 	bool b_onGround;
 	bool b_isDead;
+	int m_lives;
 
 	void HandleGameOver();
+	void HandleLifeLost();
 };

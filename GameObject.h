@@ -11,6 +11,7 @@ public:
         OBJ_NONE = -1,
         OBJ_PLAYER = 0,
         OBJ_PLATFORM,
+        OBJ_MOVING_PLATFORM,
         OBJ_ALL = 999
     };
 

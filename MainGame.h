@@ -8,6 +8,8 @@ class GameObject;
 constexpr int DISPLAY_WIDTH = 1280;
 constexpr int DISPLAY_HEIGHT = 720;
 constexpr int DISPLAY_SCALE = 1;
+constexpr int LEVEL_WIDTH = 2560;
+constexpr int LEVEL_HEIGHT = 720;
 
 enum class State
 {
@@ -30,6 +32,14 @@ enum class State
 	STATE_INVALID = -1,
 };
 
+struct CameraRect
+{
+	int x;
+	int y;
+	int width;
+	int height;
+};
+
 struct Sprites
 {
 	int idleRight, idleLeft, runRight, runLeft, jumpRight, jumpLeft, crouchRight, crouchLeft,
@@ -43,6 +53,7 @@ struct GameState
 	static std::vector< GameObject* > s_vMap;
 	State playerState = State::STATE_IDLE;
 	Sprites sprites;
+	CameraRect camera;
 };
 
 struct PlatformArgs
@@ -52,7 +63,8 @@ struct PlatformArgs
 	int height;
 };
 
-
 void CreateMap(GameState& gState, const int platformNum);
 
 void LoadSprites(Sprites& sprites);
+
+void MoveCamera(GameObject* player, CameraRect& cam);

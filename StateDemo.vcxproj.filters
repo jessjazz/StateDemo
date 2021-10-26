@@ -19,6 +19,12 @@
     <Filter Include="Source Files\MovementStates">
       <UniqueIdentifier>{2347a4a4-516c-408a-bda8-aa1556981273}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Platforms">
+      <UniqueIdentifier>{cba084ab-93a7-4ec0-8dd3-31195e47c430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Platforms">
+      <UniqueIdentifier>{acd2a2ae-bd65-47b3-8b98-3e776192b2b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Play.h">
@@ -54,14 +60,17 @@
     <ClInclude Include="SlideState.h">
       <Filter>Header Files\MovementStates</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FallState.h">
       <Filter>Header Files\MovementStates</Filter>
+    </ClInclude>
+    <ClInclude Include="MovingPlatform.h">
+      <Filter>Header Files\Platforms</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Header Files\Platforms</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -95,14 +104,17 @@
     <ClCompile Include="SlideState.cpp">
       <Filter>Source Files\MovementStates</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Platform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FallState.cpp">
       <Filter>Source Files\MovementStates</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Source Files\Platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="MovingPlatform.cpp">
+      <Filter>Source Files\Platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

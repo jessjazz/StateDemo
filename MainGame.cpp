@@ -1,6 +1,6 @@
 #include "MainGame.h"
 #include "GameObject.h"
-#include "Platform.h"
+#include "MovingPlatform.h"
 #include "Player.h"
 #define PLAY_IMPLEMENTATION
 #include "Play.h"
@@ -17,6 +17,7 @@ void MainGameEntry( PLAY_IGNORE_COMMAND_LINE )
 	Play::LoadBackground("Data\\Backgrounds\\background.png");
 	CreateMap(gState, 10);
 	LoadSprites(gState.sprites);
+	gState.camera = { 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT };
 	gState.player = new Player({ DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 140 });
 }
 
@@ -26,6 +27,14 @@ bool MainGameUpdate(float elapsedTime)
 
 	Play::DrawBackground();
 
+	std::string lives = std::to_string(gState.player->GetLives());
+	if (gState.player->GetLives() > 0)
+	{
+		Play::CentreSpriteOrigin("64px");
+		Play::DrawFontText("64px", ("Lives: " + lives), { 50, 50 });
+	}
+
+	MoveCamera(gState.player, gState.camera);
 	GameObject::UpdateAll(gState);
 	GameObject::DrawAll(gState);
 
@@ -59,6 +68,34 @@ void CreateMap(GameState& gState, const int platformNum)
 	for (int i = 0; i < platformNum; i++)
 	{
 		gState.s_vMap.push_back(new Platform(Platforms[i].pos, Platforms[i].width, Platforms[i].height));
+	}
+
+	PlatformArgs movingPlatform1{ {1390, 180}, 200, 50 };
+	PlatformArgs movingPlatform2{ {1285, 180}, 100, 50 };
+	gState.s_vMap.push_back(new MovingPlatform(movingPlatform1.pos, movingPlatform1.width, movingPlatform1.height, 0));
+	gState.s_vMap.push_back(new MovingPlatform(movingPlatform2.pos, movingPlatform2.width, movingPlatform2.height, 1));
+}
+
+void MoveCamera(GameObject* player, CameraRect& cam)
+{
+	cam.x = (player->GetPosition().x + player->GetWidth() / 2) - DISPLAY_WIDTH / 2;
+	cam.y = (player->GetPosition().y + player->GetHeight() / 2) - DISPLAY_HEIGHT / 2;
+
+	if (cam.x < 0)
+	{
+		cam.x = 0;
+	}
+	if (cam.y < 0)
+	{
+		cam.y = 0;
+	}
+	if (cam.x > LEVEL_WIDTH - cam.width)
+	{
+		cam.x = LEVEL_WIDTH - cam.width;
+	}
+	if (cam.y > LEVEL_HEIGHT - cam.height)
+	{
+		cam.y = LEVEL_HEIGHT - cam.height;
 	}
 }
 

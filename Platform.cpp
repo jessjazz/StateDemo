@@ -17,5 +17,5 @@ void Platform::Update(GameState& gState)
 
 void Platform::Draw(GameState& gState) const
 {
-	Play::DrawRect(m_pos, { m_pos.x + m_width, m_pos.y + m_height }, Play::cGrey, true);
+	Play::DrawRect({ m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, { m_pos.x + m_width - gState.camera.x, m_pos.y + m_height - gState.camera.y }, Play::cGrey, true);
 }

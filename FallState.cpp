@@ -25,6 +25,15 @@ void FallRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 
 	for (GameObject* p : map)
 	{
+		int collisionDirection = player.DetectCollision(&player, p);
+		if (collisionDirection == 2)
+		{
+			player.SetVelocity({ 0, player.GetVelocity().y });
+		}
+	}
+
+	for (GameObject* p : map)
+	{
 		if (player.IsStandingOn(&player, p))
 		{
 			player.SetGrounded(true);
@@ -34,6 +43,7 @@ void FallRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	if (player.GetPosition().y > DISPLAY_HEIGHT)
 	{
 		player.SetDead(true);
+		player.SetLives(player.GetLives() - 1);
 	}
 }
 
@@ -57,6 +67,15 @@ void FallLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 
 	player.SetVelocity(player.GetVelocity() + player.GetGravity());
 	player.SetPosition(currentPos + player.GetVelocity());
+
+	for (GameObject* p : map)
+	{
+		int collisionDirection = player.DetectCollision(&player, p);
+		if (collisionDirection == -1)
+		{
+			player.SetVelocity({ 0, player.GetVelocity().y });
+		}
+	}
 
 	for (GameObject* p : map)
 	{

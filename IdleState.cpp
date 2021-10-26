@@ -41,9 +41,17 @@ void IdleRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	{
 		if (player.IsStandingOn(&player, p))
 		{
-			player.SetPosition({ currentPos.x, p->GetPosition().y - player.GetHeight() });
-			player.SetVelocity({ 0,0 });
-			player.SetGrounded(true);
+			if (p->GetType() == GameObject::Type::OBJ_MOVING_PLATFORM)
+			{
+				player.SetPosition({ currentPos.x + p->GetVelocity().x, p->GetPosition().y - player.GetHeight() });
+				player.SetGrounded(true);
+			}
+			else
+			{
+				player.SetPosition({ currentPos.x, p->GetPosition().y - player.GetHeight() });
+				player.SetVelocity({ 0,0 });
+				player.SetGrounded(true);
+			}
 		}
 	}
 }
@@ -85,9 +93,17 @@ void IdleLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 	{
 		if (player.IsStandingOn(&player, p))
 		{
-			player.SetPosition({ currentPos.x, p->GetPosition().y - player.GetHeight() });
-			player.SetVelocity({ 0,0 });
-			player.SetGrounded(true);
+			if (p->GetType() == GameObject::Type::OBJ_MOVING_PLATFORM)
+			{
+				player.SetPosition({ currentPos.x + p->GetVelocity().x, p->GetPosition().y - player.GetHeight() });
+				player.SetGrounded(true);
+			}
+			else
+			{
+				player.SetPosition({ currentPos.x, p->GetPosition().y - player.GetHeight() });
+				player.SetVelocity({ 0,0 });
+				player.SetGrounded(true);
+			}
 		}
 	}
 }
