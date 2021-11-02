@@ -21,6 +21,7 @@ PlayerState* JumpRightState::HandleInput(Player& player)
 
 void JumpRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
+	// Set sprite dimensions
 	int spriteId = gState.sprites.jumpRight;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
@@ -36,18 +37,38 @@ void JumpRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	{
 		player.SetVelocity({ JUMP_DISTANCE, player.GetVelocity().y });
 	}
-	
-	for (GameObject* p : map)
-	{
-		if (player.DetectCollision(&player, p) == 1)
-		{
-			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1 });
-		}
-	}
+
+	HandleJumpCollision(player, map);
+	HandleCoinPickup(player, gState);
+	HandleGemPickup(player, gState);
 
 	player.SetPosition(currentPos + player.GetVelocity());
 
+	if (player.GetPosition().x > LEVEL_WIDTH - player.GetWidth())
+	{
+		player.SetPosition({ LEVEL_WIDTH - player.GetWidth(), player.GetPosition().y });
+	}
+	else if (player.GetPosition().x < 0)
+	{
+		player.SetPosition({ 0, player.GetPosition().y });
+	}
+
 	player.SetGrounded(false);
+}
+
+void JumpRightState::HandleJumpCollision(Player& player, const std::vector<GameObject*>& map) const
+{
+	for (GameObject* p : map)
+	{
+		if (DetectCollision(&player, p) == UP && p->IsCollidable())
+		{
+			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1 });
+		}
+		else if (DetectCollision(&player, p) == LEFT || DetectCollision(&player, p) == RIGHT && p->IsCollidable())
+		{
+			player.SetVelocity({ player.GetVelocity().x * -1, player.GetVelocity().y });
+		}
+	}
 }
 
 PlayerState* JumpLeftState::HandleInput(Player& player)
@@ -65,6 +86,7 @@ PlayerState* JumpLeftState::HandleInput(Player& player)
 
 void JumpLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
+	// Set sprite dimensions
 	int spriteId = gState.sprites.jumpLeft;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
@@ -81,15 +103,35 @@ void JumpLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 		player.SetVelocity({ -JUMP_DISTANCE, player.GetVelocity().y });
 	}
 
-	for (GameObject* p : map)
-	{
-		if (player.DetectCollision(&player, p) == 1)
-		{
-			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1 });
-		}
-	}
+	HandleJumpCollision(player, map);
+	HandleCoinPickup(player, gState);
+	HandleGemPickup(player, gState);
 
 	player.SetPosition(currentPos + player.GetVelocity());
 
+	if (player.GetPosition().x > LEVEL_WIDTH - player.GetWidth())
+	{
+		player.SetPosition({ LEVEL_WIDTH - player.GetWidth(), player.GetPosition().y });
+	}
+	else if (player.GetPosition().x < 0)
+	{
+		player.SetPosition({ 0, player.GetPosition().y });
+	}
+
 	player.SetGrounded(false);
+}
+
+void JumpLeftState::HandleJumpCollision(Player& player, const std::vector<GameObject*>& map) const
+{
+	for (GameObject* p : map)
+	{
+		if (DetectCollision(&player, p) == UP && p->IsCollidable())
+		{
+			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1 });
+		}
+		else if (DetectCollision(&player, p) == LEFT || DetectCollision(&player, p) == RIGHT && p->IsCollidable())
+		{
+			player.SetVelocity({ player.GetVelocity().x * -1, player.GetVelocity().y });
+		}
+	}
 }

@@ -1,15 +1,13 @@
+#include "Door.h"
 #include "IdleState.h"
 #include "Player.h"
 #include "PlayerState.h"
 
-Player::Player(Point2f pos)
+Player::Player(Point2f pos, Vector2f gravity, int speed, int lives)
 	: GameObject(pos),
-	m_speed(5),
-	m_state(State::STATE_IDLE),
-	m_gravity({ 0, 1 }),
-	b_onGround(false),
-	b_isDead(false),
-	m_lives(3)
+	m_speed(speed),
+	m_gravity(gravity),
+	m_lives(lives)
 {
 	SetPosition(pos);
 	SetVelocity({ 0,0 });
@@ -22,6 +20,15 @@ Player::~Player() {}
 
 void Player::Update(GameState& gState)
 {
+	// Handle changing animation for ground pound
+	m_framePos += m_animSpeed;
+	if (m_framePos > 1.0f)
+	{
+		m_frame++;
+		m_framePos -= 1.0f;
+	}
+
+	// Handle lifecycle
 	if (!b_isDead)
 	{
 		PlayerState* pState = m_pCurrentState->HandleInput(*this);
@@ -42,6 +49,10 @@ void Player::Update(GameState& gState)
 	{
 		HandleGameOver(gState);
 	}
+
+	// Handle new level
+	HandleNewLevel(gState, this);
+
 }
 
 void Player::Draw(GameState& gState) const
@@ -49,16 +60,16 @@ void Player::Draw(GameState& gState) const
 	switch (m_state)
 	{
 	case State::STATE_IDLE:
-		Play::DrawSprite(gState.sprites.idleRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 5 * gState.time);
+		Play::DrawSprite(gState.sprites.idleRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(5.f * gState.time));
 		break;
 	case State::STATE_IDLE_LEFT:
-		Play::DrawSprite(gState.sprites.idleLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 5 * gState.time);
+		Play::DrawSprite(gState.sprites.idleLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(5.f * gState.time));
 		break;
 	case State::STATE_RUN_RIGHT:
-		Play::DrawSprite(gState.sprites.runRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 12 * gState.time);
+		Play::DrawSprite(gState.sprites.runRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(12.f * gState.time));
 		break;
 	case State::STATE_RUN_LEFT:
-		Play::DrawSprite(gState.sprites.runLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 12 * gState.time);
+		Play::DrawSprite(gState.sprites.runLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(12.f * gState.time));
 		break;
 	case State::STATE_JUMP:
 		Play::DrawSprite(gState.sprites.jumpRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 1);
@@ -67,28 +78,28 @@ void Player::Draw(GameState& gState) const
 		Play::DrawSprite(gState.sprites.jumpLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 1);
 		break;
 	case State::STATE_CROUCH:
-		Play::DrawSprite(gState.sprites.crouchRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 5 * gState.time);
+		Play::DrawSprite(gState.sprites.crouchRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(5.f * gState.time));
 		break;
 	case State::STATE_CROUCH_LEFT:
-		Play::DrawSprite(gState.sprites.crouchLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 5 * gState.time);
+		Play::DrawSprite(gState.sprites.crouchLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(5.f * gState.time));
 		break;
 	case State::STATE_DASH_RIGHT:
-		Play::DrawSprite(gState.sprites.dashRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 10 * gState.time);
+		Play::DrawSprite(gState.sprites.dashRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(10.f * gState.time));
 		break;
 	case State::STATE_DASH_LEFT:
-		Play::DrawSprite(gState.sprites.dashLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 10 * gState.time);
+		Play::DrawSprite(gState.sprites.dashLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(10.f * gState.time));
 		break;
 	case State::STATE_CRAWL_RIGHT:
-		Play::DrawSprite(gState.sprites.crawlRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 10 * gState.time);
+		Play::DrawSprite(gState.sprites.crawlRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(10.f * gState.time));
 		break;
 	case State::STATE_CRAWL_LEFT:
-		Play::DrawSprite(gState.sprites.crawlLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 10 * gState.time);
+		Play::DrawSprite(gState.sprites.crawlLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(10.f * gState.time));
 		break;
 	case State::STATE_SLIDE_RIGHT:
-		Play::DrawSprite(gState.sprites.slideRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 10 * gState.time);
+		Play::DrawSprite(gState.sprites.slideRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(10.f * gState.time));
 		break;
 	case State::STATE_SLIDE_LEFT:
-		Play::DrawSprite(gState.sprites.slideLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 10 * gState.time);
+		Play::DrawSprite(gState.sprites.slideLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(10.f * gState.time));
 		break;
 	case State::STATE_FALL_RIGHT:
 		Play::DrawSprite(gState.sprites.fallRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 1);
@@ -96,93 +107,14 @@ void Player::Draw(GameState& gState) const
 	case State::STATE_FALL_LEFT:
 		Play::DrawSprite(gState.sprites.fallLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 1);
 		break;
+	case State::STATE_SMASH_RIGHT:
+		Play::DrawSprite(gState.sprites.groundPoundRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, m_frame);
+		break;
+	case State::STATE_SMASH_LEFT:
+		Play::DrawSprite(gState.sprites.groundPoundLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, m_frame);
+		break;
 	default:
 		break;
-	}
-}
-
-bool Player::IsStandingOn(const GameObject* object1, const GameObject* object2) const
-{
-	PLAY_ASSERT_MSG(object1, "object1 cannot be null");
-	PLAY_ASSERT_MSG(object2, "object2 cannot be null");
-
-	int xoffset = 5;
-	int vert_dist = 15;
-
-	int object1_x1 = object1->GetPosition().x - xoffset;
-	int object1_y1 = object1->GetPosition().y + object1->GetHeight();
-	int object1_x2 = object1->GetPosition().x + object1->GetWidth() + xoffset;
-	int object1_y2 = object1->GetPosition().y + object1->GetHeight() + vert_dist;
-
-	int object2_x1 = object2->GetPosition().x;
-	int object2_y1 = object2->GetPosition().y;
-	int object2_x2 = object2->GetPosition().x + object2->GetWidth();
-	int object2_y2 = object2->GetPosition().y + vert_dist;
-
-
-	if (object1_x1 < object2_x2 &&
-		object1_x2 > object2_x1 &&
-		object1_y1 < object2_y2 &&
-		object1_y2 > object2_y1)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-int Player::DetectCollision(GameObject* object1, GameObject* object2) const
-{
-	PLAY_ASSERT_MSG(object1, "object1 cannot be null");
-	PLAY_ASSERT_MSG(object2, "object2 cannot be null");
-
-	int offset = 3;
-
-	int object1_y = object1->GetPosition().y;
-	int object2_y = object2->GetPosition().y;
-	int object1_x = object1->GetPosition().x;
-	int object2_x = object2->GetPosition().x;
-	int object1_yh = object1->GetPosition().y + object1->GetHeight();
-	int object2_yh = object2->GetPosition().y + object2->GetHeight();
-	int object1_xw = object1->GetPosition().x + object1->GetWidth();
-	int object2_xw = object2->GetPosition().x + object2->GetWidth();
-
-	int object1_y_offset = object1->GetPosition().y + offset;
-	int object2_yh_offset = object2->GetPosition().y + object2->GetHeight() - offset;
-
-	int object1_x_offset = object1->GetPosition().x - offset;
-	int object2_xw_offset = object2->GetPosition().x + object2->GetWidth() + offset;
-
-	int object1_xw_offset = object1->GetPosition().x + object1->GetWidth() + offset;
-	int object2_x_offset = object2->GetPosition().x - offset;
-
-	// Check for collision above
-	if (object1_x < object2_xw &&
-		object1_xw > object2_x &&
-		object1_y < object2_yh &&
-		object1_y_offset > object2_yh_offset)
-	{
-		return 1;
-	}
-	// Check for collision to the left of player
-	else if (object1_x_offset < object2_xw_offset &&
-		object1_x > object2_xw &&
-		object1_y < object2_yh &&
-		object1_yh > object2_y)
-	{
-		return -1;
-	}
-	// Check for collision to right of player
-	else if (object1_xw < object2_x &&
-		object1_xw_offset > object2_x_offset &&
-		object1_y < object2_yh &&
-		object1_yh > object2_y)
-	{
-		return 2;
-	}
-	else
-	{
-		return 0;
 	}
 }
 
@@ -196,7 +128,11 @@ void Player::HandleGameOver(GameState& gState)
 	if (Play::KeyPressed(VK_RETURN))
 	{
 		HandleLifeLost(gState);
-		m_lives = 3;
+		m_lives = LIVES;
+		for (GameObject* item : gState.s_vPickups)
+		{
+			item->SetCollidable(true);
+		}
 	}
 }
 
@@ -209,3 +145,24 @@ void Player::HandleLifeLost(GameState& gState)
 	b_onGround = true;
 }
 
+void Player::HandleNewLevel(GameState& gState, GameObject* player)
+{
+	std::vector<GameObject*> doors;
+	GameObject::GetObjectList(GameObject::Type::OBJ_DOOR, doors);
+
+	for (GameObject* door : doors)
+	{
+		if (DetectCollision(player, door))
+		{
+			Door* d = static_cast<Door*>(door);
+			if (Play::KeyPressed(VK_UP) && d->GetState() == Door::State::OPEN)
+			{
+				// TODO: New player transition state to fade out
+				// Load next level
+				// Just for now:
+				player->SetVelocity({ 0, 200 });
+				player->SetPosition(player->GetPosition() + player->GetVelocity());
+			}
+		}
+	}
+}

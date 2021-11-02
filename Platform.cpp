@@ -6,7 +6,7 @@ Platform::Platform(Point2f pos, int width, int height)
 {
 	SetPosition(pos);
 	SetType(OBJ_PLATFORM);
-	SetDrawOrder(2);
+	SetDrawOrder(3);
 	SetHeight(height);
 	SetWidth(width);
 }

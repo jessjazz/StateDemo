@@ -25,6 +25,12 @@
     <Filter Include="Source Files\Platforms">
       <UniqueIdentifier>{acd2a2ae-bd65-47b3-8b98-3e776192b2b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Pickups">
+      <UniqueIdentifier>{59cc3c93-6535-40d9-9fad-79d42422165b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pickups">
+      <UniqueIdentifier>{ee99e372-9d93-4cb6-a3de-574e07ce204d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Play.h">
@@ -75,6 +81,21 @@
     <ClInclude Include="DecayingPlatform.h">
       <Filter>Header Files\Platforms</Filter>
     </ClInclude>
+    <ClInclude Include="DestructiblePlatform.h">
+      <Filter>Header Files\Platforms</Filter>
+    </ClInclude>
+    <ClInclude Include="GroundPoundState.h">
+      <Filter>Header Files\MovementStates</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>Header Files\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="Gem.h">
+      <Filter>Header Files\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="Door.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame.cpp">
@@ -121,6 +142,21 @@
     </ClCompile>
     <ClCompile Include="DecayingPlatform.cpp">
       <Filter>Source Files\Platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="DestructiblePlatform.cpp">
+      <Filter>Source Files\Platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="GroundPoundState.cpp">
+      <Filter>Source Files\MovementStates</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>Source Files\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Gem.cpp">
+      <Filter>Source Files\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Door.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

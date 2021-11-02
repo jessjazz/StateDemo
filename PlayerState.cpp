@@ -9,9 +9,9 @@ void PlayerState::HandleCollision(Player& player, const std::vector<GameObject*>
 
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(&player, p))
+		if (IsStandingOn(&player, p))
 		{
-			if (p->GetType() != GameObject::Type::OBJ_DECAYING_PLATFORM)
+			if (p->GetType() != GameObject::Type::OBJ_DECAYING_PLATFORM && p->GetType() != GameObject::Type::OBJ_DESTRUCTIBLE_PLATFORM)
 			{
 				switch (direction)
 				{
@@ -65,10 +65,54 @@ void PlayerState::HandleCollision(Player& player, const std::vector<GameObject*>
 
 	for (GameObject* p : map)
 	{
-		int collisionDirection = player.DetectCollision(&player, p);
-		if (collisionDirection == -1 || collisionDirection == 2)
+		if (DetectCollision(&player, p) == LEFT && direction == LEFT)
 		{
 			player.SetPosition(oldPos);
+		}
+		else if (DetectCollision(&player, p) == RIGHT && direction == RIGHT)
+		{
+			player.SetPosition(oldPos);
+		}
+	}
+
+	if (player.GetPosition().x > LEVEL_WIDTH - player.GetWidth())
+	{
+		player.SetPosition({ LEVEL_WIDTH - player.GetWidth(), currentPos.y });
+	}
+	else if (player.GetPosition().x <= 0)
+	{
+		player.SetPosition({ 0, currentPos.y });
+	}
+}
+
+void PlayerState::HandleCoinPickup(Player& player, GameState& gState) const
+{
+	for (GameObject* obj : gState.s_vPickups)
+	{
+		if (obj->GetType() == GameObject::Type::OBJ_COIN)
+		{
+			Coin* coin = static_cast<Coin*>(obj);
+			if ((DetectCollision(&player, coin) == LEFT || DetectCollision(&player, coin) == RIGHT || DetectCollision(&player, coin) == UP) && coin->IsCollidable())
+			{
+				player.AddCoinToCount(1);
+				coin->SetCollidable(false);
+			}
+		}
+	}
+}
+
+void PlayerState::HandleGemPickup(Player& player, GameState& gState) const
+{
+	for (GameObject* obj : gState.s_vPickups)
+	{
+		if (obj->GetType() == GameObject::Type::OBJ_GEM)
+		{
+			Gem* gem = static_cast<Gem*>(obj);
+			if ((DetectCollision(&player, gem) == LEFT || DetectCollision(&player, gem) == RIGHT || DetectCollision(&player, gem) == UP) && gem->IsCollidable())
+			{
+				player.AddLife();
+				gem->SetCollidable(false);
+			}
 		}
 	}
 }

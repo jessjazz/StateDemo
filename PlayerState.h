@@ -1,11 +1,10 @@
 #pragma once
 #include "Play.h"
+#include "Coin.h"
+#include "Gem.h"
 #include "Platform.h"
 #include "MainGame.h"
 #include "GameObject.h"
-
-constexpr int RIGHT = 1;
-constexpr int LEFT = -1;
 
 class Player;
 
@@ -19,5 +18,8 @@ public:
 
 	void HandleCollision(Player& player, const std::vector<GameObject*>& map, 
 						const int speed, const int direction) const;
+
+	void HandleCoinPickup(Player& player, GameState& gState) const;
+	void HandleGemPickup(Player& player, GameState& gState) const;
 };
 

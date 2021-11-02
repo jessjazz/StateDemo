@@ -26,6 +26,7 @@ PlayerState* DashRightState::HandleInput(Player& player)
 
 void DashRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
+	// Set sprite dimensions
 	int spriteId = gState.sprites.dashRight;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
@@ -33,6 +34,8 @@ void DashRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	int speed = player.GetSpeed() * 2;
 
 	HandleCollision(player, map, speed, RIGHT);
+	HandleCoinPickup(player, gState);
+	HandleGemPickup(player, gState);
 }
 
 PlayerState* DashLeftState::HandleInput(Player& player)
@@ -56,6 +59,7 @@ PlayerState* DashLeftState::HandleInput(Player& player)
 
 void DashLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
+	// Set sprite dimensions
 	int spriteId = gState.sprites.dashLeft;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
@@ -63,4 +67,6 @@ void DashLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 	int speed = player.GetSpeed() * 2;
 
 	HandleCollision(player, map, speed, LEFT);
+	HandleCoinPickup(player, gState);
+	HandleGemPickup(player, gState);
 }

@@ -11,6 +11,11 @@ public:
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
 
+	void HandleCollision(Player& player, const std::vector<GameObject*>& map,
+		const int speed, const int direction) const;
+
+	int DetectCollision(GameObject* object1, GameObject* object2) const;
+
 private:
 	float m_slideTime;
 };
@@ -24,6 +29,11 @@ public:
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
+
+	void HandleCollision(Player& player, const std::vector<GameObject*>& map,
+		const int speed, const int direction) const;
+
+	int DetectCollision(GameObject* object1, GameObject* object2) const;
 
 private:
 	float m_slideTime;

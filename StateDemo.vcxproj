@@ -143,12 +143,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Coin.h" />
     <ClInclude Include="CrawlState.h" />
     <ClInclude Include="CrouchingState.h" />
     <ClInclude Include="DashState.h" />
     <ClInclude Include="DecayingPlatform.h" />
+    <ClInclude Include="DestructiblePlatform.h" />
+    <ClInclude Include="Door.h" />
     <ClInclude Include="FallState.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Gem.h" />
+    <ClInclude Include="GroundPoundState.h" />
     <ClInclude Include="IdleState.h" />
     <ClInclude Include="JumpingState.h" />
     <ClInclude Include="MainGame.h" />
@@ -161,12 +166,17 @@
     <ClInclude Include="SlideState.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Coin.cpp" />
     <ClCompile Include="CrawlState.cpp" />
     <ClCompile Include="CrouchingState.cpp" />
     <ClCompile Include="DashState.cpp" />
     <ClCompile Include="DecayingPlatform.cpp" />
+    <ClCompile Include="DestructiblePlatform.cpp" />
+    <ClCompile Include="Door.cpp" />
     <ClCompile Include="FallState.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Gem.cpp" />
+    <ClCompile Include="GroundPoundState.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="JumpingState.cpp" />
     <ClCompile Include="MainGame.cpp" />

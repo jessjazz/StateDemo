@@ -13,6 +13,10 @@ public:
         OBJ_PLATFORM,
         OBJ_MOVING_PLATFORM,
         OBJ_DECAYING_PLATFORM,
+        OBJ_DESTRUCTIBLE_PLATFORM,
+        OBJ_COIN,
+        OBJ_GEM,
+        OBJ_DOOR,
         OBJ_ALL = 999
     };
 

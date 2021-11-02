@@ -1,5 +1,6 @@
 #include "CrouchingState.h"
 #include "FallState.h"
+#include "GroundPoundState.h"
 #include "IdleState.h"
 #include "JumpingState.h"
 #include "Player.h"
@@ -27,6 +28,13 @@ PlayerState* IdleRightState::HandleInput(Player& player)
 		player.SetDrawState(State::STATE_CROUCH);
 		return new CrouchRightState;
 	}
+	else if (Play::KeyPressed(VK_CONTROL))
+	{
+		player.SetDrawState(State::STATE_SMASH_RIGHT);
+		player.SetFrame(0);
+		player.SetAnimSpeed(0.25f);
+		return new GroundPoundRightState;
+	}
 	
 	if (!player.IsGrounded())
 	{
@@ -38,22 +46,23 @@ PlayerState* IdleRightState::HandleInput(Player& player)
 
 void IdleRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-	Point2f currentPos = player.GetPosition();;
-
+	// Set sprite dimensions
 	int spriteId = gState.sprites.idleRight;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
+	Point2f currentPos = player.GetPosition();;
+
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(&player, p))
+		if (IsStandingOn(&player, p))
 		{
 			if (p->GetType() == GameObject::Type::OBJ_MOVING_PLATFORM)
 			{
 				player.SetPosition({ currentPos.x + p->GetVelocity().x, p->GetPosition().y - player.GetHeight() });
 				player.SetGrounded(true);
 			}
-			else if (p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM)
+			else if (p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM || p->GetType() == GameObject::Type::OBJ_DESTRUCTIBLE_PLATFORM)
 			{
 				if (p->IsCollidable())
 				{
@@ -98,6 +107,13 @@ PlayerState* IdleLeftState::HandleInput(Player& player)
 		player.SetDrawState(State::STATE_CROUCH_LEFT);
 		return new CrouchLeftState;
 	}
+	else if (Play::KeyPressed(VK_CONTROL))
+	{
+		player.SetDrawState(State::STATE_SMASH_LEFT);
+		player.SetFrame(0);
+		player.SetAnimSpeed(0.25f);
+		return new GroundPoundLeftState;
+	}
 
 	if (!player.IsGrounded())
 	{
@@ -109,22 +125,23 @@ PlayerState* IdleLeftState::HandleInput(Player& player)
 
 void IdleLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-	Point2f currentPos = player.GetPosition();;
-
+	// Set sprite dimensions
 	int spriteId = gState.sprites.idleLeft;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
+	Point2f currentPos = player.GetPosition();;
+	
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(&player, p))
+		if (IsStandingOn(&player, p))
 		{
 			if (p->GetType() == GameObject::Type::OBJ_MOVING_PLATFORM)
 			{
 				player.SetPosition({ currentPos.x + p->GetVelocity().x, p->GetPosition().y - player.GetHeight() });
 				player.SetGrounded(true);
 			}
-			else if (p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM)
+			else if (p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM || p->GetType() == GameObject::Type::OBJ_DESTRUCTIBLE_PLATFORM)
 			{
 				if (p->IsCollidable())
 				{

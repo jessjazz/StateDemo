@@ -1,12 +1,10 @@
 #include "MovingPlatform.h"
 
-MovingPlatform::MovingPlatform(Point2f pos, int width, int height, int direction)
+MovingPlatform::MovingPlatform(Point2f pos, int width, int height, int direction, float sinAmplitude, float sinFrequency)
 	: Platform(pos, width, height),
 	m_direction(direction),
-	m_amplitude(4.f),
-	m_frequency(0.20f),
-	m_xoffset(0),
-	m_yoffset(0)
+	m_amplitude(sinAmplitude),
+	m_frequency(sinFrequency)
 {
 	SetPosition(pos);
 	SetType(OBJ_MOVING_PLATFORM);
@@ -19,7 +17,7 @@ void MovingPlatform::Update(GameState& gState)
 {
 	x += 0.1f;
 
-	if (m_direction == 0)
+	if (m_direction == VERTICAL)
 	{
 		m_velocity.x = m_amplitude * sin(m_frequency * x + m_xoffset) + m_yoffset;
 		m_pos.x += m_velocity.x;

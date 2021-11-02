@@ -9,36 +9,49 @@ PlayerState* FallRightState::HandleInput(Player& player)
 		player.SetDrawState(State::STATE_IDLE);
 		return new IdleRightState;
 	}
+	
 	return nullptr;
 }
 
 void FallRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
+	// Set sprite dimensions
 	int spriteId = gState.sprites.fallRight;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 	
-	Point2f currentPos = player.GetPosition();;
+	Point2f currentPos = player.GetPosition();
 
 	player.SetVelocity(player.GetVelocity() + player.GetGravity());
 	player.SetPosition(currentPos + player.GetVelocity());
 
-	for (GameObject* p : map)
+	// Handle level edges
+	if (player.GetPosition().x > LEVEL_WIDTH - player.GetWidth())
 	{
-		int collisionDirection = player.DetectCollision(&player, p);
-		if (collisionDirection == 2)
-		{
-			player.SetVelocity({ 0, player.GetVelocity().y });
-		}
+		player.SetPosition({ LEVEL_WIDTH - player.GetWidth(), player.GetPosition().y });
+	}
+	else if (player.GetPosition().x < 0)
+	{
+		player.SetPosition({ 0, player.GetPosition().y });
 	}
 
+	// Handle sideways collision
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(&player, p) && p->GetType() != GameObject::Type::OBJ_DECAYING_PLATFORM)
+		int collisionDirection = DetectCollision(&player, p);
+		if (collisionDirection == RIGHT && p->IsCollidable())
+		{
+			player.SetVelocity({ player.GetVelocity().x * -1, player.GetVelocity().y });
+		}
+	}
+	// Handle collision from above
+	for (GameObject* p : map)
+	{
+		if (IsStandingOn(&player, p) && p->GetType() != GameObject::Type::OBJ_DECAYING_PLATFORM && p->GetType() != GameObject::Type::OBJ_DESTRUCTIBLE_PLATFORM)
 		{
 			player.SetGrounded(true);
 		}
-		else if (player.IsStandingOn(&player, p) && p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM)
+		else if (IsStandingOn(&player, p) && (p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM || p->GetType() == GameObject::Type::OBJ_DESTRUCTIBLE_PLATFORM))
 		{
 			if (p->IsCollidable())
 			{
@@ -46,6 +59,9 @@ void FallRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 			}
 		}
 	}
+
+	HandleCoinPickup(player, gState);
+	HandleGemPickup(player, gState);
 
 	if (player.GetPosition().y > DISPLAY_HEIGHT)
 	{
@@ -66,31 +82,43 @@ PlayerState* FallLeftState::HandleInput(Player& player)
 
 void FallLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
+	// Set sprite dimensions
 	int spriteId = gState.sprites.fallLeft;
 	player.SetHeight(Play::GetSpriteHeight(spriteId));
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
-	Point2f currentPos = player.GetPosition();;
+	Point2f currentPos = player.GetPosition();
 
 	player.SetVelocity(player.GetVelocity() + player.GetGravity());
 	player.SetPosition(currentPos + player.GetVelocity());
 
-	for (GameObject* p : map)
+	// Handle level edges
+	if (player.GetPosition().x > LEVEL_WIDTH - player.GetWidth())
 	{
-		int collisionDirection = player.DetectCollision(&player, p);
-		if (collisionDirection == -1)
-		{
-			player.SetVelocity({ 0, player.GetVelocity().y });
-		}
+		player.SetPosition({ LEVEL_WIDTH - player.GetWidth(), player.GetPosition().y });
+	}
+	else if (player.GetPosition().x < 0)
+	{
+		player.SetPosition({ 0, player.GetPosition().y });
 	}
 
+	// Handle sideways collision
 	for (GameObject* p : map)
 	{
-		if (player.IsStandingOn(&player, p) && p->GetType() != GameObject::Type::OBJ_DECAYING_PLATFORM)
+		int collisionDirection = DetectCollision(&player, p);
+		if (collisionDirection == LEFT && p->IsCollidable())
+		{
+			player.SetVelocity({ player.GetVelocity().x * -1, player.GetVelocity().y });
+		}
+	}
+	// Handle collision from above
+	for (GameObject* p : map)
+	{
+		if (IsStandingOn(&player, p) && p->GetType() != GameObject::Type::OBJ_DECAYING_PLATFORM && p->GetType() != GameObject::Type::OBJ_DESTRUCTIBLE_PLATFORM)
 		{
 			player.SetGrounded(true);
 		}
-		else if (player.IsStandingOn(&player, p) && p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM)
+		else if (IsStandingOn(&player, p) && (p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM || p->GetType() == GameObject::Type::OBJ_DESTRUCTIBLE_PLATFORM))
 		{
 			if (p->IsCollidable())
 			{
@@ -98,6 +126,9 @@ void FallLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 			}
 		}
 	}
+
+	HandleCoinPickup(player, gState);
+	HandleGemPickup(player, gState);
 
 	if (player.GetPosition().y > DISPLAY_HEIGHT)
 	{
