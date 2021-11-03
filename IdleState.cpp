@@ -10,35 +10,27 @@ PlayerState* IdleRightState::HandleInput(Player& player)
 {
 	if (Play::KeyDown(VK_RIGHT))
 	{
-		player.SetDrawState(State::STATE_RUN_RIGHT);
 		return new RunRightState;
 	}
 	else if (Play::KeyDown(VK_LEFT))
 	{
-		player.SetDrawState(State::STATE_RUN_LEFT);
 		return new RunLeftState;
 	}
 	else if (Play::KeyPressed(VK_SPACE))
 	{
-		player.SetDrawState(State::STATE_JUMP);
 		return new JumpRightState;
 	}
 	else if (Play::KeyPressed(VK_DOWN))
 	{
-		player.SetDrawState(State::STATE_CROUCH);
 		return new CrouchRightState;
 	}
 	else if (Play::KeyPressed(VK_CONTROL))
 	{
-		player.SetDrawState(State::STATE_SMASH_RIGHT);
-		player.SetFrame(0);
-		player.SetAnimSpeed(0.25f);
 		return new GroundPoundRightState;
 	}
 	
 	if (!player.IsGrounded())
 	{
-		player.SetDrawState(State::STATE_FALL_RIGHT);
 		return new FallRightState;
 	}
 	return nullptr;
@@ -85,39 +77,37 @@ void IdleRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	}
 }
 
+void IdleRightState::Enter(Player& player) const
+{
+	player.SetDrawState(State::STATE_IDLE);
+	player.SetCrouching(false);
+}
+
 PlayerState* IdleLeftState::HandleInput(Player& player)
 {
 	if (Play::KeyDown(VK_RIGHT))
 	{
-		player.SetDrawState(State::STATE_RUN_RIGHT);
 		return new RunRightState;
 	}
 	else if (Play::KeyDown(VK_LEFT))
 	{
-		player.SetDrawState(State::STATE_RUN_LEFT);
 		return new RunLeftState;
 	}
 	else if (Play::KeyPressed(VK_SPACE))
 	{
-		player.SetDrawState(State::STATE_JUMP_LEFT);
 		return new JumpLeftState;
 	}
 	else if (Play::KeyPressed(VK_DOWN))
 	{
-		player.SetDrawState(State::STATE_CROUCH_LEFT);
 		return new CrouchLeftState;
 	}
 	else if (Play::KeyPressed(VK_CONTROL))
 	{
-		player.SetDrawState(State::STATE_SMASH_LEFT);
-		player.SetFrame(0);
-		player.SetAnimSpeed(0.25f);
 		return new GroundPoundLeftState;
 	}
 
 	if (!player.IsGrounded())
 	{
-		player.SetDrawState(State::STATE_FALL_LEFT);
 		return new FallLeftState;
 	}
 	return nullptr;
@@ -162,4 +152,10 @@ void IdleLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 			}
 		}
 	}
+}
+
+void IdleLeftState::Enter(Player& player) const
+{
+	player.SetDrawState(State::STATE_IDLE_LEFT);
+	player.SetCrouching(false);
 }

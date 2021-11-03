@@ -21,11 +21,14 @@ Player::~Player() {}
 void Player::Update(GameState& gState)
 {
 	// Handle changing animation for ground pound
-	m_framePos += m_animSpeed;
-	if (m_framePos > 1.0f)
+	if (m_animSpeed > 0)
 	{
-		m_frame++;
-		m_framePos -= 1.0f;
+		m_framePos += m_animSpeed;
+		if (m_framePos > 1.0f)
+		{
+			m_frame++;
+			m_framePos -= 1.0f;
+		}
 	}
 
 	// Handle lifecycle
@@ -37,6 +40,8 @@ void Player::Update(GameState& gState)
 		{
 			delete m_pCurrentState;
 			m_pCurrentState = pState;
+			
+			m_pCurrentState->Enter(*this);
 		}
 
 		m_pCurrentState->StateUpdate(*this, gState.s_vMap, gState);
@@ -51,7 +56,20 @@ void Player::Update(GameState& gState)
 	}
 
 	// Handle new level
-	HandleNewLevel(gState, this);
+	std::vector<GameObject*> doors;
+	GameObject::GetObjectList(GameObject::Type::OBJ_DOOR, doors);
+
+	for (GameObject* door : doors)
+	{
+		if (DetectCollision(this, door, IsCrouching()))
+		{
+			Door* d = static_cast<Door*>(door);
+			if (Play::KeyPressed(VK_UP) && d->GetState() == Door::State::OPEN)
+			{
+				HandleNewLevel(gState, this);
+			}
+		}
+	}
 
 }
 
@@ -141,28 +159,16 @@ void Player::HandleLifeLost(GameState& gState)
 	m_pos = { gState.originalPlayerPos };
 	b_isDead = false;
 	SetDrawState(State::STATE_IDLE);
+	delete m_pCurrentState;
 	m_pCurrentState = new IdleRightState;
 	b_onGround = true;
 }
 
 void Player::HandleNewLevel(GameState& gState, GameObject* player)
 {
-	std::vector<GameObject*> doors;
-	GameObject::GetObjectList(GameObject::Type::OBJ_DOOR, doors);
-
-	for (GameObject* door : doors)
-	{
-		if (DetectCollision(player, door))
-		{
-			Door* d = static_cast<Door*>(door);
-			if (Play::KeyPressed(VK_UP) && d->GetState() == Door::State::OPEN)
-			{
-				// TODO: New player transition state to fade out
-				// Load next level
-				// Just for now:
-				player->SetVelocity({ 0, 200 });
-				player->SetPosition(player->GetPosition() + player->GetVelocity());
-			}
-		}
-	}
+	// TODO: New player transition state to fade out
+	// Load next level
+	// Just for now:
+	player->SetVelocity({ 0, 200 });
+	player->SetPosition(player->GetPosition() + player->GetVelocity());
 }

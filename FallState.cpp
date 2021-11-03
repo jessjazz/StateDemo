@@ -6,7 +6,6 @@ PlayerState* FallRightState::HandleInput(Player& player)
 {
 	if (player.IsGrounded())
 	{
-		player.SetDrawState(State::STATE_IDLE);
 		return new IdleRightState;
 	}
 	
@@ -38,7 +37,7 @@ void FallRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	// Handle sideways collision
 	for (GameObject* p : map)
 	{
-		int collisionDirection = DetectCollision(&player, p);
+		int collisionDirection = DetectCollision(&player, p, player.IsCrouching());
 		if (collisionDirection == RIGHT && p->IsCollidable())
 		{
 			player.SetVelocity({ player.GetVelocity().x * -1, player.GetVelocity().y });
@@ -70,11 +69,16 @@ void FallRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	}
 }
 
+void FallRightState::Enter(Player& player) const
+{
+	player.SetDrawState(State::STATE_FALL_RIGHT);
+	player.SetCrouching(false);
+}
+
 PlayerState* FallLeftState::HandleInput(Player& player)
 {
 	if (player.IsGrounded())
 	{
-		player.SetDrawState(State::STATE_IDLE_LEFT);
 		return new IdleLeftState;
 	}
 	return nullptr;
@@ -105,7 +109,7 @@ void FallLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 	// Handle sideways collision
 	for (GameObject* p : map)
 	{
-		int collisionDirection = DetectCollision(&player, p);
+		int collisionDirection = DetectCollision(&player, p, player.IsCrouching());
 		if (collisionDirection == LEFT && p->IsCollidable())
 		{
 			player.SetVelocity({ player.GetVelocity().x * -1, player.GetVelocity().y });
@@ -133,5 +137,12 @@ void FallLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 	if (player.GetPosition().y > DISPLAY_HEIGHT)
 	{
 		player.SetDead(true);
+		player.SetLives(player.GetLives() - 1);
 	}
+}
+
+void FallLeftState::Enter(Player& player) const
+{
+	player.SetDrawState(State::STATE_FALL_LEFT);
+	player.SetCrouching(false);
 }

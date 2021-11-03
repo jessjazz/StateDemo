@@ -20,7 +20,7 @@ constexpr int HORIZONTAL = 1;
 constexpr int VERTICAL = 0;
 
 constexpr int LIVES{ 3 };
-const Vector2f GRAVITY{ 0, 1.5f };
+const Vector2f GRAVITY{ 0, 1.0f };
 
 enum class State
 {
@@ -126,4 +126,4 @@ void CreatePickups(GameState& gState);
 void MoveCamera(GameObject* player, CameraRect& cam);
 
 bool IsStandingOn(GameObject* object1, GameObject* object2);
-int DetectCollision(GameObject* object1, GameObject* object2);
+int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouched);

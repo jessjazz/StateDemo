@@ -11,13 +11,11 @@ PlayerState* DashRightState::HandleInput(Player& player)
 
 	if (m_dashTime > MAX_DASH)
 	{
-		player.SetDrawState(State::STATE_RUN_RIGHT);
 		return new RunRightState;
 	}
 
 	if (!player.IsGrounded())
 	{
-		player.SetDrawState(State::STATE_FALL_RIGHT);
 		return new FallRightState;
 	}
 
@@ -38,19 +36,22 @@ void DashRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	HandleGemPickup(player, gState);
 }
 
+void DashRightState::Enter(Player& player) const
+{
+	player.SetDrawState(State::STATE_DASH_RIGHT);
+}
+
 PlayerState* DashLeftState::HandleInput(Player& player)
 {
 	m_dashTime++;
 
 	if (m_dashTime > MAX_DASH)
 	{
-		player.SetDrawState(State::STATE_RUN_LEFT);
 		return new RunLeftState;
 	}
 
 	if (!player.IsGrounded())
 	{
-		player.SetDrawState(State::STATE_FALL_LEFT);
 		return new FallLeftState;
 	}
 
@@ -69,4 +70,9 @@ void DashLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 	HandleCollision(player, map, speed, LEFT);
 	HandleCoinPickup(player, gState);
 	HandleGemPickup(player, gState);
+}
+
+void DashLeftState::Enter(Player& player) const
+{
+	player.SetDrawState(State::STATE_DASH_LEFT);
 }

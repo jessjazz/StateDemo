@@ -42,6 +42,9 @@ public:
 	int GetCoinCount() const { return m_coinCount; }
 	void AddCoinToCount(const int num) { m_coinCount += num; }
 
+	bool IsCrouching() const { return b_isCrouching; }
+	void SetCrouching(bool crouching) { b_isCrouching = crouching; }
+
 private:
 	State m_state{State::STATE_IDLE};
 	PlayerState* m_pCurrentState;
@@ -51,6 +54,7 @@ private:
 	Vector2f m_gravity;
 	bool b_onGround{ false };
 	bool b_isDead{ false };
+	bool b_isCrouching{ false };
 	int m_frame{ 0 };
 	float m_framePos{ 0.0f };
 	float m_animSpeed{ 0.0f };

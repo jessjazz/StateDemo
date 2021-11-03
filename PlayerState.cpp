@@ -65,11 +65,11 @@ void PlayerState::HandleCollision(Player& player, const std::vector<GameObject*>
 
 	for (GameObject* p : map)
 	{
-		if (DetectCollision(&player, p) == LEFT && direction == LEFT)
+		if (DetectCollision(&player, p, player.IsCrouching()) == LEFT && direction == LEFT)
 		{
 			player.SetPosition(oldPos);
 		}
-		else if (DetectCollision(&player, p) == RIGHT && direction == RIGHT)
+		else if (DetectCollision(&player, p, player.IsCrouching()) == RIGHT && direction == RIGHT)
 		{
 			player.SetPosition(oldPos);
 		}
@@ -92,7 +92,7 @@ void PlayerState::HandleCoinPickup(Player& player, GameState& gState) const
 		if (obj->GetType() == GameObject::Type::OBJ_COIN)
 		{
 			Coin* coin = static_cast<Coin*>(obj);
-			if ((DetectCollision(&player, coin) == LEFT || DetectCollision(&player, coin) == RIGHT || DetectCollision(&player, coin) == UP) && coin->IsCollidable())
+			if ((DetectCollision(&player, coin, player.IsCrouching()) == LEFT || DetectCollision(&player, coin, player.IsCrouching()) == RIGHT || DetectCollision(&player, coin, player.IsCrouching()) == UP) && coin->IsCollidable())
 			{
 				player.AddCoinToCount(1);
 				coin->SetCollidable(false);
@@ -108,7 +108,7 @@ void PlayerState::HandleGemPickup(Player& player, GameState& gState) const
 		if (obj->GetType() == GameObject::Type::OBJ_GEM)
 		{
 			Gem* gem = static_cast<Gem*>(obj);
-			if ((DetectCollision(&player, gem) == LEFT || DetectCollision(&player, gem) == RIGHT || DetectCollision(&player, gem) == UP) && gem->IsCollidable())
+			if ((DetectCollision(&player, gem, player.IsCrouching()) == LEFT || DetectCollision(&player, gem, player.IsCrouching()) == RIGHT || DetectCollision(&player, gem, player.IsCrouching()) == UP) && gem->IsCollidable())
 			{
 				player.AddLife();
 				gem->SetCollidable(false);

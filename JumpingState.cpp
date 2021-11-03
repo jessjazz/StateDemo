@@ -12,7 +12,6 @@ PlayerState* JumpRightState::HandleInput(Player& player)
 	
 	if (!Play::KeyDown(VK_SPACE) || m_jumpTime > MAX_JUMP_TIME)
 	{
-		player.SetDrawState(State::STATE_FALL_RIGHT);
 		return new FallRightState;
 	}
 
@@ -56,15 +55,21 @@ void JumpRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	player.SetGrounded(false);
 }
 
+void JumpRightState::Enter(Player& player) const
+{
+	player.SetDrawState(State::STATE_JUMP);
+	player.SetCrouching(false);
+}
+
 void JumpRightState::HandleJumpCollision(Player& player, const std::vector<GameObject*>& map) const
 {
 	for (GameObject* p : map)
 	{
-		if (DetectCollision(&player, p) == UP && p->IsCollidable())
+		if (DetectCollision(&player, p, player.IsCrouching()) == UP && p->IsCollidable())
 		{
 			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1 });
 		}
-		else if (DetectCollision(&player, p) == LEFT || DetectCollision(&player, p) == RIGHT && p->IsCollidable())
+		else if (DetectCollision(&player, p, player.IsCrouching()) == LEFT || DetectCollision(&player, p, player.IsCrouching()) == RIGHT && p->IsCollidable())
 		{
 			player.SetVelocity({ player.GetVelocity().x * -1, player.GetVelocity().y });
 		}
@@ -77,7 +82,6 @@ PlayerState* JumpLeftState::HandleInput(Player& player)
 
 	if (!Play::KeyDown(VK_SPACE) || m_jumpTime > MAX_JUMP_TIME)
 	{
-		player.SetDrawState(State::STATE_FALL_LEFT);
 		return new FallLeftState;
 	}
 
@@ -121,15 +125,21 @@ void JumpLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 	player.SetGrounded(false);
 }
 
+void JumpLeftState::Enter(Player& player) const
+{
+	player.SetDrawState(State::STATE_JUMP_LEFT);
+	player.SetCrouching(false);
+}
+
 void JumpLeftState::HandleJumpCollision(Player& player, const std::vector<GameObject*>& map) const
 {
 	for (GameObject* p : map)
 	{
-		if (DetectCollision(&player, p) == UP && p->IsCollidable())
+		if (DetectCollision(&player, p, player.IsCrouching()) == UP && p->IsCollidable())
 		{
 			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1 });
 		}
-		else if (DetectCollision(&player, p) == LEFT || DetectCollision(&player, p) == RIGHT && p->IsCollidable())
+		else if (DetectCollision(&player, p, player.IsCrouching()) == LEFT || DetectCollision(&player, p, player.IsCrouching()) == RIGHT && p->IsCollidable())
 		{
 			player.SetVelocity({ player.GetVelocity().x * -1, player.GetVelocity().y });
 		}

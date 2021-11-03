@@ -7,7 +7,8 @@ public:
 	GroundPoundRightState() {}
 
 	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const;
+	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
+	void Enter(Player& player) const override;
 
 	void HandleCollision(Player& player, const std::vector<GameObject*>& map) const;
 
@@ -21,7 +22,8 @@ public:
 	GroundPoundLeftState() {}
 
 	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const;
+	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
+	void Enter(Player& player) const override;
 
 	void HandleCollision(Player& player, const std::vector<GameObject*>& map) const;
 

@@ -12,6 +12,7 @@ public:
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
+	void Enter(Player& player) const override;
 
 	void HandleJumpCollision(Player& player, const std::vector<GameObject*>& map) const;
 
@@ -28,6 +29,7 @@ public:
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
+	void Enter(Player& player) const override;
 
 	void HandleJumpCollision(Player& player, const std::vector<GameObject*>& map) const;
 

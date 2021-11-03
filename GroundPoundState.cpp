@@ -11,7 +11,6 @@ PlayerState* GroundPoundRightState::HandleInput(Player& player)
 	m_smashTime += 0.1f;
 	if (m_smashTime > MAX_SMASH)
 	{
-		player.SetDrawState(State::STATE_FALL_RIGHT);
 		return new FallRightState;
 	}
 	return nullptr;
@@ -25,6 +24,13 @@ void GroundPoundRightState::StateUpdate(Player& player, const std::vector<GameOb
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
 	HandleCollision(player, map);
+}
+
+void GroundPoundRightState::Enter(Player& player) const
+{
+	player.SetDrawState(State::STATE_SMASH_RIGHT);
+	player.SetFrame(0);
+	player.SetAnimSpeed(0.25f);
 }
 
 void GroundPoundRightState::HandleCollision(Player& player, const std::vector<GameObject*>& map) const
@@ -72,7 +78,6 @@ PlayerState* GroundPoundLeftState::HandleInput(Player& player)
 	m_smashTime += 0.1f;
 	if (m_smashTime > MAX_SMASH)
 	{
-		player.SetDrawState(State::STATE_FALL_LEFT);
 		return new FallLeftState;
 	}
 	return nullptr;
@@ -86,6 +91,13 @@ void GroundPoundLeftState::StateUpdate(Player& player, const std::vector<GameObj
 	player.SetWidth(Play::GetSpriteWidth(spriteId));
 
 	GroundPoundLeftState::HandleCollision(player, map);
+}
+
+void GroundPoundLeftState::Enter(Player& player) const
+{
+	player.SetDrawState(State::STATE_SMASH_LEFT);
+	player.SetFrame(0);
+	player.SetAnimSpeed(0.25f);
 }
 
 void GroundPoundLeftState::HandleCollision(Player& player, const std::vector<GameObject*>& map) const

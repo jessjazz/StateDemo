@@ -248,14 +248,14 @@ bool IsStandingOn(GameObject* object1, GameObject* object2)
 	return false;
 }
 
-int DetectCollision(GameObject* object1, GameObject* object2)
+int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouched)
 {
 	PLAY_ASSERT_MSG(object1, "object1 cannot be null");
 	PLAY_ASSERT_MSG(object2, "object2 cannot be null");
 
 	float offset = 4.f;
 
-	float object1_y = object1->GetPosition().y;
+	float object1_y = (isCrouched) ? object1->GetPosition().y + (object1->GetHeight() / 2.f) : object1->GetPosition().y;
 	float object2_y = object2->GetPosition().y;
 	float object1_x = object1->GetPosition().x;
 	float object2_x = object2->GetPosition().x;
@@ -264,7 +264,7 @@ int DetectCollision(GameObject* object1, GameObject* object2)
 	float object1_xw = object1->GetPosition().x + object1->GetWidth();
 	float object2_xw = object2->GetPosition().x + object2->GetWidth() - offset;
 
-	float object1_y_offset = object1->GetPosition().y + offset;
+	float object1_y_offset = (isCrouched) ? object1->GetPosition().y + (object1->GetHeight() / 2.f) : object1->GetPosition().y;
 	float object2_yh_offset = object2->GetPosition().y + object2->GetHeight() - offset;
 
 	float object1_x_offset = object1->GetPosition().x - offset;

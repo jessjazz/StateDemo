@@ -4,37 +4,25 @@
 class SlideRightState : public PlayerState
 {
 public:
-	SlideRightState()
-		: m_slideTime(0.0f)
-	{}
+	SlideRightState() {}
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
-
-	void HandleCollision(Player& player, const std::vector<GameObject*>& map,
-		const int speed, const int direction) const;
-
-	int DetectCollision(GameObject* object1, GameObject* object2) const;
+	void Enter(Player& player) const override;
 
 private:
-	float m_slideTime;
+	float m_slideTime{ 0.0f };
 };
 
 class SlideLeftState : public PlayerState
 {
 public:
-	SlideLeftState()
-		: m_slideTime(0.0f)
-	{}
+	SlideLeftState() {}
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
-
-	void HandleCollision(Player& player, const std::vector<GameObject*>& map,
-		const int speed, const int direction) const;
-
-	int DetectCollision(GameObject* object1, GameObject* object2) const;
+	void Enter(Player& player) const override;
 
 private:
-	float m_slideTime;
+	float m_slideTime{ 0.0f };
 };
