@@ -33,3 +33,8 @@ void MovingPlatform::Draw(GameState& gState) const
 {
 	Play::DrawRect({ m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, { m_pos.x + m_width - gState.camera.x, m_pos.y + m_height - gState.camera.y }, Play::cBlack, true);
 }
+
+MovingPlatform* MovingPlatform::CreatePlatform(Point2f pos, int width, int height, int direction, float sinAmplitude, float sinFrequency)
+{
+	return new MovingPlatform(pos, width, height, direction, sinAmplitude, sinFrequency);
+}

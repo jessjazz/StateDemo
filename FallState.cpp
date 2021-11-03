@@ -24,6 +24,25 @@ void FallRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 	player.SetVelocity(player.GetVelocity() + player.GetGravity());
 	player.SetPosition(currentPos + player.GetVelocity());
 
+	HandleCollision(player, map);
+	HandleCoinPickup(player, gState);
+	HandleGemPickup(player, gState);
+
+	if (player.GetPosition().y > DISPLAY_HEIGHT)
+	{
+		player.SetDead(true);
+		player.SetLives(player.GetLives() - 1);
+	}
+}
+
+void FallRightState::Enter(Player& player) const
+{
+	player.SetDrawState(State::STATE_FALL_RIGHT);
+	player.SetCrouching(false);
+}
+
+void FallRightState::HandleCollision(Player& player, const std::vector<GameObject*>& map) const
+{
 	// Handle level edges
 	if (player.GetPosition().x > LEVEL_WIDTH - player.GetWidth())
 	{
@@ -58,21 +77,6 @@ void FallRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 			}
 		}
 	}
-
-	HandleCoinPickup(player, gState);
-	HandleGemPickup(player, gState);
-
-	if (player.GetPosition().y > DISPLAY_HEIGHT)
-	{
-		player.SetDead(true);
-		player.SetLives(player.GetLives() - 1);
-	}
-}
-
-void FallRightState::Enter(Player& player) const
-{
-	player.SetDrawState(State::STATE_FALL_RIGHT);
-	player.SetCrouching(false);
 }
 
 PlayerState* FallLeftState::HandleInput(Player& player)
@@ -96,6 +100,25 @@ void FallLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 	player.SetVelocity(player.GetVelocity() + player.GetGravity());
 	player.SetPosition(currentPos + player.GetVelocity());
 
+	HandleCollision(player, map);
+	HandleCoinPickup(player, gState);
+	HandleGemPickup(player, gState);
+
+	if (player.GetPosition().y > DISPLAY_HEIGHT)
+	{
+		player.SetDead(true);
+		player.SetLives(player.GetLives() - 1);
+	}
+}
+
+void FallLeftState::Enter(Player& player) const
+{
+	player.SetDrawState(State::STATE_FALL_LEFT);
+	player.SetCrouching(false);
+}
+
+void FallLeftState::HandleCollision(Player& player, const std::vector<GameObject*>& map) const
+{
 	// Handle level edges
 	if (player.GetPosition().x > LEVEL_WIDTH - player.GetWidth())
 	{
@@ -130,19 +153,4 @@ void FallLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 			}
 		}
 	}
-
-	HandleCoinPickup(player, gState);
-	HandleGemPickup(player, gState);
-
-	if (player.GetPosition().y > DISPLAY_HEIGHT)
-	{
-		player.SetDead(true);
-		player.SetLives(player.GetLives() - 1);
-	}
-}
-
-void FallLeftState::Enter(Player& player) const
-{
-	player.SetDrawState(State::STATE_FALL_LEFT);
-	player.SetCrouching(false);
 }

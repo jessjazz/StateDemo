@@ -9,6 +9,8 @@ public:
 	void Update(GameState& gState) override;
 	void Draw(GameState& gState) const override;
 
+	static DestructiblePlatform* CreatePlatform(Point2f pos, int width, int height, float lifeTime, float fadeSpeed);
+
 	enum State
 	{
 		STATE_APPEAR = 0,

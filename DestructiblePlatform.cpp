@@ -46,3 +46,8 @@ void DestructiblePlatform::Draw(GameState& gState) const
 		break;
 	}
 }
+
+DestructiblePlatform* DestructiblePlatform::CreatePlatform(Point2f pos, int width, int height, float lifeTime, float fadeSpeed)
+{
+	return new DestructiblePlatform(pos, width, height, lifeTime, fadeSpeed);
+}

@@ -20,3 +20,8 @@ void Coin::Draw(GameState& gState) const
 		Play::DrawSprite(gState.sprites.coin, { m_pos.x - gState.camera.x, m_pos.y + yWobble - gState.camera.y }, (int)(3.f * gState.time));
 	}
 }
+
+Coin* Coin::CreateCoin(Point2f pos)
+{
+	return new Coin(pos);
+}

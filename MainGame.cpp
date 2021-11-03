@@ -23,7 +23,7 @@ void MainGameEntry( PLAY_IGNORE_COMMAND_LINE )
 	LoadSprites(gState.sprites);
 	CreateMap(gState);
 	gState.camera = { 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT };
-	gState.player = new Player(gState.originalPlayerPos, GRAVITY, gState.playerSpeed, LIVES);
+	gState.player = Player::CreatePlayer(gState.originalPlayerPos, GRAVITY, gState.playerSpeed, LIVES);
 }
 
 bool MainGameUpdate(float elapsedTime)
@@ -33,6 +33,10 @@ bool MainGameUpdate(float elapsedTime)
 
 	Play::DrawBackground();
 
+	MoveCamera(gState.player, gState.camera);
+	GameObject::UpdateAll(gState);
+	GameObject::DrawAll(gState);
+
 	std::string lives = std::to_string(gState.player->GetLives());
 	std::string coins = std::to_string(gState.player->GetCoinCount());
 	if (gState.player->GetLives() > 0)
@@ -41,10 +45,11 @@ bool MainGameUpdate(float elapsedTime)
 		Play::DrawFontText("64px", ("Lives: " + lives), { 50, 50 });
 		Play::DrawFontText("64px", ("Coins: " + coins), { DISPLAY_WIDTH - 150, 50 });
 	}
-
-	MoveCamera(gState.player, gState.camera);
-	GameObject::UpdateAll(gState);
-	GameObject::DrawAll(gState);
+	
+	if (gState.player->GetLives() <= 0)
+	{
+		HandleGameOver(gState);
+	}
 
 	Play::PresentDrawingBuffer();
 	return Play::KeyDown(VK_ESCAPE);
@@ -83,7 +88,8 @@ void CreateMap(GameState& gState)
 
 	for (int i = 0; i < 16; i++)
 	{
-		gState.s_vMap.push_back(new Platform(Platforms[i].pos, Platforms[i].width, Platforms[i].height));
+		Platform* plat = Platform::CreatePlatform(Platforms[i].pos, Platforms[i].width, Platforms[i].height);
+		gState.s_vMap.push_back(plat);
 	}
 
 	// Load moving Platforms
@@ -94,11 +100,12 @@ void CreateMap(GameState& gState)
 
 	for (int i = 0; i < 2; i++)
 	{
-		gState.s_vMap.push_back(new MovingPlatform(movingPlatforms[i].pos, movingPlatforms[i].width, movingPlatforms[i].height, movingPlatforms[i].direction, 
-													movingPlatforms[i].sinAmplitude, movingPlatforms[i].sinFrequency));
+		MovingPlatform* mPlat = MovingPlatform::CreatePlatform(movingPlatforms[i].pos, movingPlatforms[i].width, movingPlatforms[i].height, movingPlatforms[i].direction,
+																movingPlatforms[i].sinAmplitude, movingPlatforms[i].sinFrequency);
+		gState.s_vMap.push_back(mPlat);
 	}
 
-	// Load decaying playforms
+	// Load decaying platforms
 	DecayingPlatformArgs decayingPlatform1{ {840, 180}, Play::GetSpriteWidth(gState.sprites.smallPlatform), Play::GetSpriteHeight(gState.sprites.smallPlatform), 20, 'S', 10.f, 2.f};
 	DecayingPlatformArgs decayingPlatform2{ {2000, 180}, Play::GetSpriteWidth(gState.sprites.largePlatform), Play::GetSpriteHeight(gState.sprites.largePlatform), 14, 'L', 10.f, 2.f };
 	DecayingPlatformArgs decayingPlatform3{ {2400, 240}, Play::GetSpriteWidth(gState.sprites.largePlatform), Play::GetSpriteHeight(gState.sprites.largePlatform), 14, 'L', 10.f, 2.f };
@@ -108,22 +115,26 @@ void CreateMap(GameState& gState)
 
 	for (int i = 0; i < 4; i++)
 	{
-		gState.s_vMap.push_back(new DecayingPlatform(decayingPlatforms[i].pos, decayingPlatforms[i].width, decayingPlatforms[i].height, decayingPlatforms[i].decaySpeed, 
-													decayingPlatforms[i].size, decayingPlatforms[i].lifeTime, decayingPlatforms[i].respawnDelay));
+		DecayingPlatform* decPlat = DecayingPlatform::CreatePlatform(decayingPlatforms[i].pos, decayingPlatforms[i].width, decayingPlatforms[i].height, decayingPlatforms[i].decaySpeed,
+																	decayingPlatforms[i].size, decayingPlatforms[i].lifeTime, decayingPlatforms[i].respawnDelay);
+		gState.s_vMap.push_back(decPlat);
 	}
 
+	// Load destructible platforms
 	DestructiblePlatformArgs destructiblePlatform1{ {3700, 300}, Play::GetSpriteWidth(gState.sprites.detructiblePlatform), Play::GetSpriteHeight(gState.sprites.detructiblePlatform), 10.f, 20.f };
-	//DestructiblePlatformArgs destructiblePlatform2{ {140, 470}, Play::GetSpriteWidth(gState.sprites.detructiblePlatform), Play::GetSpriteHeight(gState.sprites.detructiblePlatform), 10.f, 20.f };
 
 	DestructiblePlatformArgs destructiblePlatforms[1] = { destructiblePlatform1 };
 
 	for (int i = 0; i < 1; i++)
 	{
-		gState.s_vMap.push_back(new DestructiblePlatform(destructiblePlatforms[i].pos, destructiblePlatforms[i].width, destructiblePlatforms[i].height, destructiblePlatforms[i].lifeTime, destructiblePlatforms[i].fadeSpeed));
+		DestructiblePlatform* desPlat = DestructiblePlatform::CreatePlatform(destructiblePlatforms[i].pos, destructiblePlatforms[i].width, destructiblePlatforms[i].height, 
+																			destructiblePlatforms[i].lifeTime, destructiblePlatforms[i].fadeSpeed);
+		gState.s_vMap.push_back(desPlat);
 	}
 
 	// Put a door at the end of the level
-	gState.s_vMap.push_back(new Door({ LEVEL_WIDTH - 100, 650 - Play::GetSpriteHeight(gState.sprites.door) }));
+	Door* door = Door::CreateDoor({ LEVEL_WIDTH - 100, 650 - Play::GetSpriteHeight(gState.sprites.door) });
+	gState.s_vMap.push_back(door);
 
 	CreatePickups(gState);
 }
@@ -162,7 +173,26 @@ void CreatePickups(GameState& gState)
 
 	for (int i = 0; i < 26; i++)
 	{
-		gState.s_vPickups.push_back(new Coin(coins[i].pos));
+		Coin* coin = Coin::CreateCoin(coins[i].pos);
+		gState.s_vPickups.push_back(coin);
+	}
+}
+
+void HandleGameOver(GameState& gState)
+{
+	Play::CentreSpriteOrigin("151px");
+	Play::CentreSpriteOrigin("64px");
+	Play::DrawFontText("151px", "Game Over", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
+	Play::DrawFontText("64px", "Press enter to play again!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
+
+	if (Play::KeyPressed(VK_RETURN))
+	{
+		gState.player->HandleLifeLost(gState);
+		gState.player->SetLives(LIVES);
+		for (GameObject* item : gState.s_vPickups)
+		{
+			item->SetCollidable(true);
+		}
 	}
 }
 
@@ -248,14 +278,14 @@ bool IsStandingOn(GameObject* object1, GameObject* object2)
 	return false;
 }
 
-int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouched)
+int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouching)
 {
 	PLAY_ASSERT_MSG(object1, "object1 cannot be null");
 	PLAY_ASSERT_MSG(object2, "object2 cannot be null");
 
 	float offset = 4.f;
 
-	float object1_y = (isCrouched) ? object1->GetPosition().y + (object1->GetHeight() / 2.f) : object1->GetPosition().y;
+	float object1_y = (isCrouching) ? object1->GetPosition().y + (object1->GetHeight() / 2.f) : object1->GetPosition().y;
 	float object2_y = object2->GetPosition().y;
 	float object1_x = object1->GetPosition().x;
 	float object2_x = object2->GetPosition().x;
@@ -264,7 +294,7 @@ int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouched)
 	float object1_xw = object1->GetPosition().x + object1->GetWidth();
 	float object2_xw = object2->GetPosition().x + object2->GetWidth() - offset;
 
-	float object1_y_offset = (isCrouched) ? object1->GetPosition().y + (object1->GetHeight() / 2.f) : object1->GetPosition().y;
+	float object1_y_offset = (isCrouching) ? object1->GetPosition().y + (object1->GetHeight() / 2.f) : object1->GetPosition().y;
 	float object2_yh_offset = object2->GetPosition().y + object2->GetHeight() - offset;
 
 	float object1_x_offset = object1->GetPosition().x - offset;

@@ -9,5 +9,7 @@ public:
 
 	void Update(GameState& gState);
 	void Draw(GameState& gState) const;
+
+	static Coin* CreateCoin(Point2f pos);
 };
 

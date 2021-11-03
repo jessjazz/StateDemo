@@ -9,6 +9,8 @@ public:
 	void Update(GameState& gState);
 	void Draw(GameState& gState) const;
 
+	static Door* CreateDoor(Point2f pos);
+
 	enum State
 	{
 		CLOSED = 0,

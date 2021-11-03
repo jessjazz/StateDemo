@@ -50,3 +50,8 @@ void Door::Draw(GameState& gState) const
 		break;
 	}
 }
+
+Door* Door::CreateDoor(Point2f pos)
+{
+	return new Door(pos);
+}

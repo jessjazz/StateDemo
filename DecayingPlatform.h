@@ -16,6 +16,8 @@ public:
 	void Update(GameState& gState) override;
 	void Draw(GameState& gState) const override;
 
+	static DecayingPlatform* CreatePlatform(Point2f pos, int width, int height, int decaySpeed, char size, float lifeTime, float respawnDelay);
+
 	void SetSize(Size size) { m_size = size; }
 
 private:

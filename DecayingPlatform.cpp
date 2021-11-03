@@ -81,6 +81,11 @@ void DecayingPlatform::Draw(GameState& gState) const
 	}
 }
 
+DecayingPlatform* DecayingPlatform::CreatePlatform(Point2f pos, int width, int height, int decaySpeed, char size, float lifeTime, float respawnDelay)
+{
+	return new DecayingPlatform(pos, width, height, decaySpeed, size, lifeTime, respawnDelay);
+}
+
 void DecayingPlatform::ResetPlatform()
 {
 	m_alpha = m_originalAlpha;

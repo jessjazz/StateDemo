@@ -13,6 +13,8 @@ public:
 	void Update(GameState& gState) override;
 	void Draw(GameState& gState) const override;
 
+	static Player* CreatePlayer(Point2f pos, Vector2f gravity, int speed, int lives);
+
 	void SetState(PlayerState* playerState) { m_pCurrentState = playerState; }
 	PlayerState* GetState() const { return m_pCurrentState; }
 	void SetDrawState(const State state) { m_state = state; }
@@ -44,6 +46,8 @@ public:
 
 	bool IsCrouching() const { return b_isCrouching; }
 	void SetCrouching(bool crouching) { b_isCrouching = crouching; }
+	
+	void HandleLifeLost(GameState& gState);
 
 private:
 	State m_state{State::STATE_IDLE};
@@ -59,7 +63,5 @@ private:
 	float m_framePos{ 0.0f };
 	float m_animSpeed{ 0.0f };
 
-	void HandleGameOver(GameState& gState);
-	void HandleLifeLost(GameState& gState);
 	void HandleNewLevel(GameState& gState, GameObject* player);
 };

@@ -20,7 +20,7 @@ Player::~Player() {}
 
 void Player::Update(GameState& gState)
 {
-	// Handle changing animation for ground pound
+	// Handle state animation
 	if (m_animSpeed > 0)
 	{
 		m_framePos += m_animSpeed;
@@ -31,7 +31,7 @@ void Player::Update(GameState& gState)
 		}
 	}
 
-	// Handle lifecycle
+	// Handle player lifecycle
 	if (!b_isDead)
 	{
 		PlayerState* pState = m_pCurrentState->HandleInput(*this);
@@ -49,10 +49,6 @@ void Player::Update(GameState& gState)
 	else if (b_isDead && m_lives > 0)
 	{
 		HandleLifeLost(gState);
-	}
-	else
-	{
-		HandleGameOver(gState);
 	}
 
 	// Handle new level
@@ -136,23 +132,28 @@ void Player::Draw(GameState& gState) const
 	}
 }
 
-void Player::HandleGameOver(GameState& gState)
+Player* Player::CreatePlayer(Point2f pos, Vector2f gravity, int speed, int lives)
 {
-	Play::CentreSpriteOrigin("151px");
-	Play::CentreSpriteOrigin("64px");
-	Play::DrawFontText("151px", "Game Over", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
-	Play::DrawFontText("64px", "Press enter to play again!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
-
-	if (Play::KeyPressed(VK_RETURN))
-	{
-		HandleLifeLost(gState);
-		m_lives = LIVES;
-		for (GameObject* item : gState.s_vPickups)
-		{
-			item->SetCollidable(true);
-		}
-	}
+	return new Player(pos, gravity, speed, lives);
 }
+
+//void Player::HandleGameOver(GameState& gState)
+//{
+//	Play::CentreSpriteOrigin("151px");
+//	Play::CentreSpriteOrigin("64px");
+//	Play::DrawFontText("151px", "Game Over", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
+//	Play::DrawFontText("64px", "Press enter to play again!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
+//
+//	if (Play::KeyPressed(VK_RETURN))
+//	{
+//		HandleLifeLost(gState);
+//		m_lives = LIVES;
+//		for (GameObject* item : gState.s_vPickups)
+//		{
+//			item->SetCollidable(true);
+//		}
+//	}
+//}
 
 void Player::HandleLifeLost(GameState& gState)
 {

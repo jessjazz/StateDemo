@@ -19,3 +19,8 @@ void Platform::Draw(GameState& gState) const
 {
 	Play::DrawRect({ m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, { m_pos.x + m_width - gState.camera.x, m_pos.y + m_height - gState.camera.y }, Play::cGrey, true);
 }
+
+Platform* Platform::CreatePlatform(Point2f pos, int width, int height)
+{
+	return new Platform(pos, width, height);
+}

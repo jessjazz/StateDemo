@@ -10,6 +10,8 @@ public:
 	void Update(GameState& gState) override;
 	void Draw(GameState& gState) const override;
 
+	static MovingPlatform* CreatePlatform(Point2f pos, int width, int height, int direction, float sinAmplitude, float sinFrequency);
+
 private:
 	float x { 0.f };
 	float m_amplitude;

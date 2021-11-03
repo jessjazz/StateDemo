@@ -11,5 +11,7 @@ public:
 
 	void Update(GameState& gState) override;
 	void Draw(GameState& gState) const override;
+
+	static Platform* CreatePlatform(Point2f pos, int width, int height);
 };
 
