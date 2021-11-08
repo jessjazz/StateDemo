@@ -16,6 +16,7 @@ public:
         OBJ_DESTRUCTIBLE_PLATFORM,
         OBJ_COIN,
         OBJ_GEM,
+        OBJ_STAR,
         OBJ_DOOR,
         OBJ_ALL = 999
     };
@@ -43,6 +44,9 @@ public:
 
     void SetCollidable(const bool collidable) { b_collidable = collidable; }
     bool IsCollidable() const { return b_collidable; }
+
+    void SetActive(const bool active) { m_active = active; }
+    bool GetActive() const { return m_active; }
 
     void SetDrawOrder(const int drawOrder) { m_drawOrder = drawOrder; }
     int GetDrawOrder() const { return m_drawOrder; };

@@ -24,6 +24,9 @@ public:
 	int GetFrame() const { return m_frame; }
 	void SetFrame(const int frame) { m_frame = frame; }
 
+	float GetFramePos() const { return m_framePos; }
+	void SetFramePos(const float framePos) { m_framePos = framePos; }
+
 	State GetState() const { return m_state; }
 	void SetState(State newState) { m_state = newState; }
 

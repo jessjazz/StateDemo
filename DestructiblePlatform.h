@@ -29,5 +29,6 @@ private:
 	float m_fadeSpeed;
 	float m_originalAlpha{ 1.f };
 	float m_alpha{ m_originalAlpha };
+	bool b_visible{ true };
 };
 

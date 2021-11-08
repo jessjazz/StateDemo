@@ -32,6 +32,9 @@ public:
 	void SetLives(const int lives) { m_lives = lives; }
 	void AddLife() { m_lives++; }
 
+	float GetDeathTime() const { return m_deathTime; }
+	void SetDeathTime(const float time) { m_deathTime = time; }
+
 	Vector2f GetGravity() const { return m_gravity; }
 	void SetGravity(const Vector2f gravity) { m_gravity = gravity; }
 
@@ -43,6 +46,7 @@ public:
 
 	int GetCoinCount() const { return m_coinCount; }
 	void AddCoinToCount(const int num) { m_coinCount += num; }
+	void ResetCoinCount() { m_coinCount = 0; }
 
 	bool IsCrouching() const { return b_isCrouching; }
 	void SetCrouching(bool crouching) { b_isCrouching = crouching; }
@@ -62,6 +66,7 @@ private:
 	int m_frame{ 0 };
 	float m_framePos{ 0.0f };
 	float m_animSpeed{ 0.0f };
+	float m_deathTime{ 0.0f };
 
 	void HandleNewLevel(GameState& gState, GameObject* player);
 };

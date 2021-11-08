@@ -164,6 +164,7 @@
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="RunningState.h" />
     <ClInclude Include="SlideState.h" />
+    <ClInclude Include="Star.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Coin.cpp" />
@@ -186,6 +187,7 @@
     <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="RunningState.cpp" />
     <ClCompile Include="SlideState.cpp" />
+    <ClCompile Include="Star.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

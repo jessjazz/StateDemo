@@ -58,7 +58,7 @@ struct Sprites
 	int idleRight, idleLeft, runRight, runLeft, jumpRight, jumpLeft, crouchRight, crouchLeft,
 		dashRight, dashLeft, crawlRight, crawlLeft, slideRight, slideLeft, fallRight, fallLeft, 
 		groundPoundRight, groundPoundLeft, smallPlatform, largePlatform, detructiblePlatform, 
-		brokenPlatform, coin, gem, door;
+		brokenPlatform, coin, gem, door, star;
 };
 
 struct GameState
@@ -73,6 +73,7 @@ struct GameState
 	State playerState = State::STATE_IDLE;
 	Sprites sprites;
 	CameraRect camera;
+	bool levelEnd{ false };
 };
 
 struct PlatformArgs
@@ -130,3 +131,5 @@ bool IsStandingOn(GameObject* object1, GameObject* object2);
 int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouching);
 
 void HandleGameOver(GameState& gState);
+
+void HandleLevelEnd(GameState& gState);

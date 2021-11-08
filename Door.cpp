@@ -11,9 +11,10 @@ Door::Door(Point2f pos)
 void Door::Update(GameState& gState)
 {
 	// If player presses e or E
-	if (Play::KeyPressed(0x45) || Play::KeyPressed(0x65))
+	if ((Play::KeyPressed(0x45) || Play::KeyPressed(0x65)) && m_state == CLOSED)
 	{
 		m_state = OPENING;
+		Play::PlayAudio("door");
 	}
 
 	if (m_state == OPENING)

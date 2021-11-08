@@ -31,6 +31,7 @@ void GroundPoundRightState::Enter(Player& player) const
 	player.SetDrawState(State::STATE_SMASH_RIGHT);
 	player.SetFrame(0);
 	player.SetAnimSpeed(0.25f);
+	Play::PlayAudio("smash");
 }
 
 void GroundPoundRightState::HandleCollision(Player& player, const std::vector<GameObject*>& map) const
@@ -59,6 +60,7 @@ void GroundPoundRightState::HandleCollision(Player& player, const std::vector<Ga
 				DestructiblePlatform* dp = static_cast<DestructiblePlatform*>(p);
 				if (dp->GetState() == DestructiblePlatform::State::STATE_APPEAR && m_smashTime > MAX_SMASH - 0.2f)
 				{
+					//Play::PlayAudio("smash");
 					dp->SetState(DestructiblePlatform::State::STATE_BROKEN);
 					player.SetGrounded(false);
 				}
@@ -98,6 +100,7 @@ void GroundPoundLeftState::Enter(Player& player) const
 	player.SetDrawState(State::STATE_SMASH_LEFT);
 	player.SetFrame(0);
 	player.SetAnimSpeed(0.25f);
+	Play::PlayAudio("smash");
 }
 
 void GroundPoundLeftState::HandleCollision(Player& player, const std::vector<GameObject*>& map) const
@@ -126,6 +129,7 @@ void GroundPoundLeftState::HandleCollision(Player& player, const std::vector<Gam
 				DestructiblePlatform* dp = static_cast<DestructiblePlatform*>(p);
 				if (dp->GetState() == DestructiblePlatform::State::STATE_APPEAR && m_smashTime > MAX_SMASH - 0.2f)
 				{
+					//Play::PlayAudio("smash");
 					dp->SetState(DestructiblePlatform::State::STATE_BROKEN);
 					player.SetGrounded(false);
 				}

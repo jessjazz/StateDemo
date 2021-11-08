@@ -24,6 +24,7 @@ void MainGameEntry( PLAY_IGNORE_COMMAND_LINE )
 	CreateMap(gState);
 	gState.camera = { 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT };
 	gState.player = Player::CreatePlayer(gState.originalPlayerPos, GRAVITY, gState.playerSpeed, LIVES);
+	Play::StartAudioLoop("soundscape");
 }
 
 bool MainGameUpdate(float elapsedTime)
@@ -49,6 +50,11 @@ bool MainGameUpdate(float elapsedTime)
 	if (gState.player->GetLives() <= 0)
 	{
 		HandleGameOver(gState);
+	}
+
+	if (gState.levelEnd)
+	{
+		HandleLevelEnd(gState);
 	}
 
 	Play::PresentDrawingBuffer();
@@ -184,15 +190,72 @@ void HandleGameOver(GameState& gState)
 	Play::CentreSpriteOrigin("64px");
 	Play::DrawFontText("151px", "Game Over", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
 	Play::DrawFontText("64px", "Press enter to play again!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
+	Play::StopAudioLoop("soundscape");
+	for (GameObject* p : gState.s_vPickups)
+	{
+		p->SetActive(false);
+	}
 
 	if (Play::KeyPressed(VK_RETURN))
 	{
+		Play::StartAudioLoop("soundscape");
 		gState.player->HandleLifeLost(gState);
 		gState.player->SetLives(LIVES);
+		gState.player->ResetCoinCount();
+		CreatePickups(gState);
 		for (GameObject* item : gState.s_vPickups)
 		{
 			item->SetCollidable(true);
 		}
+		for (GameObject* platform : gState.s_vMap)
+		{
+			if (platform->GetType() == GameObject::OBJ_DESTRUCTIBLE_PLATFORM)
+			{
+				DestructiblePlatform* dp = static_cast<DestructiblePlatform*>(platform);
+				dp->SetState(DestructiblePlatform::STATE_APPEAR);
+			}
+		}
+	}
+}
+
+void HandleLevelEnd(GameState& gState)
+{
+	Play::CentreSpriteOrigin("151px");
+	Play::CentreSpriteOrigin("64px");
+	Play::DrawFontText("151px", "You finished the level!", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
+	Play::DrawFontText("64px", "Press enter to restart!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
+	Play::StopAudioLoop("soundscape");
+	for (GameObject* p : gState.s_vPickups)
+	{
+		p->SetActive(false);
+	}
+	if (Play::KeyPressed(VK_RETURN))
+	{
+		Play::StartAudioLoop("soundscape");
+		gState.player->HandleLifeLost(gState);
+		gState.player->SetLives(LIVES);
+		CreatePickups(gState);
+
+		for (GameObject* item : gState.s_vPickups)
+		{
+			item->SetCollidable(true);
+		}
+		for (GameObject* obj : gState.s_vMap)
+		{
+			if (obj->GetType() == GameObject::OBJ_DESTRUCTIBLE_PLATFORM)
+			{
+				DestructiblePlatform* dp = static_cast<DestructiblePlatform*>(obj);
+				dp->SetState(DestructiblePlatform::STATE_APPEAR);
+			}
+			if (obj->GetType() == GameObject::OBJ_DOOR)
+			{
+				Door* d = static_cast<Door*>(obj);
+				d->SetState(Door::CLOSED);
+				d->SetFrame(0);
+			}
+		}
+
+		gState.levelEnd = false;
 	}
 }
 
@@ -246,6 +309,7 @@ void LoadSprites(Sprites& sprites)
 	sprites.coin = Play::GetSpriteId("coins");
 	sprites.gem = Play::GetSpriteId("gem");
 	sprites.door = Play::GetSpriteId("door");
+	sprites.star = Play::GetSpriteId("star");
 }
 
 bool IsStandingOn(GameObject* object1, GameObject* object2)

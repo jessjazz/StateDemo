@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "PlayerState.h"
 
+constexpr float RESPAWN_DELAY = 0.5f;
+
 Player::Player(Point2f pos, Vector2f gravity, int speed, int lives)
 	: GameObject(pos),
 	m_speed(speed),
@@ -137,39 +139,26 @@ Player* Player::CreatePlayer(Point2f pos, Vector2f gravity, int speed, int lives
 	return new Player(pos, gravity, speed, lives);
 }
 
-//void Player::HandleGameOver(GameState& gState)
-//{
-//	Play::CentreSpriteOrigin("151px");
-//	Play::CentreSpriteOrigin("64px");
-//	Play::DrawFontText("151px", "Game Over", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
-//	Play::DrawFontText("64px", "Press enter to play again!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
-//
-//	if (Play::KeyPressed(VK_RETURN))
-//	{
-//		HandleLifeLost(gState);
-//		m_lives = LIVES;
-//		for (GameObject* item : gState.s_vPickups)
-//		{
-//			item->SetCollidable(true);
-//		}
-//	}
-//}
-
 void Player::HandleLifeLost(GameState& gState)
 {
-	m_pos = { gState.originalPlayerPos };
-	b_isDead = false;
-	SetDrawState(State::STATE_IDLE);
-	delete m_pCurrentState;
-	m_pCurrentState = new IdleRightState;
-	b_onGround = true;
+	if (gState.time > m_deathTime + RESPAWN_DELAY)
+	{
+		m_pos = { gState.originalPlayerPos };
+		b_isDead = false;
+		SetDrawState(State::STATE_IDLE);
+		delete m_pCurrentState;
+		m_pCurrentState = new IdleRightState;
+		b_onGround = true;
+	}
 }
 
 void Player::HandleNewLevel(GameState& gState, GameObject* player)
 {
-	// TODO: New player transition state to fade out
-	// Load next level
+	// TODO: Load next level
 	// Just for now:
-	player->SetVelocity({ 0, 200 });
-	player->SetPosition(player->GetPosition() + player->GetVelocity());
+	Play::PlayAudio("success");
+	SetVelocity({ 0, 200 });
+	SetPosition(player->GetPosition() + player->GetVelocity());
+	ResetCoinCount();
+	gState.levelEnd = true;
 }

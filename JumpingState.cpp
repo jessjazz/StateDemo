@@ -59,6 +59,7 @@ void JumpRightState::Enter(Player& player) const
 {
 	player.SetDrawState(State::STATE_JUMP);
 	player.SetCrouching(false);
+	Play::PlayAudio("jump");
 }
 
 void JumpRightState::HandleJumpCollision(Player& player, const std::vector<GameObject*>& map) const
@@ -129,6 +130,7 @@ void JumpLeftState::Enter(Player& player) const
 {
 	player.SetDrawState(State::STATE_JUMP_LEFT);
 	player.SetCrouching(false);
+	Play::PlayAudio("jump");
 }
 
 void JumpLeftState::HandleJumpCollision(Player& player, const std::vector<GameObject*>& map) const

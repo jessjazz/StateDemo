@@ -1,5 +1,6 @@
 #include "PlayerState.h"
 #include "Player.h"
+#include "Star.h"
 
 void PlayerState::HandleCollision(Player& player, const std::vector<GameObject*>& map, 
 								const int speed, const int direction) const
@@ -96,6 +97,8 @@ void PlayerState::HandleCoinPickup(Player& player, GameState& gState) const
 			{
 				player.AddCoinToCount(1);
 				coin->SetCollidable(false);
+				Play::PlayAudio("collect");
+				Star::SpawnStars(coin->GetPosition());
 			}
 		}
 	}
@@ -112,6 +115,8 @@ void PlayerState::HandleGemPickup(Player& player, GameState& gState) const
 			{
 				player.AddLife();
 				gem->SetCollidable(false);
+				Play::PlayAudio("gem");
+				Star::SpawnStars(gem->GetPosition());
 			}
 		}
 	}

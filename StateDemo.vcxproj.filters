@@ -31,6 +31,12 @@
     <Filter Include="Source Files\Pickups">
       <UniqueIdentifier>{ee99e372-9d93-4cb6-a3de-574e07ce204d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\OtherObjects">
+      <UniqueIdentifier>{294b30ed-74f2-4e39-8fed-41a8e7edcfb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OtherObjects">
+      <UniqueIdentifier>{565d5000-51d4-468b-9d4a-1c0968218e16}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Play.h">
@@ -93,8 +99,11 @@
     <ClInclude Include="Gem.h">
       <Filter>Header Files\Pickups</Filter>
     </ClInclude>
+    <ClInclude Include="Star.h">
+      <Filter>Header Files\OtherObjects</Filter>
+    </ClInclude>
     <ClInclude Include="Door.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\OtherObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -155,8 +164,11 @@
     <ClCompile Include="Gem.cpp">
       <Filter>Source Files\Pickups</Filter>
     </ClCompile>
+    <ClCompile Include="Star.cpp">
+      <Filter>Source Files\OtherObjects</Filter>
+    </ClCompile>
     <ClCompile Include="Door.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\OtherObjects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

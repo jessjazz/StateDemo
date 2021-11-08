@@ -14,6 +14,13 @@ DestructiblePlatform::DestructiblePlatform(Point2f pos, int width, int height, f
 
 void DestructiblePlatform::Update(GameState& gState)
 {
+	if (m_state == STATE_APPEAR && m_remainingLife <= 0)
+	{
+		m_remainingLife = m_lifeTime;
+		b_visible = true;
+		b_collidable = true;
+	}
+	
 	if (m_state == STATE_BROKEN)
 	{
 		b_collidable = false;
@@ -21,29 +28,33 @@ void DestructiblePlatform::Update(GameState& gState)
 		m_life = m_remainingLife / m_lifeTime;
 		m_alpha = m_originalAlpha * m_life;
 
-		if (m_remainingLife <= 0.0f)
+		if (m_remainingLife <= 0.0f && b_visible)
 		{
 			Gem* gem = Gem::SpawnGem({ m_pos.x + (GetWidth() / 2) - 20, m_pos.y });
 			gState.s_vPickups.push_back(gem);
-			m_active = false;
+			b_visible = false;
+			b_collidable = false;
 		}
 	}
 }
 
 void DestructiblePlatform::Draw(GameState& gState) const
 {
-	switch (m_state)
+	if (b_visible)
 	{
-	case STATE_APPEAR:
-		Play::DrawSprite(gState.sprites.detructiblePlatform, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 0);
-		break;
-	case STATE_BROKEN:
-		Play::DrawSpriteTransparent(gState.sprites.brokenPlatform, { m_pos.x - 15 - gState.camera.x, m_pos.y - gState.camera.y }, 0, m_alpha);
-		Play::DrawSpriteTransparent(gState.sprites.brokenPlatform, { m_pos.x - gState.camera.x, m_pos.y - 10 - gState.camera.y }, 1, m_alpha);
-		Play::DrawSpriteTransparent(gState.sprites.brokenPlatform, { m_pos.x + 15 - gState.camera.x, m_pos.y - gState.camera.y }, 2, m_alpha);
-		break;
-	default:
-		break;
+		switch (m_state)
+		{
+		case STATE_APPEAR:
+			Play::DrawSprite(gState.sprites.detructiblePlatform, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 0);
+			break;
+		case STATE_BROKEN:
+			Play::DrawSpriteTransparent(gState.sprites.brokenPlatform, { m_pos.x - 15 - gState.camera.x, m_pos.y - gState.camera.y }, 0, m_alpha);
+			Play::DrawSpriteTransparent(gState.sprites.brokenPlatform, { m_pos.x - gState.camera.x, m_pos.y - 10 - gState.camera.y }, 1, m_alpha);
+			Play::DrawSpriteTransparent(gState.sprites.brokenPlatform, { m_pos.x + 15 - gState.camera.x, m_pos.y - gState.camera.y }, 2, m_alpha);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
