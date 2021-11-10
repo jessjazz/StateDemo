@@ -11,5 +11,7 @@ public:
 	void Draw(GameState& gState) const;
 
 	static Coin* CreateCoin(Point2f pos);
+
+	static bool IsColliding(GameObject* object1, GameObject* object2, bool isCrouching);
 };
 

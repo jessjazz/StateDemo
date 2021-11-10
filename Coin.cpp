@@ -25,3 +25,30 @@ Coin* Coin::CreateCoin(Point2f pos)
 {
 	return new Coin(pos);
 }
+
+bool Coin::IsColliding(GameObject* object1, GameObject* object2, bool isCrouching)
+{
+	PLAY_ASSERT_MSG(object1, "object1 cannot be null");
+	PLAY_ASSERT_MSG(object2, "object2 cannot be null");
+
+	float object1_y = (isCrouching) ? object1->GetPosition().y + (object1->GetHeight() / 2.f) : object1->GetPosition().y;
+	float object2_y = object2->GetPosition().y;
+	float object1_x = object1->GetPosition().x;
+	float object2_x = object2->GetPosition().x;
+	float object1_yh = object1->GetPosition().y + object1->GetHeight();
+	float object2_yh = object2->GetPosition().y + object2->GetHeight();
+	float object1_xw = object1->GetPosition().x + object1->GetWidth();
+	float object2_xw = object2->GetPosition().x + object2->GetWidth();
+
+	if (object1_x < object2_xw &&
+		object1_xw > object2_x &&
+		object1_y < object2_yh &&
+		object1_yh > object2_y)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}

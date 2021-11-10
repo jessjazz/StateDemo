@@ -19,8 +19,12 @@ public:
 
 	void HandleCollision(Player& player, const std::vector<GameObject*>& map, 
 						const int speed, const int direction) const;
+	int HandleCrouchingCollision(Player& player);
 
 	void HandleCoinPickup(Player& player, GameState& gState) const;
 	void HandleGemPickup(Player& player, GameState& gState) const;
+
+protected:
+	int hitCount{ 0 };
 };
 

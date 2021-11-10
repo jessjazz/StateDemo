@@ -7,7 +7,10 @@ PlayerState* CrouchRightState::HandleInput(Player& player)
 {
 	if (!Play::KeyDown(VK_DOWN))
 	{
-		return new IdleRightState;
+		if (HandleCrouchingCollision(player) == 0)
+		{
+			return new IdleRightState;
+		}
 	}
 
 	if (Play::KeyDown(VK_RIGHT))
@@ -51,7 +54,10 @@ PlayerState* CrouchLeftState::HandleInput(Player& player)
 {
 	if (!Play::KeyDown(VK_DOWN))
 	{
-		return new IdleLeftState;
+		if (HandleCrouchingCollision(player) == 0)
+		{
+			return new IdleLeftState;
+		}
 	}
 
 	if (Play::KeyDown(VK_RIGHT))

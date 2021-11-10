@@ -81,7 +81,7 @@ void CreateMap(GameState& gState)
 	PlatformArgs platform8{ { 390, 180 }, 300, 50 };
 	PlatformArgs platform9{ { 1080, 180 }, 200, 50 };
 	PlatformArgs platform10{ { 3200, 400 }, 700, (DISPLAY_HEIGHT - 400) };
-	PlatformArgs platform11{ { 3400, 0 }, 100, 345 };
+	PlatformArgs platform11{ { 3400, 0 }, 100, 341 };
 	PlatformArgs platform12{ { 3900, 450 }, 200, (DISPLAY_HEIGHT - 450) };
 	PlatformArgs platform13{ { 4100, 500 }, 150, (DISPLAY_HEIGHT - 500) };
 	PlatformArgs platform14{ { 4250, 550 }, 150, (DISPLAY_HEIGHT - 550) };
@@ -349,7 +349,7 @@ int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouching)
 
 	float offset = 4.f;
 
-	float object1_y = (isCrouching) ? object1->GetPosition().y + (object1->GetHeight() / 2.f) : object1->GetPosition().y;
+	float object1_y = (isCrouching) ? object1->GetPosition().y + (object1->GetHeight() / 3.3f) : object1->GetPosition().y;
 	float object2_y = object2->GetPosition().y;
 	float object1_x = object1->GetPosition().x;
 	float object2_x = object2->GetPosition().x;
@@ -358,7 +358,7 @@ int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouching)
 	float object1_xw = object1->GetPosition().x + object1->GetWidth();
 	float object2_xw = object2->GetPosition().x + object2->GetWidth() - offset;
 
-	float object1_y_offset = (isCrouching) ? object1->GetPosition().y + (object1->GetHeight() / 2.f) : object1->GetPosition().y;
+	float object1_y_offset = (isCrouching) ? object1->GetPosition().y + (object1->GetHeight() / 3.3f) : object1->GetPosition().y;
 	float object2_yh_offset = object2->GetPosition().y + object2->GetHeight() - offset;
 
 	float object1_x_offset = object1->GetPosition().x - offset;
@@ -370,7 +370,7 @@ int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouching)
 	// Check for collision above player (object1)
 	if (object1_x < object2_xw &&
 		object1_xw > object2_x &&
-		object1_y < object2_yh &&
+		object1_y < object2_yh + offset &&
 		object1_y_offset > object2_yh_offset)
 	{
 		return UP;

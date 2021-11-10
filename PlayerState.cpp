@@ -86,6 +86,22 @@ void PlayerState::HandleCollision(Player& player, const std::vector<GameObject*>
 	}
 }
 
+int PlayerState::HandleCrouchingCollision(Player& player)
+{
+	std::vector<GameObject*> platforms;
+	GameObject::GetObjectList(GameObject::OBJ_PLATFORM, platforms);
+
+	for (GameObject* plat : platforms)
+	{
+		if (DetectCollision(&player, plat, true) == UP)
+		{
+			hitCount++;
+		}
+	}
+
+	return hitCount;
+}
+
 void PlayerState::HandleCoinPickup(Player& player, GameState& gState) const
 {
 	for (GameObject* obj : gState.s_vPickups)
@@ -93,7 +109,7 @@ void PlayerState::HandleCoinPickup(Player& player, GameState& gState) const
 		if (obj->GetType() == GameObject::Type::OBJ_COIN)
 		{
 			Coin* coin = static_cast<Coin*>(obj);
-			if ((DetectCollision(&player, coin, player.IsCrouching()) == LEFT || DetectCollision(&player, coin, player.IsCrouching()) == RIGHT || DetectCollision(&player, coin, player.IsCrouching()) == UP) && coin->IsCollidable())
+			if (Coin::IsColliding(&player, coin, player.IsCrouching()) && coin->IsCollidable())
 			{
 				player.AddCoinToCount(1);
 				coin->SetCollidable(false);

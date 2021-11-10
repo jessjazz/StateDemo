@@ -13,7 +13,10 @@ PlayerState* CrawlRightState::HandleInput(Player& player)
 
 	if (!Play::KeyDown(VK_DOWN))
 	{
-		return new RunRightState;
+		if (HandleCrouchingCollision(player) == 0)
+		{
+			return new RunRightState;
+		}
 	}
 
 	if (!player.IsGrounded())
@@ -53,7 +56,10 @@ PlayerState* CrawlLeftState::HandleInput(Player& player)
 
 	if (!Play::KeyDown(VK_DOWN))
 	{
-		return new RunLeftState;
+		if (HandleCrouchingCollision(player) == 0)
+		{
+			return new RunLeftState;
+		}
 	}
 
 	if (!player.IsGrounded())
