@@ -7,22 +7,23 @@ void PlayerState::HandleCollision(Player& player, const std::vector<GameObject*>
 {
 	Point2f oldPos = player.GetPosition();
 	Point2f currentPos = oldPos;
-
-	for (GameObject* p : map)
+	// Checks if player is standing on a platform and sets position accordingly
+	// If platform is destructible or decays, once platform is invisible, player is not grounded
+	for (GameObject* platform : map)
 	{
-		if (IsStandingOn(&player, p))
+		if (IsStandingOn(&player, platform))
 		{
-			if (p->GetType() != GameObject::Type::OBJ_DECAYING_PLATFORM && p->GetType() != GameObject::Type::OBJ_DESTRUCTIBLE_PLATFORM)
+			if (platform->GetType() != GameObject::Type::OBJ_DECAYING_PLATFORM && platform->GetType() != GameObject::Type::OBJ_DESTRUCTIBLE_PLATFORM)
 			{
 				switch (direction)
 				{
 				case RIGHT:
 					player.SetVelocity({ speed, 0 });
-					player.SetPosition({ currentPos.x + player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
+					player.SetPosition({ currentPos.x + player.GetVelocity().x, platform->GetPosition().y - player.GetHeight() });
 					break;
 				case LEFT:
 					player.SetVelocity({ -speed, 0 });
-					player.SetPosition({ currentPos.x + player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
+					player.SetPosition({ currentPos.x + player.GetVelocity().x, platform->GetPosition().y - player.GetHeight() });
 					break;
 				default:
 					break;
@@ -33,17 +34,17 @@ void PlayerState::HandleCollision(Player& player, const std::vector<GameObject*>
 			}
 			else
 			{
-				if (p->IsCollidable())
+				if (platform->IsCollidable())
 				{
 					switch (direction)
 					{
 					case RIGHT:
 						player.SetVelocity({ speed, 0 });
-						player.SetPosition({ currentPos.x + player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
+						player.SetPosition({ currentPos.x + player.GetVelocity().x, platform->GetPosition().y - player.GetHeight() });
 						break;
 					case LEFT:
 						player.SetVelocity({ -speed, 0 });
-						player.SetPosition({ currentPos.x + player.GetVelocity().x, p->GetPosition().y - player.GetHeight() });
+						player.SetPosition({ currentPos.x + player.GetVelocity().x, platform->GetPosition().y - player.GetHeight() });
 						break;
 					default:
 						break;
@@ -63,25 +64,19 @@ void PlayerState::HandleCollision(Player& player, const std::vector<GameObject*>
 			player.SetGrounded(false);
 		}
 	}
-
-	for (GameObject* p : map)
+	// Resets position of player if colliding with a platform to their left or right
+	for (GameObject* platform : map)
 	{
-		if (DetectCollision(&player, p, player.IsCrouching()) == LEFT && direction == LEFT)
+		if ((DetectCollision(&player, platform, player.IsCrouching()) == LEFT && direction == LEFT) || 
+			(DetectCollision(&player, platform, player.IsCrouching()) == RIGHT && direction == RIGHT))
 		{
-			if (p->IsCollidable())
-			{
-				player.SetPosition(oldPos);
-			}
-		}
-		else if (DetectCollision(&player, p, player.IsCrouching()) == RIGHT && direction == RIGHT)
-		{
-			if (p->IsCollidable())
+			if (platform->IsCollidable())
 			{
 				player.SetPosition(oldPos);
 			}
 		}
 	}
-
+	// Stops player running off the start or end of the level
 	if (player.GetPosition().x > LEVEL_WIDTH - player.GetWidth())
 	{
 		player.SetPosition({ LEVEL_WIDTH - player.GetWidth(), currentPos.y });
@@ -97,9 +92,9 @@ int PlayerState::HandleCrouchingCollision(Player& player)
 	std::vector<GameObject*> platforms;
 	GameObject::GetObjectList(GameObject::OBJ_PLATFORM, platforms);
 
-	for (GameObject* plat : platforms)
+	for (GameObject* platform : platforms)
 	{
-		if (DetectCollision(&player, plat, true) == UP)
+		if (DetectCollision(&player, platform, true) == UP)
 		{
 			hitCount++;
 		}

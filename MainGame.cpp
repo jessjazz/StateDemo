@@ -22,7 +22,9 @@ void MainGameEntry( PLAY_IGNORE_COMMAND_LINE )
 	Play::LoadBackground("Data\\Backgrounds\\background.png");
 	LoadSprites(gState.sprites);
 	CreateMap(gState);
+	// Set initial camera values
 	gState.camera = { 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT };
+	// Create instance of playable character
 	gState.player = Player::CreatePlayer(gState.originalPlayerPos, GRAVITY, gState.playerSpeed, LIVES);
 	Play::StartAudioLoop("music");
 }
@@ -33,11 +35,9 @@ bool MainGameUpdate(float elapsedTime)
 	gState.time += elapsedTime;
 
 	Play::DrawBackground();
-
 	MoveCamera(gState.player, gState.camera);
 	GameObject::UpdateAll(gState);
 	GameObject::DrawAll(gState);
-
 	ShowHUD(gState);
 	
 	if (gState.player->GetLives() <= 0)
@@ -63,7 +63,7 @@ int MainGameExit(void)
 
 void CreateMap(GameState& gState)
 {
-	// Load regular platforms
+	// Load regular platforms into map vector
 	PlatformArgs platform1{ { 0, 670 }, 800, 50 };
 	PlatformArgs platform2{ { 0, 620 }, 450, 50 };
 	PlatformArgs platform3{ { 0, 570 }, 350, 50 };
@@ -91,7 +91,7 @@ void CreateMap(GameState& gState)
 		gState.s_vMap.push_back(plat);
 	}
 
-	// Load moving Platforms
+	// Load moving Platforms into map vector
 	MovingPlatformArgs movingPlatform1{ {1390, 180}, 200, 50, VERTICAL, 4.f, 0.2f };
 	MovingPlatformArgs movingPlatform2{ {1285, 180}, 100, 50, HORIZONTAL, 4.f, 0.2f };
 	
@@ -104,7 +104,7 @@ void CreateMap(GameState& gState)
 		gState.s_vMap.push_back(mPlat);
 	}
 
-	// Load decaying platforms
+	// Load decaying platforms into map vector
 	DecayingPlatformArgs decayingPlatform1{ {840, 180}, Play::GetSpriteWidth(gState.sprites.smallPlatform), Play::GetSpriteHeight(gState.sprites.smallPlatform), 20, 'S', 10.f, 2.f};
 	DecayingPlatformArgs decayingPlatform2{ {2000, 180}, Play::GetSpriteWidth(gState.sprites.largePlatform), Play::GetSpriteHeight(gState.sprites.largePlatform), 15, 'L', 10.f, 2.f };
 	DecayingPlatformArgs decayingPlatform3{ {2400, 240}, Play::GetSpriteWidth(gState.sprites.largePlatform), Play::GetSpriteHeight(gState.sprites.largePlatform), 15, 'L', 10.f, 2.f };
@@ -119,7 +119,7 @@ void CreateMap(GameState& gState)
 		gState.s_vMap.push_back(decPlat);
 	}
 
-	// Load destructible platforms
+	// Load destructible platforms into map vector
 	DestructiblePlatformArgs destructiblePlatform1{ {3700, 300}, Play::GetSpriteWidth(gState.sprites.detructiblePlatform), Play::GetSpriteHeight(gState.sprites.detructiblePlatform), 10.f, 20.f };
 
 	DestructiblePlatformArgs destructiblePlatforms[1] = { destructiblePlatform1 };
@@ -131,7 +131,7 @@ void CreateMap(GameState& gState)
 		gState.s_vMap.push_back(desPlat);
 	}
 
-	// Put a door at the end of the level
+	// Put a door at the end of the level and add to map vector
 	Door* door = Door::CreateDoor({ LEVEL_WIDTH - 100, 650 - Play::GetSpriteHeight(gState.sprites.door) });
 	gState.s_vMap.push_back(door);
 
@@ -140,6 +140,7 @@ void CreateMap(GameState& gState)
 
 void CreatePickups(GameState& gState)
 {
+	// Load coins into pickup vector
 	PickupArgs coin1{ {1000, 530} };
 	PickupArgs coin2{ {1100, 530} };
 	PickupArgs coin3{ {1200, 530} };
@@ -181,6 +182,7 @@ void ShowHUD(GameState& gState)
 {
 	std::string lives = std::to_string(gState.player->GetLives());
 	std::string coins = std::to_string(gState.player->GetCoinCount());
+	// Only show main HUD if player is not dead or at the end of the level
 	if (gState.player->GetLives() > 0 && !gState.levelEnd)
 	{
 		Play::CentreSpriteOrigin("64px");
@@ -202,11 +204,12 @@ void HandleGameOver(GameState& gState)
 	Play::CentreSpriteOrigin("64px");
 	Play::DrawFontText("151px", "Game Over", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
 	Play::DrawFontText("64px", "Press enter to play again!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
+	// Set all pickups to inactive so garbage collector can delete the instances
 	for (GameObject* p : gState.s_vPickups)
 	{
 		p->SetActive(false);
 	}
-
+	// Reset player, lives, coins and platforms
 	if (Play::KeyPressed(VK_RETURN))
 	{
 		Play::StartAudioLoop("music");
@@ -235,10 +238,12 @@ void HandleLevelEnd(GameState& gState)
 	Play::CentreSpriteOrigin("64px");
 	Play::DrawFontText("151px", "You finished the level!", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
 	Play::DrawFontText("64px", "Press enter to restart!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
+	// Set all pickups to inactive so garbage collector can delete the instances
 	for (GameObject* p : gState.s_vPickups)
 	{
 		p->SetActive(false);
 	}
+	// Reset player, lives, coins, platforms and door
 	if (Play::KeyPressed(VK_RETURN))
 	{
 		Play::StartAudioLoop("music");
@@ -271,9 +276,10 @@ void HandleLevelEnd(GameState& gState)
 
 void MoveCamera(GameObject* player, CameraRect& cam)
 {
+	// Set camera pos in relation to player
 	cam.x = (player->GetPosition().x + player->GetWidth() / 2.f) - DISPLAY_WIDTH / 2.f;
 	cam.y = (player->GetPosition().y + player->GetHeight() / 2.f) - DISPLAY_HEIGHT / 2.f;
-
+	// Clamps camera if at the level edges
 	if (cam.x < 0)
 	{
 		cam.x = 0;
@@ -294,6 +300,7 @@ void MoveCamera(GameObject* player, CameraRect& cam)
 
 void LoadSprites(Sprites& sprites)
 {
+	// This is to get the sprite ID from anywhere in the solution without calling GetSpriteID every time
 	sprites.idleRight = Play::GetSpriteId("idle_right");
 	sprites.idleLeft = Play::GetSpriteId("idle_left");
 	sprites.runRight = Play::GetSpriteId("run_right");
@@ -326,8 +333,9 @@ bool IsStandingOn(GameObject* object1, GameObject* object2)
 {
 	PLAY_ASSERT_MSG(object1, "object1 cannot be null");
 	PLAY_ASSERT_MSG(object2, "object2 cannot be null");
-
+	// Pixels to the left and right of object as a buffer
 	float xoffset = 5.f;
+	// Pixels below object1 and above object2 for collision detection
 	float vert_dist = 20.f;
 
 	float object1_x1 = object1->GetPosition().x - xoffset;
@@ -356,7 +364,7 @@ int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouching)
 {
 	PLAY_ASSERT_MSG(object1, "object1 cannot be null");
 	PLAY_ASSERT_MSG(object2, "object2 cannot be null");
-
+	// Pixel buffer to avoid problems with discrete time sampling
 	float offset = 4.f;
 
 	float object1_y = (isCrouching) ? object1->GetPosition().y + (object1->GetHeight() / 3.3f) : object1->GetPosition().y;
