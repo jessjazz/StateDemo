@@ -68,11 +68,17 @@ void PlayerState::HandleCollision(Player& player, const std::vector<GameObject*>
 	{
 		if (DetectCollision(&player, p, player.IsCrouching()) == LEFT && direction == LEFT)
 		{
-			player.SetPosition(oldPos);
+			if (p->IsCollidable())
+			{
+				player.SetPosition(oldPos);
+			}
 		}
 		else if (DetectCollision(&player, p, player.IsCrouching()) == RIGHT && direction == RIGHT)
 		{
-			player.SetPosition(oldPos);
+			if (p->IsCollidable())
+			{
+				player.SetPosition(oldPos);
+			}
 		}
 	}
 
@@ -135,5 +141,21 @@ void PlayerState::HandleGemPickup(Player& player, GameState& gState) const
 				Star::SpawnStars(gem->GetPosition());
 			}
 		}
+	}
+}
+
+void PlayerState::PlayFallScream() const
+{
+	switch (Play::RandomRoll(3))
+	{
+	case 1:
+		Play::PlayAudio("fall_1");
+		break;
+	case 2:
+		Play::PlayAudio("fall_2");
+		break;
+	case 3:
+		Play::PlayAudio("fall_3");
+		break;
 	}
 }

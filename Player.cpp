@@ -95,11 +95,9 @@ void Player::Draw(GameState& gState) const
 		break;
 	case State::STATE_CROUCH:
 		Play::DrawSprite(gState.sprites.crouchRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(5.f * gState.time));
-		Play::DrawRect({ m_pos.x - gState.camera.x, m_pos.y + (GetHeight() / 3.3f) - gState.camera.y }, { m_pos.x + GetWidth() - gState.camera.x, m_pos.y + GetHeight() - gState.camera.y }, Play::cRed);
 		break;
 	case State::STATE_CROUCH_LEFT:
 		Play::DrawSprite(gState.sprites.crouchLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(5.f * gState.time));
-		Play::DrawRect({ m_pos.x - gState.camera.x, m_pos.y + (GetHeight() / 3.3f) - gState.camera.y }, { m_pos.x + GetWidth() - gState.camera.x, m_pos.y + GetHeight() - gState.camera.y }, Play::cRed);
 		break;
 	case State::STATE_DASH_RIGHT:
 		Play::DrawSprite(gState.sprites.dashRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(10.f * gState.time));
@@ -109,19 +107,15 @@ void Player::Draw(GameState& gState) const
 		break;
 	case State::STATE_CRAWL_RIGHT:
 		Play::DrawSprite(gState.sprites.crawlRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(10.f * gState.time));
-		Play::DrawRect({ m_pos.x - gState.camera.x, m_pos.y + (GetHeight() / 3.3f) - gState.camera.y }, { m_pos.x + GetWidth() - gState.camera.x, m_pos.y + GetHeight() - gState.camera.y }, Play::cRed);
 		break;
 	case State::STATE_CRAWL_LEFT:
 		Play::DrawSprite(gState.sprites.crawlLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(10.f * gState.time));
-		Play::DrawRect({ m_pos.x - gState.camera.x, m_pos.y + (GetHeight() / 3.3f) - gState.camera.y }, { m_pos.x + GetWidth() - gState.camera.x, m_pos.y + GetHeight() - gState.camera.y }, Play::cRed);
 		break;
 	case State::STATE_SLIDE_RIGHT:
 		Play::DrawSprite(gState.sprites.slideRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(10.f * gState.time));
-		Play::DrawRect({ m_pos.x - gState.camera.x, m_pos.y + (GetHeight() / 3.3f) - gState.camera.y }, { m_pos.x + GetWidth() - gState.camera.x, m_pos.y + GetHeight() - gState.camera.y }, Play::cRed);
 		break;
 	case State::STATE_SLIDE_LEFT:
 		Play::DrawSprite(gState.sprites.slideLeft, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, (int)(10.f * gState.time));
-		Play::DrawRect({ m_pos.x - gState.camera.x, m_pos.y + (GetHeight() / 3.3f) - gState.camera.y }, { m_pos.x + GetWidth() - gState.camera.x, m_pos.y + GetHeight() - gState.camera.y }, Play::cRed);
 		break;
 	case State::STATE_FALL_RIGHT:
 		Play::DrawSprite(gState.sprites.fallRight, { m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, 1);
@@ -160,8 +154,6 @@ void Player::HandleLifeLost(GameState& gState)
 
 void Player::HandleNewLevel(GameState& gState, GameObject* player)
 {
-	// TODO: Load next level
-	// Just for now:
 	Play::PlayAudio("success");
 	SetVelocity({ 0, 200 });
 	SetPosition(player->GetPosition() + player->GetVelocity());

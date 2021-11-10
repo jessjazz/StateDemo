@@ -30,7 +30,7 @@ void FallRightState::StateUpdate(Player& player, const std::vector<GameObject*>&
 
 	if (player.GetPosition().y > DISPLAY_HEIGHT)
 	{
-		Play::PlayAudio("fall");
+		PlayFallScream();
 		player.SetDead(true);
 		player.SetLives(player.GetLives() - 1);
 		player.SetDeathTime(gState.time);
@@ -108,7 +108,7 @@ void FallLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& 
 
 	if (player.GetPosition().y > DISPLAY_HEIGHT)
 	{
-		Play::PlayAudio("fall");
+		PlayFallScream();
 		player.SetDead(true);
 		player.SetLives(player.GetLives() - 1);
 		player.SetDeathTime(gState.time);

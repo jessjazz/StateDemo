@@ -23,6 +23,7 @@ public:
 
 	void HandleCoinPickup(Player& player, GameState& gState) const;
 	void HandleGemPickup(Player& player, GameState& gState) const;
+	void PlayFallScream() const;
 
 protected:
 	int hitCount{ 0 };

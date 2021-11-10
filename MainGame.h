@@ -126,6 +126,8 @@ void CreatePickups(GameState& gState);
 
 void MoveCamera(GameObject* player, CameraRect& cam);
 
+void ShowHUD(GameState& gState);
+
 bool IsStandingOn(GameObject* object1, GameObject* object2);
 
 int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouching);

@@ -24,7 +24,7 @@ void MainGameEntry( PLAY_IGNORE_COMMAND_LINE )
 	CreateMap(gState);
 	gState.camera = { 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT };
 	gState.player = Player::CreatePlayer(gState.originalPlayerPos, GRAVITY, gState.playerSpeed, LIVES);
-	Play::StartAudioLoop("soundscape");
+	Play::StartAudioLoop("music");
 }
 
 bool MainGameUpdate(float elapsedTime)
@@ -38,14 +38,7 @@ bool MainGameUpdate(float elapsedTime)
 	GameObject::UpdateAll(gState);
 	GameObject::DrawAll(gState);
 
-	std::string lives = std::to_string(gState.player->GetLives());
-	std::string coins = std::to_string(gState.player->GetCoinCount());
-	if (gState.player->GetLives() > 0)
-	{
-		Play::CentreSpriteOrigin("64px");
-		Play::DrawFontText("64px", ("Lives: " + lives), { 50, 50 });
-		Play::DrawFontText("64px", ("Coins: " + coins), { DISPLAY_WIDTH - 150, 50 });
-	}
+	ShowHUD(gState);
 	
 	if (gState.player->GetLives() <= 0)
 	{
@@ -80,13 +73,13 @@ void CreateMap(GameState& gState)
 	PlatformArgs platform7{ { 440, 440 }, 300, 50 };
 	PlatformArgs platform8{ { 390, 180 }, 300, 50 };
 	PlatformArgs platform9{ { 1080, 180 }, 200, 50 };
-	PlatformArgs platform10{ { 3200, 400 }, 700, (DISPLAY_HEIGHT - 400) };
+	PlatformArgs platform10{ { 3200, 400 }, 700, 100 };
 	PlatformArgs platform11{ { 3400, 0 }, 100, 341 };
-	PlatformArgs platform12{ { 3900, 450 }, 200, (DISPLAY_HEIGHT - 450) };
-	PlatformArgs platform13{ { 4100, 500 }, 150, (DISPLAY_HEIGHT - 500) };
-	PlatformArgs platform14{ { 4250, 550 }, 150, (DISPLAY_HEIGHT - 550) };
-	PlatformArgs platform15{ { 4400, 600 }, 150, (DISPLAY_HEIGHT - 600) };
-	PlatformArgs platform16{ { 4550, 650 }, 450, 70 };
+	PlatformArgs platform12{ { 3900, 450 }, 200, 100 };
+	PlatformArgs platform13{ { 4100, 500 }, 150, 100 };
+	PlatformArgs platform14{ { 4250, 550 }, 150, 100 };
+	PlatformArgs platform15{ { 4400, 600 }, 275, 120 };
+	PlatformArgs platform16{ { 4675, 650 }, 325, 70 };
 
 	PlatformArgs Platforms [16] = { platform1, platform2, platform3, platform5, platform6, platform7,
 									platform8, platform9, platform10, platform11, platform12, platform13,
@@ -113,9 +106,9 @@ void CreateMap(GameState& gState)
 
 	// Load decaying platforms
 	DecayingPlatformArgs decayingPlatform1{ {840, 180}, Play::GetSpriteWidth(gState.sprites.smallPlatform), Play::GetSpriteHeight(gState.sprites.smallPlatform), 20, 'S', 10.f, 2.f};
-	DecayingPlatformArgs decayingPlatform2{ {2000, 180}, Play::GetSpriteWidth(gState.sprites.largePlatform), Play::GetSpriteHeight(gState.sprites.largePlatform), 14, 'L', 10.f, 2.f };
-	DecayingPlatformArgs decayingPlatform3{ {2400, 240}, Play::GetSpriteWidth(gState.sprites.largePlatform), Play::GetSpriteHeight(gState.sprites.largePlatform), 14, 'L', 10.f, 2.f };
-	DecayingPlatformArgs decayingPlatform4{ {2800, 300}, Play::GetSpriteWidth(gState.sprites.largePlatform), Play::GetSpriteHeight(gState.sprites.largePlatform), 14, 'L', 10.f, 2.f };
+	DecayingPlatformArgs decayingPlatform2{ {2000, 180}, Play::GetSpriteWidth(gState.sprites.largePlatform), Play::GetSpriteHeight(gState.sprites.largePlatform), 15, 'L', 10.f, 2.f };
+	DecayingPlatformArgs decayingPlatform3{ {2400, 240}, Play::GetSpriteWidth(gState.sprites.largePlatform), Play::GetSpriteHeight(gState.sprites.largePlatform), 15, 'L', 10.f, 2.f };
+	DecayingPlatformArgs decayingPlatform4{ {2800, 300}, Play::GetSpriteWidth(gState.sprites.largePlatform), Play::GetSpriteHeight(gState.sprites.largePlatform), 15, 'L', 10.f, 2.f };
 	
 	DecayingPlatformArgs decayingPlatforms[4] = { decayingPlatform1, decayingPlatform2, decayingPlatform3, decayingPlatform4 };
 
@@ -184,13 +177,31 @@ void CreatePickups(GameState& gState)
 	}
 }
 
+void ShowHUD(GameState& gState)
+{
+	std::string lives = std::to_string(gState.player->GetLives());
+	std::string coins = std::to_string(gState.player->GetCoinCount());
+	if (gState.player->GetLives() > 0 && !gState.levelEnd)
+	{
+		Play::CentreSpriteOrigin("64px");
+		Play::DrawFontText("64px", ("Lives: " + lives), { 50, 50 });
+		Play::DrawFontText("64px", ("Coins: " + coins), { DISPLAY_WIDTH - 150, 50 });
+		Play::DrawFontText("64px", "Left and Right Arrows to Move", { 25 - gState.camera.x, DISPLAY_HEIGHT - 75 - gState.camera.y });
+		Play::DrawFontText("64px", "Space to Jump", { 25 - gState.camera.x, DISPLAY_HEIGHT - 25 - gState.camera.y });
+		Play::DrawFontText("64px", "Shift to Dash", { 2025 - gState.camera.x, 250 - gState.camera.y });
+		Play::DrawFontText("64px", "Hold Down Arrow to Crouch", { 3225 - gState.camera.x, 425 - gState.camera.y });
+		Play::DrawFontText("64px", "Press CTRL on Blocks to Smash", { 3600 - gState.camera.x, 100 - gState.camera.y });
+		Play::DrawFontText("64px", "E to Open the Door", { 4425 - gState.camera.x, DISPLAY_HEIGHT - 70 - gState.camera.y });
+		Play::DrawFontText("64px", "Up to End the Level", { 4425 - gState.camera.x, DISPLAY_HEIGHT - 25 - gState.camera.y });
+	}
+}
+
 void HandleGameOver(GameState& gState)
 {
 	Play::CentreSpriteOrigin("151px");
 	Play::CentreSpriteOrigin("64px");
 	Play::DrawFontText("151px", "Game Over", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
 	Play::DrawFontText("64px", "Press enter to play again!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
-	Play::StopAudioLoop("soundscape");
 	for (GameObject* p : gState.s_vPickups)
 	{
 		p->SetActive(false);
@@ -198,7 +209,7 @@ void HandleGameOver(GameState& gState)
 
 	if (Play::KeyPressed(VK_RETURN))
 	{
-		Play::StartAudioLoop("soundscape");
+		Play::StartAudioLoop("music");
 		gState.player->HandleLifeLost(gState);
 		gState.player->SetLives(LIVES);
 		gState.player->ResetCoinCount();
@@ -224,14 +235,13 @@ void HandleLevelEnd(GameState& gState)
 	Play::CentreSpriteOrigin("64px");
 	Play::DrawFontText("151px", "You finished the level!", { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, Play::CENTRE);
 	Play::DrawFontText("64px", "Press enter to restart!", { DISPLAY_WIDTH / 2, 510 }, Play::CENTRE);
-	Play::StopAudioLoop("soundscape");
 	for (GameObject* p : gState.s_vPickups)
 	{
 		p->SetActive(false);
 	}
 	if (Play::KeyPressed(VK_RETURN))
 	{
-		Play::StartAudioLoop("soundscape");
+		Play::StartAudioLoop("music");
 		gState.player->HandleLifeLost(gState);
 		gState.player->SetLives(LIVES);
 		CreatePickups(gState);

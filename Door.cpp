@@ -1,4 +1,5 @@
 #include "Door.h"
+#include "Player.h"
 
 Door::Door(Point2f pos)
 	: GameObject(pos)
@@ -11,10 +12,21 @@ Door::Door(Point2f pos)
 void Door::Update(GameState& gState)
 {
 	// If player presses e or E
-	if ((Play::KeyPressed(0x45) || Play::KeyPressed(0x65)) && m_state == CLOSED)
+	if ((Play::KeyPressed('e') || Play::KeyPressed('E')) && m_state == CLOSED)
 	{
-		m_state = OPENING;
-		Play::PlayAudio("door");
+		// Get coin count and only open the door if all coins have been collected
+		int maxCoins = GameObject::GetObjectCount(Type::OBJ_COIN);
+		std::vector<GameObject*> players;
+		GameObject::GetObjectList(Type::OBJ_PLAYER, players);
+		for (GameObject* p : players)
+		{
+			Player* player = static_cast<Player*>(p);
+			if (player->GetCoinCount() == maxCoins)
+			{
+				m_state = OPENING;
+				Play::PlayAudio("door");
+			}
+		}
 	}
 
 	if (m_state == OPENING)
