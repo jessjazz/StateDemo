@@ -68,11 +68,11 @@ void JumpRightState::HandleJumpCollision(Player& player, const std::vector<GameO
 	{
 		if (DetectCollision(&player, p, player.IsCrouching()) == UP && p->IsCollidable())
 		{
-			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1 });
+			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1.f });
 		}
 		else if (DetectCollision(&player, p, player.IsCrouching()) == LEFT || DetectCollision(&player, p, player.IsCrouching()) == RIGHT && p->IsCollidable())
 		{
-			player.SetVelocity({ player.GetVelocity().x * -1, player.GetVelocity().y });
+			player.SetVelocity({ player.GetVelocity().x * -0.5f, player.GetVelocity().y });
 		}
 	}
 }
@@ -139,11 +139,11 @@ void JumpLeftState::HandleJumpCollision(Player& player, const std::vector<GameOb
 	{
 		if (DetectCollision(&player, p, player.IsCrouching()) == UP && p->IsCollidable())
 		{
-			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1 });
+			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1.f });
 		}
 		else if (DetectCollision(&player, p, player.IsCrouching()) == LEFT || DetectCollision(&player, p, player.IsCrouching()) == RIGHT && p->IsCollidable())
 		{
-			player.SetVelocity({ player.GetVelocity().x * -1, player.GetVelocity().y });
+			player.SetVelocity({ player.GetVelocity().x * -0.5f, player.GetVelocity().y });
 		}
 	}
 }

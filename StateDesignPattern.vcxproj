@@ -24,6 +24,7 @@
     <ProjectGuid>{f3af2854-90d8-4c8e-a5ef-44bd67da9ff0}</ProjectGuid>
     <RootNamespace>StateDemo</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>StateDesignPattern</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

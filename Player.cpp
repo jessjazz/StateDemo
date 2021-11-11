@@ -33,15 +33,15 @@ void Player::Update(GameState& gState)
 		}
 	}
 
-	// Handle player lifecycle
+	// Handle player lifecycle and state machine
 	if (!b_isDead)
 	{
-		PlayerState* pState = m_pCurrentState->HandleInput(*this);
+		PlayerState* pState = m_pCurrentState->HandleInput(*this); // HandleInput returns a new state if input changes the movement type or nullptr if not
 
 		if (pState != nullptr)
 		{
-			delete m_pCurrentState;
-			m_pCurrentState = pState;
+			delete m_pCurrentState; // Delete the current state to avoid memory leak
+			m_pCurrentState = pState; // Assign state returned by HandleInput to CurrentState
 			
 			m_pCurrentState->Enter(*this);
 		}
@@ -53,7 +53,7 @@ void Player::Update(GameState& gState)
 		HandleLifeLost(gState);
 	}
 
-	// Handle new level
+	// Handle new level if the player goes through the level end door
 	std::vector<GameObject*> doors;
 	GameObject::GetObjectList(GameObject::Type::OBJ_DOOR, doors);
 
@@ -146,7 +146,7 @@ void Player::HandleLifeLost(GameState& gState)
 		m_pos = { gState.originalPlayerPos };
 		b_isDead = false;
 		SetDrawState(State::STATE_IDLE);
-		delete m_pCurrentState;
+		delete m_pCurrentState; // Delete the current state before assigning new state to avoid memory leak
 		m_pCurrentState = new IdleRightState;
 		b_onGround = true;
 	}

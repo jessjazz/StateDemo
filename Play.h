@@ -1487,7 +1487,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	MainGameEntry(__argc, __argv);
 
-	return PlayWindow::Instance().HandleWindows(hInstance, hPrevInstance, lpCmdLine, nShowCmd, L"StateDemo");
+	return PlayWindow::Instance().HandleWindows(hInstance, hPrevInstance, lpCmdLine, nShowCmd, L"StateDesignPattern");
 }
 
 //********************************************************************************************************************************
