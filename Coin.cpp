@@ -6,6 +6,8 @@ Coin::Coin(Point2f pos)
 	SetPosition(pos);
 	SetType(OBJ_COIN);
 	SetCollidable(true);
+	SetHeight(37);
+	SetWidth(40);
 }
 
 void Coin::Update(GameState& gState)

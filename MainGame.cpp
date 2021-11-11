@@ -33,13 +33,16 @@ bool MainGameUpdate(float elapsedTime)
 {
 	gState.deltaTime = elapsedTime;
 	gState.time += elapsedTime;
-
+	Play::BeginTimingBar(Play::cBlue);
 	Play::DrawBackground();
 	MoveCamera(gState.player, gState.camera);
+	Play::ColourTimingBar(Play::cGreen); // Timer for updating player state (collisions, movement updates)
 	GameObject::UpdateAll(gState);
+	Play::ColourTimingBar(Play::cOrange); // Timer for rendering
 	GameObject::DrawAll(gState);
+	Play::ColourTimingBar(Play::cMagenta); // Timer for UI
 	ShowHUD(gState);
-	
+
 	if (gState.player->GetLives() <= 0)
 	{
 		HandleGameOver(gState);
@@ -48,6 +51,21 @@ bool MainGameUpdate(float elapsedTime)
 	if (gState.levelEnd)
 	{
 		HandleLevelEnd(gState);
+	}
+
+	Play::ColourTimingBar(Play::cWhite);
+	// Show debug for collisions and timing bar
+	Play::DrawDebugText({ DISPLAY_WIDTH - 100, DISPLAY_HEIGHT - 20 }, "Press F1 for debug");
+	static bool s_bEnableDebug{ false };
+	if (Play::KeyPressed(VK_F1))
+	{
+		s_bEnableDebug = !s_bEnableDebug;
+	}
+
+	if (s_bEnableDebug)
+	{
+		DrawCollisionRects(gState.player);
+		Play::DrawTimingBar({ DISPLAY_WIDTH / 2 - 125, DISPLAY_HEIGHT - 40 }, { 250, 10 });
 	}
 
 	Play::PresentDrawingBuffer();
@@ -276,9 +294,10 @@ void HandleLevelEnd(GameState& gState)
 
 void MoveCamera(GameObject* player, CameraRect& cam)
 {
-	// Set camera pos in relation to player
-	cam.x = (player->GetPosition().x + player->GetWidth() / 2.f) - DISPLAY_WIDTH / 2.f;
-	cam.y = (player->GetPosition().y + player->GetHeight() / 2.f) - DISPLAY_HEIGHT / 2.f;
+	// Smooth the movement changes of the camera and set camera pos
+	Point2f cameraDiff = gState.cameraTarget - Point2f(DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2) - GetCameraPos(); 
+	SetCameraPos(GetCameraPos() + cameraDiff / 8.0f);
+
 	// Clamps camera if at the level edges
 	if (cam.x < 0)
 	{
@@ -296,6 +315,17 @@ void MoveCamera(GameObject* player, CameraRect& cam)
 	{
 		cam.y = LEVEL_HEIGHT - cam.height;
 	}
+}
+
+void SetCameraPos(Point2f pos)
+{
+	gState.camera.x = pos.x; 
+	gState.camera.y = pos.y;
+}
+
+Point2f GetCameraPos()
+{
+	return Point2f{ gState.camera.x, gState.camera.y };
 }
 
 void LoadSprites(Sprites& sprites)
@@ -335,7 +365,7 @@ bool IsStandingOn(GameObject* object1, GameObject* object2)
 	PLAY_ASSERT_MSG(object2, "object2 cannot be null");
 	// Pixels to the left and right of object as a buffer
 	float xoffset = 5.f;
-	// Pixels below object1 and above object2 for collision detection
+	// Pixels below object1 and above object2 used for collision detection
 	float vert_dist = 20.f;
 
 	float object1_x1 = object1->GetPosition().x - xoffset;
@@ -412,5 +442,47 @@ int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouching)
 	else
 	{
 		return 2;
+	}
+}
+
+void DrawCollisionRects(GameObject* player)
+{
+	std::vector<GameObject*> players;
+	GameObject::GetObjectList(GameObject::OBJ_PLAYER, players);
+
+	float playerX{ player->GetPosition().x - gState.camera.x };
+	float playerY{ player->GetPosition().y - gState.camera.y };
+	// Collision rectangle around player, reduce height by 1/3 in crouching states
+	for (GameObject* p : players)
+	{
+		Player* player = static_cast<Player*>(p);
+		if (!player->IsCrouching())
+		{
+			Play::DrawRect({ playerX, playerY }, { playerX + player->GetWidth(), playerY + player->GetHeight() }, Play::cRed);
+		}
+		else
+		{
+			Play::DrawRect({ playerX, playerY + player->GetHeight() / 3.3f }, { playerX + player->GetWidth(), playerY + player->GetHeight() }, Play::cRed);
+		}
+	}
+	// Collision rectangle around platforms if collidable
+	for (GameObject* mapObject : gState.s_vMap)
+	{
+		float posX{ mapObject->GetPosition().x - gState.camera.x };
+		float posY{ mapObject->GetPosition().y - gState.camera.y };
+		if (mapObject->IsCollidable())
+		{
+			Play::DrawRect({ posX, posY }, { posX + mapObject->GetWidth(), posY + mapObject->GetHeight() }, Play::cRed);
+		}
+	}
+	// Collision rectangle around coins/gems if collidable
+	for (GameObject* pickup : gState.s_vPickups)
+	{
+		float posX{ pickup->GetPosition().x - gState.camera.x };
+		float posY{ pickup->GetPosition().y - gState.camera.y };
+		if (pickup->IsCollidable())
+		{
+			Play::DrawRect({ posX, posY }, { posX + pickup->GetWidth(), posY + pickup->GetHeight() }, Play::cRed);
+		}
 	}
 }

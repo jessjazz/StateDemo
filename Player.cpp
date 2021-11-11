@@ -68,7 +68,8 @@ void Player::Update(GameState& gState)
 			}
 		}
 	}
-
+	// Set camera target to focus on centre of player
+	gState.cameraTarget = Point2f(GetPosition().x + GetWidth() / 2.f, GetPosition().y + GetHeight() / 2.f);
 }
 
 void Player::Draw(GameState& gState) const

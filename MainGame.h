@@ -63,8 +63,8 @@ struct Sprites
 // Keeps track of the current state of the game
 struct GameState
 {
-	float deltaTime; // Time since last frame
-	float time{ 0.f }; // Cumulative time game has been running
+	float deltaTime{0.0f}; // Time since last frame
+	float time{ 0.0f }; // Cumulative time game has been running
 	Player* player; // Instance of playable character
 	Point2f originalPlayerPos{ 40, 488 };
 	int playerSpeed{ 5 };
@@ -73,6 +73,7 @@ struct GameState
 	State playerState = State::STATE_IDLE; // Initial playerState when game is loaded
 	Sprites sprites; // Instance of sprite struct to store spriteIDs
 	CameraRect camera; // Instance of camera
+	Point2f cameraTarget{ 0,0 };
 	bool levelEnd{ false };
 };
 // Structs to store platform/pickup data to pass into create functions
@@ -125,6 +126,9 @@ void LoadSprites(Sprites& sprites);
 void CreatePickups(GameState& gState);
 // Centres the camera on the player, if player is near the edge of level, clamps camera position
 void MoveCamera(GameObject* player, CameraRect& cam);
+// Camera getters and setters
+void SetCameraPos(Point2f pos);
+Point2f GetCameraPos();
 // Draws HUD icons and tutorial text
 void ShowHUD(GameState& gState);
 // Checks if an object is directly on top of another object
@@ -135,3 +139,5 @@ int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouching);
 void HandleGameOver(GameState& gState);
 // Shows level end screen and allows player to restart by pressing enter. Resets platforms and pickups
 void HandleLevelEnd(GameState& gState);
+// Draws rectangle as visual representation of collision
+void DrawCollisionRects(GameObject* player);
