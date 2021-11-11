@@ -3,23 +3,17 @@
 
 class Player;
 
-class CrouchRightState : public PlayerState
+class CrouchState : public PlayerState
 {
 public:
-	CrouchRightState() {}
+	CrouchState(int direction);
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
 	void Enter(Player& player) const override;
-};
 
-class CrouchLeftState : public PlayerState
-{
-public:
-	CrouchLeftState() {}
-
-	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
-	void Enter(Player& player) const override;
+private:
+	int m_currentPos{ 0 };
+	int m_direction{ 0 };
 };
 

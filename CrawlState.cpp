@@ -8,7 +8,7 @@ PlayerState* CrawlRightState::HandleInput(Player& player)
 {
 	if (!Play::KeyDown(VK_RIGHT))
 	{
-		return new CrouchRightState;
+		return new CrouchState(RIGHT);
 	}
 
 	if (!Play::KeyDown(VK_DOWN))
@@ -51,7 +51,7 @@ PlayerState* CrawlLeftState::HandleInput(Player& player)
 {
 	if (!Play::KeyDown(VK_LEFT))
 	{
-		return new CrouchLeftState;
+		return new CrouchState(LEFT);
 	}
 
 	if (!Play::KeyDown(VK_DOWN))

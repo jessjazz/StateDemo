@@ -22,7 +22,7 @@ PlayerState* IdleRightState::HandleInput(Player& player)
 	}
 	else if (Play::KeyPressed(VK_DOWN))
 	{
-		return new CrouchRightState;
+		return new CrouchState(RIGHT);
 	}
 	else if (Play::KeyPressed(VK_CONTROL))
 	{
@@ -99,7 +99,7 @@ PlayerState* IdleLeftState::HandleInput(Player& player)
 	}
 	else if (Play::KeyPressed(VK_DOWN))
 	{
-		return new CrouchLeftState;
+		return new CrouchState(LEFT);
 	}
 	else if (Play::KeyPressed(VK_CONTROL))
 	{
