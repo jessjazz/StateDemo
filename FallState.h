@@ -3,24 +3,18 @@
 
 class Player;
 
-class FallRightState : public PlayerState
+class FallState : public PlayerState
 {
 public:
-	FallRightState() {}
+	FallState(int direction)
+		: m_direction(direction)
+	{}
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
 	void Enter(Player& player) const override;
 	void HandleCollision(Player& player, const std::vector<GameObject*>& map) const;
-};
 
-class FallLeftState : public PlayerState
-{
-public:
-	FallLeftState() {}
-
-	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
-	void Enter(Player& player) const override;
-	void HandleCollision(Player& player, const std::vector<GameObject*>& map) const;
+private:
+	int m_direction;
 };

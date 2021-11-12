@@ -3,10 +3,6 @@
 #include "IdleState.h"
 #include "Player.h"
 
-CrouchState::CrouchState(int direction)
-	: m_direction(direction)
-{}
-
 PlayerState* CrouchState::HandleInput(Player& player)
 {
 	switch (m_direction)
@@ -16,18 +12,18 @@ PlayerState* CrouchState::HandleInput(Player& player)
 		{
 			if (HandleCrouchingCollision(player) == 0)
 			{
-				return new IdleRightState;
+				return new IdleState(RIGHT);
 			}
 		}
 
 		if (Play::KeyDown(VK_RIGHT))
 		{
-			return new CrawlRightState;
+			return new CrawlState(RIGHT);
 		}
 
 		if (Play::KeyDown(VK_LEFT))
 		{
-			return new CrawlLeftState;
+			return new CrawlState(LEFT);
 		}
 		return nullptr;
 		break;
@@ -37,22 +33,22 @@ PlayerState* CrouchState::HandleInput(Player& player)
 		{
 			if (HandleCrouchingCollision(player) == 0)
 			{
-				return new IdleLeftState;
+				return new IdleState(LEFT);
 			}
 		}
 
 		if (Play::KeyDown(VK_RIGHT))
 		{
-			return new CrawlRightState;
+			return new CrawlState(RIGHT);
 		}
 
 		if (Play::KeyDown(VK_LEFT))
 		{
-			return new CrawlLeftState;
+			return new CrawlState(LEFT);
 		}
 		return nullptr;
 		break;
-
+	
 	default:
 		return nullptr;
 		break;
@@ -62,7 +58,7 @@ PlayerState* CrouchState::HandleInput(Player& player)
 void CrouchState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
 	int spriteId;
-	Point2f currentPos;
+	Point2f currentPos = player.GetPosition();
 
 	switch (m_direction)
 	{
@@ -71,17 +67,6 @@ void CrouchState::StateUpdate(Player& player, const std::vector<GameObject*>& ma
 		spriteId = gState.sprites.crouchRight;
 		player.SetHeight(Play::GetSpriteHeight(spriteId));
 		player.SetWidth(Play::GetSpriteWidth(spriteId));
-
-		currentPos = player.GetPosition();
-
-		for (GameObject* p : map)
-		{
-			if (IsStandingOn(&player, p))
-			{
-				player.SetPosition({ currentPos.x + p->GetVelocity().x, p->GetPosition().y - player.GetHeight() });
-				player.SetGrounded(true);
-			}
-		}
 		break;
 
 	case LEFT:
@@ -89,21 +74,16 @@ void CrouchState::StateUpdate(Player& player, const std::vector<GameObject*>& ma
 		spriteId = gState.sprites.crouchLeft;
 		player.SetHeight(Play::GetSpriteHeight(spriteId));
 		player.SetWidth(Play::GetSpriteWidth(spriteId));
-
-		currentPos = player.GetPosition();
-
-		for (GameObject* p : map)
+		break;
+	}
+	
+	for (GameObject* p : map)
+	{
+		if (IsStandingOn(&player, p))
 		{
-			if (IsStandingOn(&player, p))
-			{
-				player.SetPosition({ currentPos.x + p->GetVelocity().x, p->GetPosition().y - player.GetHeight() });
-				player.SetGrounded(true);
-			}
+			player.SetPosition({ currentPos.x + p->GetVelocity().x, p->GetPosition().y - player.GetHeight() });
+			player.SetGrounded(true);
 		}
-		break;
-
-	default:
-		break;
 	}
 }
 
@@ -113,16 +93,12 @@ void CrouchState::Enter(Player& player) const
 	{
 	case RIGHT:
 		player.SetDrawState(State::STATE_CROUCH);
-		player.SetCrouching(true);
 		break;
 
 	case LEFT:
 		player.SetDrawState(State::STATE_CROUCH_LEFT);
-		player.SetCrouching(true);
-		break;
-
-	default:
 		break;
 	}
+	player.SetCrouching(true);	// used in both states
 }
 

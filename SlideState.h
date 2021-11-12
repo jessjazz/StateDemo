@@ -1,28 +1,18 @@
 #pragma once
 #include "PlayerState.h"
 
-class SlideRightState : public PlayerState
+class SlideState : public PlayerState
 {
 public:
-	SlideRightState() {}
+	SlideState(int direction)
+		: m_direction(direction)
+	{}
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
 	void Enter(Player& player) const override;
 
 private:
-	float m_slideTime{ 0.0f };
-};
-
-class SlideLeftState : public PlayerState
-{
-public:
-	SlideLeftState() {}
-
-	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
-	void Enter(Player& player) const override;
-
-private:
+	int m_direction;
 	float m_slideTime{ 0.0f };
 };

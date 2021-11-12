@@ -5,76 +5,81 @@
 
 constexpr float MAX_SLIDE = 20.0f;
 
-PlayerState* SlideRightState::HandleInput(Player& player)
+PlayerState* SlideState::HandleInput(Player& player)
 {
     m_slideTime++;
 
-    if (m_slideTime > MAX_SLIDE)
+    switch (m_direction)
     {
-        return new CrawlRightState;
-    }
+    case RIGHT:
+        if (m_slideTime > MAX_SLIDE)
+        {
+            return new CrawlState(RIGHT);
+        }
 
-    if (!player.IsGrounded())
-    {
-        return new FallRightState;
-    }
+        if (!player.IsGrounded())
+        {
+            return new FallState(RIGHT);
+        }
 
-    return nullptr;
+        return nullptr;
+        break;
+    
+    case LEFT:
+        if (m_slideTime > MAX_SLIDE)
+        {
+            return new CrawlState(LEFT);
+        }
+
+        if (!player.IsGrounded())
+        {
+            return new FallState(LEFT);
+        }
+
+        return nullptr;
+
+    default:
+        return nullptr;
+        break;
+    }
 }
 
-void SlideRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
+void SlideState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-    // Set sprite dimensions
-    int spriteId = gState.sprites.slideRight;
-    player.SetHeight(Play::GetSpriteHeight(spriteId));
-    player.SetWidth(Play::GetSpriteWidth(spriteId));
-
+    int spriteId;
     int speed = player.GetSpeed();
 
-	HandleCollision(player, map, speed, RIGHT); // override this with slide state's own collision function
+    switch (m_direction)
+    {
+    case RIGHT:
+        // Set sprite dimensions
+        spriteId = gState.sprites.slideRight;
+        player.SetHeight(Play::GetSpriteHeight(spriteId));
+        player.SetWidth(Play::GetSpriteWidth(spriteId));
+	    HandleCollision(player, map, speed, RIGHT);
+        break;
+    case LEFT:
+        // Set sprite dimensions
+        int spriteId = gState.sprites.slideLeft;
+        player.SetHeight(Play::GetSpriteHeight(spriteId));
+        player.SetWidth(Play::GetSpriteWidth(spriteId));
+        HandleCollision(player, map, speed, LEFT);
+        break;
+    }
     HandleCoinPickup(player, gState);
 	HandleGemPickup(player, gState);
 }
 
-void SlideRightState::Enter(Player& player) const
+void SlideState::Enter(Player& player) const
 {
-	player.SetDrawState(State::STATE_SLIDE_RIGHT);
-	player.SetCrouching(true);
-}
-
-PlayerState* SlideLeftState::HandleInput(Player& player)
-{
-    m_slideTime++;
-
-    if (m_slideTime > MAX_SLIDE)
+    switch (m_direction)
     {
-        return new CrawlLeftState;
+    case RIGHT:
+	    player.SetDrawState(State::STATE_SLIDE_RIGHT);
+        break;
+    case LEFT:
+        player.SetDrawState(State::STATE_SLIDE_LEFT);
+        break;
     }
-
-    if (!player.IsGrounded())
-    {
-        return new FallLeftState;
-    }
-
-    return nullptr;
-}
-
-void SlideLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
-{
-    // Set sprite dimensions
-    int spriteId = gState.sprites.slideLeft;
-    player.SetHeight(Play::GetSpriteHeight(spriteId));
-    player.SetWidth(Play::GetSpriteWidth(spriteId));
-
-    int speed = player.GetSpeed();
-
-	HandleCollision(player, map, speed, LEFT);
-    HandleCoinPickup(player, gState);
-	HandleGemPickup(player, gState);
-}
-
-void SlideLeftState::Enter(Player& player) const
-{
-	player.SetDrawState(State::STATE_SLIDE_LEFT);
 	player.SetCrouching(true);
 }

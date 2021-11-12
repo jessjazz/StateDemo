@@ -3,23 +3,18 @@
 
 class Player;
 
-class CrawlRightState : public PlayerState
+class CrawlState : public PlayerState
 {
 public:
-	CrawlRightState() {}
+	CrawlState(int direction)
+		: m_direction(direction)
+	{}
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
 	void Enter(Player& player) const override;
-};
 
-class CrawlLeftState : public PlayerState
-{
-public:
-	CrawlLeftState() {}
-
-	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
-	void Enter(Player& player) const override;
+private:
+	int m_direction;
 };
 

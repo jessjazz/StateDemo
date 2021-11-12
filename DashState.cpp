@@ -5,74 +5,83 @@
 
 constexpr float MAX_DASH = 10.0f;
 
-PlayerState* DashRightState::HandleInput(Player& player)
+PlayerState* DashState::HandleInput(Player& player)
 {
 	m_dashTime++;
-
-	if (m_dashTime > MAX_DASH)
+	
+	switch (m_direction)
 	{
-		return new RunRightState;
-	}
+	case RIGHT:
+		if (m_dashTime > MAX_DASH)
+		{
+			return new RunState(RIGHT);
+		}
 
-	if (!player.IsGrounded())
-	{
-		return new FallRightState;
-	}
+		if (!player.IsGrounded())
+		{
+			return new FallState(RIGHT);
+		}
 
-	return nullptr;
+		return nullptr;
+		break;
+
+	case LEFT:
+		if (m_dashTime > MAX_DASH)
+		{
+			return new RunState(LEFT);
+		}
+
+		if (!player.IsGrounded())
+		{
+			return new FallState(LEFT);
+		}
+
+		return nullptr;
+		break;
+
+	default:
+		return nullptr;
+		break;
+
+	}
 }
 
-void DashRightState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
+void DashState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
 {
-	// Set sprite dimensions
-	int spriteId = gState.sprites.dashRight;
-	player.SetHeight(Play::GetSpriteHeight(spriteId));
-	player.SetWidth(Play::GetSpriteWidth(spriteId));
-
+	int spriteId;
 	int speed = player.GetSpeed() * 2;
 
-	HandleCollision(player, map, speed, RIGHT);
+	switch (m_direction)
+	{
+	case RIGHT:
+		// Set sprite dimensions
+		spriteId = gState.sprites.dashRight;
+		player.SetHeight(Play::GetSpriteHeight(spriteId));
+		player.SetWidth(Play::GetSpriteWidth(spriteId));
+		HandleCollision(player, map, speed, RIGHT);
+		break;
+	case LEFT:
+		// Set sprite dimensions
+		spriteId = gState.sprites.dashLeft;
+		player.SetHeight(Play::GetSpriteHeight(spriteId));
+		player.SetWidth(Play::GetSpriteWidth(spriteId));
+		HandleCollision(player, map, speed, LEFT);
+		break;
+	}
+
 	HandleCoinPickup(player, gState);
 	HandleGemPickup(player, gState);
 }
 
-void DashRightState::Enter(Player& player) const
+void DashState::Enter(Player& player) const
 {
-	player.SetDrawState(State::STATE_DASH_RIGHT);
-}
-
-PlayerState* DashLeftState::HandleInput(Player& player)
-{
-	m_dashTime++;
-
-	if (m_dashTime > MAX_DASH)
+	switch (m_direction)
 	{
-		return new RunLeftState;
+	case RIGHT:
+		player.SetDrawState(State::STATE_DASH_RIGHT);
+		break;
+	case LEFT:
+		player.SetDrawState(State::STATE_DASH_LEFT);
+		break;
 	}
-
-	if (!player.IsGrounded())
-	{
-		return new FallLeftState;
-	}
-
-	return nullptr;
-}
-
-void DashLeftState::StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const
-{
-	// Set sprite dimensions
-	int spriteId = gState.sprites.dashLeft;
-	player.SetHeight(Play::GetSpriteHeight(spriteId));
-	player.SetWidth(Play::GetSpriteWidth(spriteId));
-
-	int speed = player.GetSpeed() * 2;
-
-	HandleCollision(player, map, speed, LEFT);
-	HandleCoinPickup(player, gState);
-	HandleGemPickup(player, gState);
-}
-
-void DashLeftState::Enter(Player& player) const
-{
-	player.SetDrawState(State::STATE_DASH_LEFT);
 }

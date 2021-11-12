@@ -1,10 +1,12 @@
 #pragma once
 #include "PlayerState.h"
 
-class GroundPoundRightState : public PlayerState
+class GroundPoundState : public PlayerState
 {
 public:
-	GroundPoundRightState() {}
+	GroundPoundState(int direction)
+		: m_direction(direction)
+	{}
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
@@ -13,21 +15,6 @@ public:
 	void HandleCollision(Player& player, const std::vector<GameObject*>& map) const;
 
 private:
+	int m_direction;
 	float m_smashTime{ 0.f };
 };
-
-class GroundPoundLeftState : public PlayerState
-{
-public:
-	GroundPoundLeftState() {}
-
-	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
-	void Enter(Player& player) const override;
-
-	void HandleCollision(Player& player, const std::vector<GameObject*>& map) const;
-
-private:
-	float m_smashTime{ 0.f };
-};
-

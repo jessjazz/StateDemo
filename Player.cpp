@@ -15,7 +15,7 @@ Player::Player(Point2f pos, Vector2f gravity, int speed, int lives)
 	SetVelocity({ 0,0 });
 	SetType(OBJ_PLAYER);
 	SetDrawOrder(1);
-	m_pCurrentState = new IdleRightState;
+	m_pCurrentState = new IdleState(RIGHT);
 }
 
 Player::~Player() {}
@@ -148,7 +148,7 @@ void Player::HandleLifeLost(GameState& gState)
 		b_isDead = false;
 		SetDrawState(State::STATE_IDLE);
 		delete m_pCurrentState; // Delete the current state before assigning new state to avoid memory leak
-		m_pCurrentState = new IdleRightState;
+		m_pCurrentState = new IdleState(RIGHT);
 		b_onGround = true;
 	}
 }

@@ -3,22 +3,17 @@
 
 class Player;
 
-class RunRightState : public PlayerState
+class RunState : public PlayerState
 {
 public:
-	RunRightState() {}
+	RunState(int direction)
+		: m_direction(direction)
+	{}
 
 	PlayerState* HandleInput(Player& player) override;
 	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
 	void Enter(Player& player) const override;
-};
 
-class RunLeftState : public PlayerState
-{
-public:
-	RunLeftState() {}
-
-	PlayerState* HandleInput(Player& player) override;
-	void StateUpdate(Player& player, const std::vector<GameObject*>& map, GameState& gState) const override;
-	void Enter(Player& player) const override;
+private:
+	int m_direction;
 };
