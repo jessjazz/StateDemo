@@ -26,7 +26,7 @@ void GameObject::UpdateAll(GameState& gState)
 	s_vNewGameObjects.clear();
 
 	std::sort(s_vUpdateList.begin(), s_vUpdateList.end(), GameObject::UpdateOrder);
-
+	// Loop through update list, update each object and delete any inactive objects
 	for (size_t n = 0; n < s_vUpdateList.size(); n++)
 	{
 		s_vUpdateList[n]->Update(gState);
@@ -39,7 +39,7 @@ void GameObject::UpdateAll(GameState& gState)
 void GameObject::DrawAll(GameState& gState)
 {
 	std::sort(s_vDrawList.begin(), s_vDrawList.end(), GameObject::DrawOrder);
-
+	// Loop through draw list and call object specific draw function
 	for (size_t n = 0; n < s_vDrawList.size(); n++)
 		s_vDrawList[n]->Draw(gState);
 }
