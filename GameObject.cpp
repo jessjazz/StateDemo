@@ -2,13 +2,13 @@
 
 std::vector< GameObject* > GameObject::s_vUpdateList;
 std::vector< GameObject* > GameObject::s_vDrawList;
+std::vector< GameObject* > GameObject::s_vNewGameObjects;
 
 GameObject::GameObject(Point2f pos)
 {
 	m_pos = pos;
-
-	s_vUpdateList.push_back(this);
-	s_vDrawList.push_back(this);
+	// Add any new gameobjects to new object vector
+	s_vNewGameObjects.push_back(this);
 }
 
 GameObject::~GameObject()
@@ -19,6 +19,12 @@ GameObject::~GameObject()
 
 void GameObject::UpdateAll(GameState& gState)
 {
+	// Add new objects from previous loop to update and draw vectors
+	s_vUpdateList.insert(s_vUpdateList.end(), s_vNewGameObjects.begin(), s_vNewGameObjects.end());
+	s_vDrawList.insert(s_vDrawList.end(), s_vNewGameObjects.begin(), s_vNewGameObjects.end());
+	// Clear the new object vector each loop
+	s_vNewGameObjects.clear();
+
 	std::sort(s_vUpdateList.begin(), s_vUpdateList.end(), GameObject::UpdateOrder);
 
 	for (size_t n = 0; n < s_vUpdateList.size(); n++)

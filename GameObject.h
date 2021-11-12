@@ -80,5 +80,6 @@ protected:
 
     static std::vector< GameObject* > s_vUpdateList;
     static std::vector< GameObject* > s_vDrawList;
+    static std::vector< GameObject* > s_vNewGameObjects;
 
 };
