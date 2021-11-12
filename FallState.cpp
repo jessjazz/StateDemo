@@ -54,7 +54,7 @@ void FallState::StateUpdate(Player& player, const std::vector<GameObject*>& map,
 	HandleCollision(player, map);
 	HandleCoinPickup(player, gState);
 	HandleGemPickup(player, gState);
-
+	// Death if player falls off level
 	if (player.GetPosition().y > DISPLAY_HEIGHT)
 	{
 		PlayFallScream();
@@ -80,7 +80,7 @@ void FallState::Enter(Player& player) const
 
 void FallState::HandleCollision(Player& player, const std::vector<GameObject*>& map) const
 {
-	// Handle level edges
+	// Rebound if colliding with level edges
 	if (player.GetPosition().x > LEVEL_WIDTH - player.GetWidth())
 	{
 		player.SetPosition({ LEVEL_WIDTH - player.GetWidth(), player.GetPosition().y });
@@ -90,7 +90,7 @@ void FallState::HandleCollision(Player& player, const std::vector<GameObject*>& 
 		player.SetPosition({ 0, player.GetPosition().y });
 	}
 
-	// Handle sideways collision
+	// Rebound if colliding sideways
 	for (GameObject* p : map)
 	{
 		int collisionDirection = DetectCollision(&player, p, player.IsCrouching());
@@ -99,7 +99,7 @@ void FallState::HandleCollision(Player& player, const std::vector<GameObject*>& 
 			player.SetVelocity({ player.GetVelocity().x * -1, player.GetVelocity().y });
 		}
 	}
-	// Handle collision from above
+	// Ground player when a platform is landed on
 	for (GameObject* p : map)
 	{
 		if (IsStandingOn(&player, p) && p->GetType() != GameObject::Type::OBJ_DECAYING_PLATFORM && p->GetType() != GameObject::Type::OBJ_DESTRUCTIBLE_PLATFORM)

@@ -121,11 +121,13 @@ void IdleState::HandleCollision(Player& player, const std::vector<GameObject*>& 
 		{
 			if (p->GetType() == GameObject::Type::OBJ_MOVING_PLATFORM)
 			{
+				// Add the platform's velocity to the player's position so they move with the platform
 				player.SetPosition({ currentPos.x + p->GetVelocity().x, p->GetPosition().y - player.GetHeight() });
 				player.SetGrounded(true);
 			}
 			else if (p->GetType() == GameObject::Type::OBJ_DECAYING_PLATFORM || p->GetType() == GameObject::Type::OBJ_DESTRUCTIBLE_PLATFORM)
 			{
+				// Player falls if platform is not visible
 				if (p->IsCollidable())
 				{
 					player.SetPosition({ currentPos.x, p->GetPosition().y - player.GetHeight() });

@@ -14,13 +14,14 @@ DestructiblePlatform::DestructiblePlatform(Point2f pos, int width, int height, f
 
 void DestructiblePlatform::Update(GameState& gState)
 {
+	// Reset platform after lifeTime has ended if game has been reset (after game over or level end)
 	if (m_state == STATE_APPEAR && m_remainingLife <= 0)
 	{
 		m_remainingLife = m_lifeTime;
 		b_visible = true;
 		b_collidable = true;
 	}
-	
+	// Fade away broken pieces and spawn a gem
 	if (m_state == STATE_BROKEN)
 	{
 		b_collidable = false;
@@ -40,6 +41,7 @@ void DestructiblePlatform::Update(GameState& gState)
 
 void DestructiblePlatform::Draw(GameState& gState) const
 {
+	// Draw whole platform or broken pieces slightly apart from each other to show the platform has been smashed
 	if (b_visible)
 	{
 		switch (m_state)

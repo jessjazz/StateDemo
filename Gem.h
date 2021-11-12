@@ -8,10 +8,10 @@ public:
 
 	void Update(GameState& gState);
 	void Draw(GameState& gState) const;
-
+	// Create function to hide raw new
 	static Gem* SpawnGem(Point2f pos);
 
 private:
-	bool b_onGround{ false };
+	bool b_onGround{ false }; // To stop gems falling through platforms
 };
 

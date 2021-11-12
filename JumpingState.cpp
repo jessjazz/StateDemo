@@ -3,8 +3,8 @@
 #include "Player.h"
 
 constexpr float MAX_JUMP_TIME = 10.0f;
-constexpr int JUMP_HEIGHT = 10;
-constexpr int JUMP_DISTANCE = 5;
+constexpr int JUMP_HEIGHT = 10; // Vertical distance to move
+constexpr int JUMP_DISTANCE = 5; // Horizontal distance to move
 
 PlayerState* JumpState::HandleInput(Player& player)
 {
@@ -46,7 +46,7 @@ void JumpState::StateUpdate(Player& player, const std::vector<GameObject*>& map,
 		spriteId = gState.sprites.jumpRight;
 		player.SetHeight(Play::GetSpriteHeight(spriteId));
 		player.SetWidth(Play::GetSpriteWidth(spriteId));
-
+		// Move right in the air
 		if (!player.IsGrounded() && Play::KeyDown(VK_RIGHT))
 		{
 			player.SetVelocity({ JUMP_DISTANCE, player.GetVelocity().y });
@@ -57,14 +57,14 @@ void JumpState::StateUpdate(Player& player, const std::vector<GameObject*>& map,
 		spriteId = gState.sprites.jumpLeft;
 		player.SetHeight(Play::GetSpriteHeight(spriteId));
 		player.SetWidth(Play::GetSpriteWidth(spriteId));
-
+		// Move left in the air
 		if (!player.IsGrounded() && Play::KeyDown(VK_LEFT))
 		{
 			player.SetVelocity({ -JUMP_DISTANCE, player.GetVelocity().y });
 		}
 		break;
 	}
-
+	// Only jump if the player is on the ground
 	if (player.IsGrounded())
 	{
 		player.SetVelocity({ 0, player.GetVelocity().y - JUMP_HEIGHT });
@@ -97,16 +97,18 @@ void JumpState::HandleJumpCollision(Player& player, const std::vector<GameObject
 {
 	for (GameObject* p : map)
 	{
-		if (DetectCollision(&player, p, player.IsCrouching()) == UP && p->IsCollidable())
+		if (DetectCollision(&player, p, player.IsCrouching()) == UP) // && p->IsCollidable()
 		{
+			// Rebound if colliding with the bottom of a platform 
 			player.SetVelocity({ player.GetVelocity().x, player.GetVelocity().y * -1.f });
 		}
 		else if (DetectCollision(&player, p, player.IsCrouching()) == LEFT || DetectCollision(&player, p, player.IsCrouching()) == RIGHT && p->IsCollidable())
 		{
+			// Rebound if colliding with the side of a platform
 			player.SetVelocity({ player.GetVelocity().x * -0.5f, player.GetVelocity().y });
 		}
 	}
-
+	// Clamp player x pos at level edges
 	if (player.GetPosition().x > LEVEL_WIDTH - player.GetWidth())
 	{
 		player.SetPosition({ LEVEL_WIDTH - player.GetWidth(), player.GetPosition().y });

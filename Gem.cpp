@@ -13,6 +13,7 @@ Gem::Gem(Point2f pos)
 
 void Gem::Update(GameState& gState)
 {
+	// Move in an arc until gem lands on a platform
 	if (!b_onGround)
 	{
 		m_velocity += GRAVITY;

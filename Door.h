@@ -8,9 +8,9 @@ public:
 
 	void Update(GameState& gState);
 	void Draw(GameState& gState) const;
-
+	// Create function to hide raw new
 	static Door* CreateDoor(Point2f pos);
-
+	// State enum to control sprites and behaviour
 	enum State
 	{
 		CLOSED = 0,

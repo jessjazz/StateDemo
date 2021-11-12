@@ -12,11 +12,11 @@ Platform::Platform(Point2f pos, int width, int height)
 }
 
 void Platform::Update(GameState& gState)
-{
-}
+{}
 
 void Platform::Draw(GameState& gState) const
 {
+	// Draw rectangle according to parameters set in MainGame CreateMap function
 	Play::DrawRect({ m_pos.x - gState.camera.x, m_pos.y - gState.camera.y }, { m_pos.x + m_width - gState.camera.x, m_pos.y + m_height - gState.camera.y }, Play::cGrey, true);
 }
 

@@ -8,7 +8,7 @@ public:
 
 	void Update(GameState& gState);
 	void Draw(GameState& gState) const;
-
+	// Star spawner creates new stars at different rotations and sets velocity
 	static void SpawnStars(Point2f pos);
 
 private:

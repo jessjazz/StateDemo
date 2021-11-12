@@ -16,7 +16,8 @@ PlayerState* CrawlState::HandleInput(Player& player)
 
 		if (!Play::KeyDown(VK_DOWN))
 		{
-			if (HandleCrouchingCollision(player) == 0)
+			// Don't stop crouching if the player is beneath a low platform
+			if (HandleCrouchingCollision(player) == UP)
 			{
 				return new RunState(RIGHT);
 			}
@@ -38,7 +39,8 @@ PlayerState* CrawlState::HandleInput(Player& player)
 
 		if (!Play::KeyDown(VK_DOWN))
 		{
-			if (HandleCrouchingCollision(player) == 0)
+			// Don't stop crouching if the player is beneath a low platform
+			if (HandleCrouchingCollision(player) == UP)
 			{
 				return new RunState(LEFT);
 			}

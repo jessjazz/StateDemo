@@ -10,10 +10,11 @@ Star::Star(Point2f pos)
 
 void Star::Update(GameState& gState)
 {
+	// Rotate the stars and move them in the direction they are facing
 	m_rot += m_rotationSpeed;
 	m_velocity += m_accelaration;
 	m_pos += m_velocity;
-
+	// Destroy when off screen
 	if (GetPosition().y > LEVEL_HEIGHT || GetPosition().y < 0 || GetPosition().x > LEVEL_WIDTH || GetPosition().x < 0)
 	{
 		SetActive(false);
@@ -27,6 +28,8 @@ void Star::Draw(GameState& gState) const
 
 void Star::SpawnStars(Point2f pos)
 {
+	// Create 4 new stars from corners of pickups and set velocity so they intially move in the
+	// direction they are facing, then gravity can be applied through accelaration
 	for (float rad{ 0.25f }; rad < 2.0f; rad += 0.5f)
 	{
 		Star* newStar = new Star(pos);

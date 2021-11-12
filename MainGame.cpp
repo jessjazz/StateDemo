@@ -406,7 +406,7 @@ int DetectCollision(GameObject* object1, GameObject* object2, bool isCrouching)
 	float object1_xw = object1->GetPosition().x + object1->GetWidth();
 	float object2_xw = object2->GetPosition().x + object2->GetWidth() - offset;
 
-	float object1_y_offset = (isCrouching) ? object1->GetPosition().y + (object1->GetHeight() / 3.3f) : object1->GetPosition().y;
+	float object1_y_offset = (isCrouching) ? object1->GetPosition().y + (object1->GetHeight() / 3.3f) + offset : object1->GetPosition().y + offset;
 	float object2_yh_offset = object2->GetPosition().y + object2->GetHeight() - offset;
 
 	float object1_x_offset = object1->GetPosition().x - offset;

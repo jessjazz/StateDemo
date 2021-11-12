@@ -10,7 +10,8 @@ PlayerState* CrouchState::HandleInput(Player& player)
 	case RIGHT:
 		if (!Play::KeyDown(VK_DOWN))
 		{
-			if (HandleCrouchingCollision(player) == 0)
+			// Don't stop crouching if the player is beneath a low platform
+			if (HandleCrouchingCollision(player) == UP)
 			{
 				return new IdleState(RIGHT);
 			}
@@ -31,7 +32,8 @@ PlayerState* CrouchState::HandleInput(Player& player)
 	case LEFT:
 		if (!Play::KeyDown(VK_DOWN))
 		{
-			if (HandleCrouchingCollision(player) == 0)
+			// Don't stop crouching if the player is beneath a low platform
+			if (HandleCrouchingCollision(player) == UP)
 			{
 				return new IdleState(LEFT);
 			}
@@ -99,6 +101,6 @@ void CrouchState::Enter(Player& player) const
 		player.SetDrawState(State::STATE_CROUCH_LEFT);
 		break;
 	}
-	player.SetCrouching(true);	// used in both states
+	player.SetCrouching(true);
 }
 

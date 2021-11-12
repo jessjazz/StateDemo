@@ -28,7 +28,7 @@ void Door::Update(GameState& gState)
 			}
 		}
 	}
-
+	// Update animation for the opening door
 	if (m_state == OPENING)
 	{
 		m_framePos += m_animSpeed;
@@ -39,7 +39,7 @@ void Door::Update(GameState& gState)
 			m_framePos -= 1.0f;
 		}
 	}
-
+	// Door stays open once animation has finished
 	if (m_frame >= Play::GetSpriteFrames(gState.sprites.door) - 1)
 	{
 		m_state = OPEN;

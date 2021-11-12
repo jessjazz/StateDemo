@@ -11,7 +11,7 @@ public:
 
 	void Update(GameState& gState) override;
 	void Draw(GameState& gState) const override;
-
+	// Create function to hide raw new
 	static Platform* CreatePlatform(Point2f pos, int width, int height);
 };
 

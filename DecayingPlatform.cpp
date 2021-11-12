@@ -31,7 +31,7 @@ void DecayingPlatform::Update(GameState& gState)
 	for (GameObject* p : players)
 	{
 		Player* player = static_cast<Player*>(p);
-
+		// Reduce remaining life while player is standing on platform, use remaining life to control alpha/fade platform
 		if (IsStandingOn(player, this))
 		{
 			m_remainingLife -= gState.deltaTime * m_decaySpeed;
@@ -50,6 +50,7 @@ void DecayingPlatform::Update(GameState& gState)
 
 			if (b_isInvisible)
 			{
+				// Delay respawning the platform so the player can fall through it
 				if (gState.time > deathTime + m_respawnDelay)
 				{
 					ResetPlatform();
