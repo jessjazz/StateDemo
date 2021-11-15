@@ -1,4 +1,4 @@
-# StateDemo
+# State Design Pattern Demo
 
 This level is a demonstration of my implementation of the state design pattern described in Game Programming Patterns by Robert Nystrom.
 
