@@ -11,7 +11,7 @@ public:
 	// Star spawner creates new stars at different rotations and sets velocity
 	static void SpawnStars(Point2f pos);
 
-private:
+protected:
 	float m_rot{ 0.0f };
 	float m_rotationSpeed{ 0.0f };
 	Vector2f m_accelaration{ 0.0f, 0.0f };

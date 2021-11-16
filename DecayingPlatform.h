@@ -21,7 +21,7 @@ public:
 
 	void SetSize(Size size) { m_size = size; }
 
-private:
+protected:
 	Size m_size;
 	float m_lifeTime;
 	float m_remainingLife{ m_lifeTime };

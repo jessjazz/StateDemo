@@ -14,7 +14,7 @@ public:
 	// Set sprite and any state specific data
 	void Enter(Player& player) const override;
 
-private:
+protected:
 	int m_direction;
 	float m_slideTime{ 0.0f }; // Amount of time the player has been sliding
 };

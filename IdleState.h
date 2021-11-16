@@ -19,6 +19,6 @@ public:
 	// Handle collision in a way specific to idle state
 	void HandleCollision(Player& player, const std::vector<GameObject*>& map) const;
 
-private:
+protected:
 	int m_direction;
 };

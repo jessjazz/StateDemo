@@ -18,7 +18,7 @@ public:
 	// Handle collision in a way specific to jumping state
 	void HandleJumpCollision(Player& player, const std::vector<GameObject*>& map) const;
 
-private:
+protected:
 	int m_direction;
 	float m_jumpTime; // Amount of time the player has been in the air
 };

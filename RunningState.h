@@ -16,6 +16,6 @@ public:
 	// Set sprite and any state specific data
 	void Enter(Player& player) const override;
 
-private:
+protected:
 	int m_direction;
 };

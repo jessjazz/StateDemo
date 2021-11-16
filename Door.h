@@ -30,7 +30,7 @@ public:
 	State GetState() const { return m_state; }
 	void SetState(State newState) { m_state = newState; }
 
-private:
+protected:
 	int m_frame{ 0 };
 	float m_framePos{ 0.0f };
 	float m_animSpeed{ 0.1f };

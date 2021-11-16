@@ -54,7 +54,7 @@ public:
 	// Resets player to the start of the level and reduces m_lives by 1
 	void HandleLifeLost(GameState& gState);
 
-private:
+protected:
 	State m_state{ State::STATE_IDLE }; // This state is used for drawing sprites
 	PlayerState* m_pCurrentState; // This state is the movement state for updating the player
 	int m_speed;

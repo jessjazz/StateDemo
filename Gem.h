@@ -11,7 +11,7 @@ public:
 	// Create function to hide raw new
 	static Gem* SpawnGem(Point2f pos);
 
-private:
+protected:
 	bool b_onGround{ false }; // To stop gems falling through platforms
 };
 

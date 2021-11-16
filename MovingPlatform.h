@@ -12,7 +12,7 @@ public:
 	// Create function to hide raw new
 	static MovingPlatform* CreatePlatform(Point2f pos, int width, int height, int direction, float sinAmplitude, float sinFrequency);
 
-private:
+protected:
 	float x { 0.f }; // Time counter for sine wave
 	float m_amplitude; // Change this to control how far the platform moves
 	float m_frequency; // Change this to control how fast the platform moves

@@ -20,7 +20,7 @@ public:
 	void SetState(State newState) { m_state = newState; }
 	State GetState() const { return m_state; }
 
-private:
+protected:
 	State m_state{ STATE_APPEAR };
 	int m_frameIndex{ 0 };
 	float m_lifeTime;

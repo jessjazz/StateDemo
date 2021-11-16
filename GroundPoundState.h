@@ -16,7 +16,7 @@ public:
 	// Handle collision in a way specific to ground pound state, handles the destruction of platforms
 	void HandleCollision(Player& player, const std::vector<GameObject*>& map) const;
 
-private:
+protected:
 	int m_direction;
 	float m_smashTime{ 0.f }; // Records how long player has been in the state
 };
